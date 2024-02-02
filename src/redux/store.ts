@@ -3,10 +3,11 @@ import { persistReducer } from 'redux-persist';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
 import authSlice from './slices/authSlices';
+import appSlice from './slices/appSlice';
 
 const authPersistConfig = {
     key: "auth",
-    timeout: 2000,
+    timeout: 100,
     storage,
     stateReconciler: autoMergeLevel2,
 };
@@ -14,7 +15,8 @@ const authPersistConfig = {
 export const makeStore = () => {
     return configureStore({
         reducer: {
-            auth: persistReducer<ReturnType<typeof authSlice.reducer>>(authPersistConfig, authSlice.reducer)
+            auth: persistReducer<ReturnType<typeof authSlice.reducer>>(authPersistConfig, authSlice.reducer),
+            app: appSlice.reducer
         },
     })
 }

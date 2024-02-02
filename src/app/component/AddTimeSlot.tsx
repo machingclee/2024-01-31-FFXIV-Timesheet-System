@@ -4,42 +4,53 @@ import MyButton from "@/component/MyButton";
 import MyTextField from "@/component/MyTextField";
 import Spacer from "@/component/Spacer";
 import Title from "@/component/Title";
-import { CreateTimeSlotParam } from "@/dto/dto";
+import { CreateTimeSlotParam, Event, TimeSlot } from "@/dto/dto";
 import useApiClient from "@/hooks/useApiClient";
-import { useAppSelector } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import appSlice from "@/redux/slices/appSlice";
 import getTimezone from "@/util/getTimzone";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from "dayjs";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaInfoCircle } from "react-icons/fa";
 import { tss } from "tss-react";
+import xdayjs from "../../util/xdayjs"
+import TimeSlots from "../timesheet/component/TimeSlots";
 
 const useStyles = tss.create(() => ({
     timePicker: {
         "& input": {
             padding: "8px 8px"
         }
-    }
+    },
 }))
 
-export default () => {
+export default ({ getEvents }: {
+    getEvents: () => Promise<void>
+}) => {
     const email = useAppSelector(s => s.auth.email);
+    const dispatch = useAppDispatch();
     const newTimeslotName = useRef("");
     const apiClient = useApiClient();
     const currDayjs = dayjs(new Date());
     const [value, setValue] = useState<Dayjs | null>(currDayjs);
     const { classes, cx } = useStyles();
     const addATimeSlot = () => {
+        dispatch(appSlice.actions.setLoading(true));
         const timeZone = getTimezone();
         apiClient.post("/timesheet/create-timeslot", {
             email,
             name: newTimeslotName.current,
             startDate: value?.format("YYYY-MM-DD"),
             timeZone
-        } as CreateTimeSlotParam)
+        } as CreateTimeSlotParam).finally(() => {
+            getEvents();
+            dispatch(appSlice.actions.setLoading(false));
+        })
     }
+
     return <>
         <Title title="Event Time Slots" />
         <Spacer />

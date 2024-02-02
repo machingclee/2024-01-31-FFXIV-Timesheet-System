@@ -6,6 +6,7 @@ import { Inter } from "next/font/google";
 import StoreProvider from './StoreProvider';
 import LoginNavBar from './component/LoginNavBar';
 import "./globals.css";
+import LoadingScreen from '@/component/LoadingScreen';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,14 +26,17 @@ export default function RootLayout({
             <AppRouterCacheProvider options={{ enableCssLayer: true }}>
                 <body className={inter.className} style={{ margin: 0 }}>
                     <StoreProvider>
+                        <LoadingScreen />
                         <LoginNavBar />
-                        <Container style={{
+                        <div style={{
                             height: "calc(100vh - 56px)",
                             overflowY: "auto",
                         }}>
-                            <Spacer />
-                            {children}
-                        </Container>
+                            <Container>
+                                <Spacer />
+                                {children}
+                            </Container>
+                        </div>
                     </StoreProvider>
                 </body>
             </AppRouterCacheProvider>

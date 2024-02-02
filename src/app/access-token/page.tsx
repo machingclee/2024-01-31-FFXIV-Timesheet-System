@@ -1,8 +1,8 @@
 "use client";
 
 import useApiClient from "@/hooks/useApiClient";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import authSlice from "@/lib/slices/authSlices";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import authSlice from "@/redux/slices/authSlices";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
