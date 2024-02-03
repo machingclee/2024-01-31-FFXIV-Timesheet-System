@@ -419,7 +419,7 @@ const MessageContent = ({
         <textarea
             defaultValue={msg}
             onKeyUp={e => {
-                updateDialogMessageDialogContent(e.target.value)
+                updateDialogMessageDialogContent(e.currentTarget.value)
             }}
             className={cx(classes.textArea)}
             style={{
