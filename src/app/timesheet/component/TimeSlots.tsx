@@ -132,11 +132,12 @@ const TimesheetTable = (props: {
         return selectionIdToCount;
     }
 
-
     const refreshParticipants = async () => {
+        dispatch(appSlice.actions.setLoading(true));
         const res = await apiClient.get<{ result: { timeslot: Day } }>(
             `/timesheet/get-event-specfic-timeslot/${dailyId}`
         )
+        dispatch(appSlice.actions.setLoading(false));
         const day_ = res.data.result.timeslot;
         setParticipants(day_.participants);
     }
