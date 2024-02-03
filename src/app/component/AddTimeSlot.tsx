@@ -27,8 +27,8 @@ const useStyles = tss.create(() => ({
     },
 }))
 
-export default ({ getEvents }: {
-    getEvents: () => void
+export default ({ getWeeklyEvents: getEvents }: {
+    getWeeklyEvents: () => void
 }) => {
     const email = useAppSelector(s => s.auth.email);
     const dispatch = useAppDispatch();

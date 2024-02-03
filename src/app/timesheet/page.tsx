@@ -12,19 +12,19 @@ import appSlice from "@/redux/slices/appSlice";
 export default () => {
     const apiClient = useApiClient();
     const dispatch = useAppDispatch();
-    const [events, setEvents] = useState<Event[]>([])
+    const [weeklyEvents, setWeeklyEvents] = useState<Event[]>([])
     const accessToken = useAppSelector(s => s.auth.accessToken);
-    const getEvents = () => {
+    const getWeeklyEvents = () => {
         dispatch(appSlice.actions.setLoading(true));
         apiClient.get<{ result: { events: Event[] } }>("/timesheet/get-events").then((res) => {
             const events_ = res.data.result.events;
-            setEvents(events_);
+            setWeeklyEvents(events_);
         }).finally(() => {
             dispatch(appSlice.actions.setLoading(false));
         })
     }
     useEffect(() => {
-        getEvents();
+        getWeeklyEvents();
     }, [])
 
     return <>
@@ -33,9 +33,9 @@ export default () => {
             pointerEvents: accessToken ? "auto" : "none"
         }}
         >
-            <AddTimeSlot getEvents={getEvents} />
+            <AddTimeSlot getWeeklyEvents={getWeeklyEvents} />
             <Spacer />
-            <Events events={events} />
+            <Events events={weeklyEvents} getWeeklyEvents={getWeeklyEvents} />
         </div >
     </>
 }

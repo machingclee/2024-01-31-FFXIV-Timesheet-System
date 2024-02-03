@@ -7,6 +7,8 @@ import StoreProvider from './StoreProvider';
 import LoginNavBar from './component/LoginNavBar';
 import "./globals.css";
 import LoadingScreen from '@/component/LoadingScreen';
+import WarningDialog from '@/component/dialogs/WarningDialog';
+import DialogInit from '@/component/DialogInit';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,6 +30,7 @@ export default function RootLayout({
                     <StoreProvider>
                         <LoadingScreen />
                         <LoginNavBar />
+                        <DialogInit />
                         <div style={{
                             height: "calc(100vh - 56px)",
                             overflowY: "auto",
@@ -37,6 +40,7 @@ export default function RootLayout({
                                 {children}
                             </Container>
                         </div>
+
                     </StoreProvider>
                 </body>
             </AppRouterCacheProvider>
