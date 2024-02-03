@@ -7,6 +7,7 @@ import useApiClient from "@/hooks/useApiClient";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import authSlice from "@/redux/slices/authSlices";
 import { Button, Container } from "@mui/material";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default () => {
@@ -36,7 +37,10 @@ export default () => {
                 height: 40
             }}>
                 <div>
-                    {accessToken && <MyButton variant="text" onClick={() => { router.push("/timesheet") }}>Timesheets</MyButton>}
+                    {accessToken && <Link href={"/timesheet"} >
+                        <MyButton variant="text" >Timesheets</MyButton>
+                    </Link>
+                    }
                 </div>
                 <div>
                     {!accessToken && <Button variant="contained" onClick={login} >Login</Button>}
@@ -47,7 +51,7 @@ export default () => {
                     </div>
                     }
                 </div>
-            </Container>
-        </div>
+            </Container >
+        </div >
     )
 }
