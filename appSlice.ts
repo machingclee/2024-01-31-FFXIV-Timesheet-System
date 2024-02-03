@@ -3,14 +3,14 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 type AppSliceState = {
     loading: boolean,
     dailyTable: {
-       aily number,
-    loading: boolean
+        loadingDailyId: number,
+        loading: boolean
     }
 }
 const initialState: AppSliceState = {
     loading: false,
     dailyTable: {
-        aily 0,
+        loadingDailyId: 0,
         loading: false
     }
 }

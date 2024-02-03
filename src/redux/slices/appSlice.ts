@@ -10,7 +10,7 @@ type AppSliceState = {
 const initialState: AppSliceState = {
     loading: false,
     dailyTable: {
-        loadingDailyId: "",
+        loadingDailyId: 0,
         loading: false
     }
 }
