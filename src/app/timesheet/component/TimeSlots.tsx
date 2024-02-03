@@ -7,13 +7,14 @@ import MyButton from "@/component/MyButton";
 import Spacer from "@/component/Spacer";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import appSlice from "@/redux/slices/appSlice";
-import { Checkbox } from "@mui/material";
+import { Checkbox, Fab } from "@mui/material";
 import { cloneDeep, debounce } from "lodash";
 import { v4 as uuidv4 } from "uuid";
 import MyTextField from "@/component/MyTextField";
 import boxShadow from "@/constants/boxShadow";
 import { FadeLoader } from "react-spinners";
 import DeleteIcon from '@mui/icons-material/Clear';
+import AddIcon from '@mui/icons-material/Add';
 
 const ROW_HEIGHT = 30;
 const COLUMN_WIDTH = 120;
@@ -129,12 +130,10 @@ const TimesheetTable = (props: {
             </div>
             <Spacer height={10} />
             <div style={{ display: "flex" }}>
-                <MyButton onClick={addUser}>Add Participant</MyButton>
                 <Spacer width={20} />
                 {showSpinner && <FadeLoader color="#36d7b7" height={20} width={7} style={{ transform: "scale(0.5)" }} />}
             </div>
-            <Spacer />
-            <Spacer height={10} />
+
             <div style={{ display: "flex", boxShadow: boxShadow.SHADOW_58, padding: 10, borderRadius: 10 }} className={cx(classes.table)}>
                 <table className={cx(classes.firstColumn)}>
                     <tbody>
@@ -170,6 +169,10 @@ const TimesheetTable = (props: {
                         />
                     )
                 })}
+                <Spacer width={30} />
+                <Fab style={{ backgroundColor: "rgba(0,0,0,0.3)", width: 36, height: 36, marginTop: 10 }} onClick={addUser}>
+                    <AddIcon style={{ color: "white" }} />
+                </Fab>
             </div>
             <Spacer />
         </ >
