@@ -1,22 +1,25 @@
 import { ChecksUpdate, Day, Option, Participant, Selection, TimeSlot, UpsertParticipantParam } from "@/dto/dto";
 import useApiClient from "@/hooks/useApiClient";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Dispatch, SetStateAction } from "react";
 import { tss } from "tss-react";
 import xdayjs from "../../../util/xdayjs"
 import MyButton from "@/component/MyButton";
 import Spacer from "@/component/Spacer";
-import { useAppDispatch } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import appSlice from "@/redux/slices/appSlice";
 import { Checkbox } from "@mui/material";
 import { cloneDeep, debounce } from "lodash";
 import { v4 as uuidv4 } from "uuid";
 import MyTextField from "@/component/MyTextField";
+import boxShadow from "@/constants/boxShadow";
+import { FadeLoader } from "react-spinners";
+import DeleteIcon from '@mui/icons-material/Clear';
 
 const ROW_HEIGHT = 30;
 const COLUMN_WIDTH = 120;
 
 export default ({ weeklyId }: { weeklyId: string }) => {
-    const [timesheets, setTimesheets] = useState<TimeSlot | null>(null);
+    const [timeslot, setTimeslot] = useState<TimeSlot | null>(null);
     const dispatch = useAppDispatch();
     const apiClient = useApiClient();
     useEffect(() => {
@@ -26,7 +29,7 @@ export default ({ weeklyId }: { weeklyId: string }) => {
         dispatch(appSlice.actions.setLoading(true));
         apiClient
             .get<{ result: { timeslots: TimeSlot } }>(`/timesheet/get-event-timeslot/${weeklyId}`)
-            .then(res => { setTimesheets(res.data.result.timeslots) })
+            .then(res => { setTimeslot(res.data.result.timeslots) })
             .finally(() => {
                 dispatch(appSlice.actions.setLoading(false));
             })
@@ -34,9 +37,12 @@ export default ({ weeklyId }: { weeklyId: string }) => {
 
     return (
         <>
-            <div key={timesheets?.weeklyId || ""}>
-                <Slot slot={timesheets} />
+            <div style={{ fontSize: 26, fontWeight: 600 }}>{timeslot?.title}</div>
+            <Spacer />
+            <div key={timeslot?.weeklyId || ""}>
+                <Slot slot={timeslot} />
             </div>
+            <Spacer height={200} />
         </>
     )
 }
@@ -50,9 +56,6 @@ const Slot = ({ slot }: { slot: TimeSlot | null }) => {
         <div>
             {days.map(day => {
                 const { dailyId } = day;
-                const startingDayjs = xdayjs(day.options?.[0].option);
-                const startingDate = startingDayjs.format("YYYY-MM-DD");
-                const weekDay = startingDayjs.format("dddd");
                 return (
                     <TimesheetTable key={dailyId} day={day} />
                 )
@@ -65,8 +68,10 @@ const TimesheetTable = (props: {
     day: Day,
 
 }) => {
+    const { loading, loadingDailyId: loadingId } = useAppSelector(s => s.app.dailyTable);
     const { day } = props;
     const { dailyId } = day;
+    const showSpinner = (dailyId === loadingId) && loading;
     const startingDayjs = xdayjs(day.options?.[0].option);
     const startingDate = startingDayjs.format("YYYY-MM-DD");
     const weekDay = startingDayjs.format("dddd");
@@ -75,7 +80,10 @@ const TimesheetTable = (props: {
     const dispatch = useAppDispatch();
     const apiClient = useApiClient();
     const onCheck = (props: ChecksUpdate) => {
-        apiClient.post("/timesheet/make-selection", props)
+        dispatch(appSlice.actions.setTableLoading({ loading: true, loadingDailyId: dailyId }))
+        apiClient.post("/timesheet/make-selection", props).finally(() => {
+            dispatch(appSlice.actions.setTableLoading({ loading: false, loadingDailyId: 0 }))
+        })
     }
     const upsertParticipant_ = (params: UpsertParticipantParam) => {
         apiClient.post("/timesheet/upsert-participant", params);
@@ -107,11 +115,27 @@ const TimesheetTable = (props: {
 
     return (
         <>
-            <div>{startingDate} ({weekDay})</div>
+            <div style={{ borderBottom: "4px solid rgba(0,0,0,0.4)", display: "flex" }}>
+                <div style={{
+                    backgroundColor: "rgba(0,0,0,0.4)",
+                    color: "white",
+                    padding: "10px 20px",
+                    fontWeight: 600,
+                    borderTopLeftRadius: 5,
+                    borderTopRightRadius: 5
+                }}>
+                    {startingDate}  ({weekDay})
+                </div>
+            </div>
             <Spacer height={10} />
-            <MyButton onClick={addUser}>Add Participant</MyButton>
+            <div style={{ display: "flex" }}>
+                <MyButton onClick={addUser}>Add Participant</MyButton>
+                <Spacer width={20} />
+                {showSpinner && <FadeLoader color="#36d7b7" height={20} width={7} style={{ transform: "scale(0.5)" }} />}
+            </div>
+            <Spacer />
             <Spacer height={10} />
-            <div style={{ display: "flex" }} className={cx(classes.table)}>
+            <div style={{ display: "flex", boxShadow: boxShadow.SHADOW_58, padding: 10, borderRadius: 10 }} className={cx(classes.table)}>
                 <table className={cx(classes.firstColumn)}>
                     <tbody>
                         <tr><td style={{ textAlign: "right", height: 40 }}>Name</td></tr>
@@ -134,12 +158,14 @@ const TimesheetTable = (props: {
                     const { frontendUUID, username } = user;
                     return (
                         <OptionsColumn
+                            key={frontendUUID}
                             username={username}
                             dailyId={dailyId}
                             options={day.options}
                             uuid={frontendUUID}
                             onCheck={onCheck}
                             upsertParticipant={upsertParticipant}
+                            setParticipants={setParticipants}
                             selections={user.selections}
                         />
                     )
@@ -151,24 +177,40 @@ const TimesheetTable = (props: {
 }
 
 
-const OptionsColumn = ({ username, uuid, options, dailyId, selections, onCheck, upsertParticipant }: {
+const OptionsColumn = ({ username, uuid, options, dailyId, selections, onCheck, setParticipants, upsertParticipant }: {
     username: string,
     uuid: string,
     dailyId: number
     options?: Option[],
     selections: Selection[],
+    setParticipants: Dispatch<SetStateAction<Participant[]>>,
     onCheck: (props: ChecksUpdate) => void,
     upsertParticipant: (params: UpsertParticipantParam) => void
 }) => {
+    const { classes, cx } = useStyles();
+    const apiClient = useApiClient();
     const [name, setName] = useState(username || "");
+    const [showDelete, setShowDelete] = useState(false);
     const updateName = debounce((text: string) => {
         setName(text);
     }, 1000)
 
+    const deleteColumn = () => {
+        setParticipants(ps => {
+            const deleteIndex = ps.findIndex(p => p.frontendUUID === uuid);
+            console.log("deleteIndexdeleteIndexdeleteIndexdeleteIndex", deleteIndex)
+            const ps_ = cloneDeep(ps);
+            const newPs = [...ps_.slice(0, deleteIndex), ...ps_.slice(deleteIndex + 1)];
+            return newPs;
+        })
+        apiClient.delete(`/timesheet/delete-participant/${uuid}`)
+    }
+
+
     return (
         <table>
             <tbody>
-                <tr><td style={{ textAlign: "center", width: COLUMN_WIDTH }}>
+                <tr><td style={{ textAlign: "center", width: COLUMN_WIDTH, position: "relative" }}>
                     <MyTextField
                         defaultValue={name}
                         placeholder="Name"
@@ -183,6 +225,17 @@ const OptionsColumn = ({ username, uuid, options, dailyId, selections, onCheck, 
                             })
                         }}
                     />
+                    <DeleteIcon
+                        onClick={() => { deleteColumn() }}
+                        className={cx(classes.deleteButton)}
+                        fontSize={"small"}
+                        style={{
+                            position: "absolute",
+                            top: 5,
+                            right: 5,
+                            cursor: "pointer",
+                            zIndex: 10
+                        }} />
                 </td>
                 </tr>
 
@@ -197,7 +250,7 @@ const OptionsColumn = ({ username, uuid, options, dailyId, selections, onCheck, 
                         }
                     })()
                     return (
-                        <tr key={`${uuid}-opt`}>
+                        <tr key={`${id}-opt`}>
                             <td style={{ textAlign: "center" }}>
                                 <Checkbox
                                     disabled={!name}
@@ -223,6 +276,12 @@ const OptionsColumn = ({ username, uuid, options, dailyId, selections, onCheck, 
 }
 
 const useStyles = tss.create(() => ({
+    deleteButton: {
+        opacity: 0.5,
+        "&:hover": {
+            opacity: 1
+        }
+    },
     firstColumn: {
         "& td:nth-child(3)": {
             paddingRight: 10

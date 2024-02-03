@@ -1,10 +1,18 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-type appSliceState = {
-    loading: boolean
+type AppSliceState = {
+    loading: boolean,
+    dailyTable: {
+        loadingDailyId: number,
+        loading: boolean
+    }
 }
-const initialState: appSliceState = {
-    loading: false
+const initialState: AppSliceState = {
+    loading: false,
+    dailyTable: {
+        loadingDailyId: "",
+        loading: false
+    }
 }
 
 const appSlice = createSlice(
@@ -14,8 +22,12 @@ const appSlice = createSlice(
         reducers: {
             setLoading: (state, action: PayloadAction<boolean>) => {
                 state.loading = action.payload;
+            },
+            setTableLoading: (state, action: PayloadAction<AppSliceState["dailyTable"]>) => {
+                state.dailyTable = action.payload;
             }
         }
+
     }
 )
 

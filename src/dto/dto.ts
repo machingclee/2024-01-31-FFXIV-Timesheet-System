@@ -20,6 +20,7 @@ export type Day = {
 }
 
 export type TimeSlot = {
+    title: string,
     weeklyId: string,
     days: Day[]
 }
