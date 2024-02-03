@@ -140,13 +140,13 @@ const TimesheetTable = (props: {
                         <tr><td style={{ textAlign: "right", height: 40 }}>Name</td></tr>
                         {day.options.map(opt => {
                             const { id, option } = opt;
-                            const from = xdayjs(option).format("HH:mm")
-                            const to = xdayjs(option).add(1, "hour").format("HH:mm")
+                            const from = xdayjs(option).format("hh:mm a")
+                            const to = xdayjs(option).add(1, "hour").format("hh:mm a")
                             return (
                                 <tr key={id}>
-                                    <td>{from}</td>
+                                    <td style={{ textAlign: "right" }}>{from}</td>
                                     <td> - </td>
-                                    <td>{to}</td>
+                                    <td style={{ textAlign: "right" }}>{to}</td>
                                 </tr>
                             )
                         })}
