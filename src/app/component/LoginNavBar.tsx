@@ -36,7 +36,7 @@ export default () => {
                 height: 40
             }}>
                 <div>
-                    {accessToken && <MyButton variant="text" onClick={() => { router.push("/timesheet") }}>Time Sheets</MyButton>}
+                    {accessToken && <MyButton variant="text" onClick={() => { router.push("/timesheet") }}>Timesheets</MyButton>}
                 </div>
                 <div>
                     {!accessToken && <Button variant="contained" onClick={login} >Login</Button>}

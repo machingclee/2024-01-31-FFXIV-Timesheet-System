@@ -21,7 +21,6 @@ export default (props: TextFieldProps) => {
         <TextField
             className={cx(className, classes.input)}
             id="outlined-size-small"
-            defaultValue="Small"
             size="small"
             {...props_}
         />

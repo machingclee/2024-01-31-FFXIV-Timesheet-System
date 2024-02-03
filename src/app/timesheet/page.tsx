@@ -6,16 +6,22 @@ import Events from "./component/Events";
 import { useEffect, useState } from "react";
 import { Event } from "@/dto/dto";
 import useApiClient from "@/hooks/useApiClient";
-import { useAppSelector } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import appSlice from "@/redux/slices/appSlice";
 
 export default () => {
     const apiClient = useApiClient();
+    const dispatch = useAppDispatch();
     const [events, setEvents] = useState<Event[]>([])
     const accessToken = useAppSelector(s => s.auth.accessToken);
-    const getEvents = async () => {
-        const res = await apiClient.get<{ result: { events: Event[] } }>("/timesheet/get-events");
-        const events_ = res.data.result.events;
-        setEvents(events_);
+    const getEvents = () => {
+        dispatch(appSlice.actions.setLoading(true));
+        apiClient.get<{ result: { events: Event[] } }>("/timesheet/get-events").then((res) => {
+            const events_ = res.data.result.events;
+            setEvents(events_);
+        }).finally(() => {
+            dispatch(appSlice.actions.setLoading(false));
+        })
     }
     useEffect(() => {
         getEvents();
