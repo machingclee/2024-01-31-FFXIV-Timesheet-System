@@ -272,7 +272,10 @@ const OptionsColumn = ({
     const { classes, cx } = useStyles();
     const apiClient = useApiClient();
     const [name, setName] = useState(username || "");
-    const messageUpdate = useRef<string>("");
+    const messageDialogContent = useRef<string>("");
+    const updateDialogMessageDialogContent = (msg: string) => {
+        messageDialogContent.current = msg;
+    }
     const dispatch = useAppDispatch();
     const updateName = debounce((text: string) => {
         setName(text);
@@ -290,7 +293,7 @@ const OptionsColumn = ({
 
     const updateMessage = async () => {
         const reqBody: UpsertMessageParam = {
-            message: messageUpdate.current,
+            message: messageDialogContent.current,
             participantUUID: uuid
         };
         dispatch(appSlice.actions.setLoading(true));
@@ -310,7 +313,10 @@ const OptionsColumn = ({
                     onClick={async () => {
                         WarningDialog.setContent({
                             title: "",
-                            desc: () => <MessageContent messageUpdate={messageUpdate} uuid={uuid} />,
+                            desc: () => <MessageContent
+                                updateDialogMessageDialogContent={updateDialogMessageDialogContent}
+                                uuid={uuid}
+                            />,
                             no: {
                                 text: "Cancel"
                             },
@@ -391,9 +397,12 @@ const OptionsColumn = ({
     )
 }
 
-const MessageContent = ({ uuid, messageUpdate }: {
+const MessageContent = ({
+    uuid,
+    updateDialogMessageDialogContent
+}: {
     uuid: string,
-    messageUpdate: MutableRefObject<string>
+    updateDialogMessageDialogContent: (msg: string) => void
 }) => {
     const { classes, cx } = useStyles();
     const apiClient = useApiClient();
@@ -409,7 +418,9 @@ const MessageContent = ({ uuid, messageUpdate }: {
     return (
         <textarea
             defaultValue={msg}
-            onChange={e => messageUpdate.current = e.target.value}
+            onKeyUp={e => {
+                updateDialogMessageDialogContent(e.target.value)
+            }}
             className={cx(classes.textArea)}
             style={{
                 width: 400,
