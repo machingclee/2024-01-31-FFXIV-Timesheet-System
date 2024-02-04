@@ -478,6 +478,9 @@ const useStyles = tss.create(() => ({
         },
         "& tr:nth-child(2n)": {
             backgroundColor: "rgba(0,0,0,0.1)"
+        },
+        "& tr:nth-child(2)": {
+            backgroundColor: "unset"
         }
     }
 }))
