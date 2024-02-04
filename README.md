@@ -1,5 +1,7 @@
 # How does it look?
 
+Preview of the system:
+
 ![Alt text](timetable-3.png)
 
 # What is the Usage
