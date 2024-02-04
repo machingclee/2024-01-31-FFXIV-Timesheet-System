@@ -1,10 +1,10 @@
 # How does it look?
 
-[![Alt text](timetable.png)](timetable)
+![Alt text](timetable-2.png)
 
 # What is the Usage
 
-This is a timesheet system written for determinng timeslots that are available for all member in a static team.
+This is a timesheet system written for determinng timeslots that are available for all member in a static team (you can use it for arranging any kind of meetings).
 
 A functioning page has been deployed here:
 
@@ -24,6 +24,14 @@ A functioning page has been deployed here:
 ## Who don't need to Login?
 
 For people just to fill the timetable, however, their record can be altered by any people. So please just share the timetable link to related members.
+
+Any sharable link is like:
+
+```
+https://ffxiv-timesheet.vercel.app/timesheet/detail?weeklyId=9f084019-29b2-4ca9-ab4a-638713583cb0
+```
+
+The `weeklyId` information is usually non-guessable. Feel free to share it with your members.
 
 ## Way to Login
 
