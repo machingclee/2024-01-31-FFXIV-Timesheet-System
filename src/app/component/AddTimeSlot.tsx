@@ -52,7 +52,7 @@ export default ({ getWeeklyEvents: getEvents }: {
     }
 
     return <>
-        <Title title="Event Time Slots" />
+        <Title title="Events" />
         <Spacer />
         <div style={{ display: "flex", alignItems: "center" }}>
             <MyTextField
