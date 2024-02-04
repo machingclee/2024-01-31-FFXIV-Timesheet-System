@@ -1,5 +1,9 @@
 # How does it look?
 
+A functioning page has been deployed here:
+
+- https://ffxiv-timesheet.vercel.app/timesheet
+
 Preview of the system:
 
 ![Alt text](timetable-3.png)
@@ -7,10 +11,6 @@ Preview of the system:
 # What is the Usage
 
 This is a timesheet system written for determinng timeslots that are available for all member in a static team (you can use it for arranging any kind of meetings).
-
-A functioning page has been deployed here:
-
-- https://ffxiv-timesheet.vercel.app/timesheet
 
 # About Login
 
