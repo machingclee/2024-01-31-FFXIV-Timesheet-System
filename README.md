@@ -1,6 +1,6 @@
 # How does it look?
 
-![Alt text](timetable-2.png)
+![Alt text](timetable-3.png)
 
 # What is the Usage
 
