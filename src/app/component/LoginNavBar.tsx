@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import authSlice from "@/redux/slices/authSlices";
 import { Button, Container } from "@mui/material";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 export default () => {
     const apiClient = useApiClient();

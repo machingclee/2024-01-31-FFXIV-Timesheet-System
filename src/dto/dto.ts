@@ -19,7 +19,7 @@ export type Day = {
     participants: Participant[]
 }
 
-export type TimeSlot = {
+export type TimeSheetsWeeklyProps = {
     title: string,
     weeklyId: string,
     days: Day[]

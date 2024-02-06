@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@air/react-drag-to-select": "^5.0.8",
     "@babel/runtime": "^7.23.9",
     "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.11.3",

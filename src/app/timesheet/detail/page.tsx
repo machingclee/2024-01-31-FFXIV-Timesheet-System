@@ -1,7 +1,7 @@
 "use client";
 
 import useParams from "@/hooks/useParams";
-import TimeSlots from "../component/TimeSlots";
+import TimeSheetsWeekly from "../component/TimeSheetsWeekly";
 
 export default () => {
     const params = useParams<{ weeklyId: string }>();
@@ -9,7 +9,7 @@ export default () => {
 
     return (
         <div>
-            <TimeSlots weeklyId={weeklyId || ""} />
+            <TimeSheetsWeekly weeklyId={weeklyId || ""} />
         </div>
     )
 

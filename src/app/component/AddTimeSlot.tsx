@@ -4,7 +4,7 @@ import MyButton from "@/component/MyButton";
 import MyTextField from "@/component/MyTextField";
 import Spacer from "@/component/Spacer";
 import Title from "@/component/Title";
-import { CreateTimeSlotParam, Event, TimeSlot } from "@/dto/dto";
+import { CreateTimeSlotParam, Event, TimeSheetsWeeklyProps } from "@/dto/dto";
 import useApiClient from "@/hooks/useApiClient";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import appSlice from "@/redux/slices/appSlice";
@@ -17,7 +17,7 @@ import { useEffect, useRef, useState } from "react";
 import { FaInfoCircle } from "react-icons/fa";
 import { tss } from "tss-react";
 import xdayjs from "../../util/xdayjs"
-import TimeSlots from "../timesheet/component/TimeSlots";
+import TimeSlots from "../timesheet/component/TimeSheetsWeekly";
 
 const useStyles = tss.create(() => ({
     timePicker: {

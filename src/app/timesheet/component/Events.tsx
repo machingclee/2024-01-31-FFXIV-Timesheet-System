@@ -12,33 +12,6 @@ import WarningDialog from "@/component/dialogs/WarningDialog";
 import { useAppDispatch } from "@/redux/hooks";
 import appSlice from "@/redux/slices/appSlice";
 
-const useStyles = tss.create(() => ({
-    tableLikeDiv: {
-        "& > div:nth-child(4n+3)": {
-            "& .clickable": {
-                backgroundColor: "rgba(0,0,0,0.05)"
-            }
-        },
-        "& > div:nth-child(4n+1)": {
-            "& .clickable": {
-                backgroundColor: "rgba(0,0,0,0.1)"
-            }
-        },
-        "& > div": {
-            "& .clickable": {
-                padding: 10,
-                transition: "opacity 0.1s ease-in-out",
-                cursor: "pointer"
-            }
-        },
-        "& > div:hover": {
-            "& .clickable": {
-                opacity: 0.5
-            }
-        },
-    }
-}))
-
 export default ({ events, getWeeklyEvents }: { events: WeeklyEvents[], getWeeklyEvents: () => void }) => {
     const apiClient = useApiClient();
     const dispatch = useAppDispatch();
@@ -98,3 +71,30 @@ export default ({ events, getWeeklyEvents }: { events: WeeklyEvents[], getWeekly
         </div>
     )
 }
+
+const useStyles = tss.create(() => ({
+    tableLikeDiv: {
+        "& > div:nth-child(4n+3)": {
+            "& .clickable": {
+                backgroundColor: "rgba(0,0,0,0.05)"
+            }
+        },
+        "& > div:nth-child(4n+1)": {
+            "& .clickable": {
+                backgroundColor: "rgba(0,0,0,0.1)"
+            }
+        },
+        "& > div": {
+            "& .clickable": {
+                padding: 10,
+                transition: "opacity 0.1s ease-in-out",
+                cursor: "pointer"
+            }
+        },
+        "& > div:hover": {
+            "& .clickable": {
+                opacity: 0.5
+            }
+        },
+    }
+}))
