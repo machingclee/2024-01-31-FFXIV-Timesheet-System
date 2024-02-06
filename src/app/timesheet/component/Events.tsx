@@ -1,5 +1,5 @@
 import MyButton from "@/component/MyButton";
-import { Event as WeeklyEvents } from "@/dto/dto";
+import { Event } from "@/dto/dto";
 import useApiClient from "@/hooks/useApiClient"
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
@@ -12,7 +12,7 @@ import WarningDialog from "@/component/dialogs/WarningDialog";
 import { useAppDispatch } from "@/redux/hooks";
 import appSlice from "@/redux/slices/appSlice";
 
-export default ({ events, getWeeklyEvents }: { events: WeeklyEvents[], getWeeklyEvents: () => void }) => {
+export default ({ events, getWeeklyEvents }: { events: Event[], getWeeklyEvents: () => void }) => {
     const apiClient = useApiClient();
     const dispatch = useAppDispatch();
     const { classes, cx } = useStyles();

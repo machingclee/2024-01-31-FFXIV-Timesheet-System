@@ -17,7 +17,7 @@ import { useEffect, useRef, useState } from "react";
 import { FaInfoCircle } from "react-icons/fa";
 import { tss } from "tss-react";
 import xdayjs from "../../util/xdayjs"
-import TimeSlots from "../timesheet/component/TimeSheetsWeekly";
+import TimeSlots from "../timesheet/detail/component/TimeSheetsWeekly";
 
 const useStyles = tss.create(() => ({
     timePicker: {

@@ -1,7 +1,7 @@
 "use client";
 
 import useParams from "@/hooks/useParams";
-import TimeSheetsWeekly from "../component/TimeSheetsWeekly";
+import TimeSheetsWeekly from "./component/TimeSheetsWeekly";
 
 export default () => {
     const params = useParams<{ weeklyId: string }>();

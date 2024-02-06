@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Spacer from "@/component/Spacer";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import appSlice from "@/redux/slices/appSlice";
-import TimeSheetDaily from "./TimeSheetDaily";
+import TimeSheetDaily from "../../component/TimeSheetDaily";
 
 
 export default ({ weeklyId }: { weeklyId: string }) => {
