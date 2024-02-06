@@ -20,6 +20,8 @@
     "@mui/icons-material": "^5.15.7",
     "@mui/material": "^5.15.6",
     "@mui/material-nextjs": "^5.15.6",
+    "@mui/x-data-grid-generator": "^6.19.3",
+    "@mui/x-data-grid-premium": "^6.19.3",
     "@mui/x-date-pickers": "^6.19.2",
     "@reduxjs/toolkit": "^2.1.0",
     "@types/lodash": "^4.14.202",

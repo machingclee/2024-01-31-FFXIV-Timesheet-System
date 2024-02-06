@@ -12,6 +12,7 @@ import { CircularProgress, Fab, Switch } from "@mui/material";
 import boxShadow from "@/constants/boxShadow";
 import OptionsColumn from "./OptionsColumn";
 import AddIcon from '@mui/icons-material/Add';
+import constants from "@/constants/constants";
 
 export default (props: {
     day: Day,
@@ -141,7 +142,7 @@ export default (props: {
                 <table className={cx(classes.firstColumn)}>
                     <tbody>
                         <tr><td style={{ textAlign: "right", height: 31 }} colSpan={3}></td></tr>
-                        <tr><td style={{ textAlign: "right", height: 40 }} colSpan={3}></td></tr>
+                        <tr><td style={{ textAlign: "right", height: 34}} colSpan={3}></td></tr>
                         {day.options.map(opt => {
                             const { id, option } = opt;
                             const from = xdayjs(option).format("hh:mm a")

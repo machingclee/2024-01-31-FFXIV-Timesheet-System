@@ -1,6 +1,7 @@
+import constants from "@/constants/constants";
 import { tss } from "tss-react";
 
-const ROW_HEIGHT = 30;
+
 
 const useTimesheetStyles = tss.create(() => ({
     textArea: {
@@ -35,18 +36,19 @@ const useTimesheetStyles = tss.create(() => ({
         }
     },
     table: {
+    
         "& .MuiButtonBase-root.MuiCheckbox-root": {
             padding: 0,
         },
         "& tr": {
-            height: ROW_HEIGHT
+            height: constants.ROW_HEIGHT
         },
         "& td": {
             verticalAlign: "middle"
         },
         "& table": {
             borderCollapse: "collapse",
-            fontSize: 14,
+            fontSize: 12,
         },
         "& tr:nth-child(2n)": {
             backgroundColor: "rgba(0,0,0,0.1)"
