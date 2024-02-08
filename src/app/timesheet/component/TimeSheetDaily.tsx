@@ -1,4 +1,4 @@
-import { Participant, ChecksUpdate, UpsertParticipantParam, Day } from "@/dto/dto";
+import { Participant, CheckUpdate, UpsertParticipantParam, Day } from "@/dto/dto";
 import useApiClient from "@/hooks/useApiClient";
 import { useAppSelector, useAppDispatch } from "@/redux/hooks";
 import xdayjs from "@/util/xdayjs";
@@ -30,9 +30,12 @@ export default (props: {
     const [particiants, setParticipants] = useState<Participant[]>([]);
     const dispatch = useAppDispatch();
     const apiClient = useApiClient();
-    const onCheck = (props: ChecksUpdate) => {
+    const checksUpdate = (checks: CheckUpdate[]) => {
         dispatch(appSlice.actions.setTableLoading({ loading: true, loadingDailyId: dailyId }))
-        apiClient.post("/timesheet/make-selection", props).finally(() => {
+        apiClient.post(
+            "/timesheet/make-selection",
+            { selections: checks }
+        ).finally(() => {
             dispatch(appSlice.actions.setTableLoading({ loading: false, loadingDailyId: 0 }))
         })
     }
@@ -142,7 +145,7 @@ export default (props: {
                 <table className={cx(classes.firstColumn)}>
                     <tbody>
                         <tr><td style={{ textAlign: "right", height: 31 }} colSpan={3}></td></tr>
-                        <tr><td style={{ textAlign: "right", height: 34}} colSpan={3}></td></tr>
+                        <tr><td style={{ textAlign: "right", height: 34 }} colSpan={3}></td></tr>
                         {day.options.map(opt => {
                             const { id, option } = opt;
                             const from = xdayjs(option).format("hh:mm a")
@@ -170,7 +173,7 @@ export default (props: {
                             dailyId={dailyId}
                             options={day.options}
                             uuid={frontendUUID}
-                            onCheck={onCheck}
+                            checksUpdate={checksUpdate}
                             upsertParticipant={upsertParticipant}
                             setParticipants={setParticipants}
                             selections={user.selections}

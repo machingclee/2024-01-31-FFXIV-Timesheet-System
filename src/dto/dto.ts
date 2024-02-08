@@ -50,7 +50,7 @@ export type UpsertParticipantParam = {
     dailyId: number
 }
 
-export type ChecksUpdate = {
+export type CheckUpdate = {
     selectionId: number,
     userUUID: string,
     timeslotDailyId: number,
