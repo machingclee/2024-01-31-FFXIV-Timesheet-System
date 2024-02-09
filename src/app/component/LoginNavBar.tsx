@@ -37,10 +37,10 @@ export default () => {
                 height: 40
             }}>
                 <div>
-                    {accessToken && <Link href={"/timesheet"} >
-                        <MyButton variant="text" >Timesheets</MyButton>
+                    <Link href={"/timesheet"} >
+                        <MyButton variant="text" disabled={!accessToken} >Timesheets</MyButton>
                     </Link>
-                    }
+
                 </div>
                 <div>
                     {!accessToken && <Button variant="contained" onClick={login} >Login</Button>}

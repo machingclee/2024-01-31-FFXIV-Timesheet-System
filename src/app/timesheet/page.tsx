@@ -8,6 +8,7 @@ import { Event } from "@/dto/dto";
 import useApiClient from "@/hooks/useApiClient";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import appSlice from "@/redux/slices/appSlice";
+import UsageGuide from "./component/UsageGuide";
 
 export default () => {
     const apiClient = useApiClient();
@@ -36,6 +37,8 @@ export default () => {
             <AddTimeSlot getWeeklyEvents={getWeeklyEvents} />
             <Spacer />
             <Events events={weeklyEvents} getWeeklyEvents={getWeeklyEvents} />
+
         </div >
+        {!accessToken && <UsageGuide />}
     </>
 }

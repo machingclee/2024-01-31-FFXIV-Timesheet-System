@@ -68,7 +68,7 @@ export default (props: {
         const selectionIdToCount = new Map<number, number>();
         day.participants.forEach(p => {
             const { selections } = p;
-            selections.forEach(s => {
+            selections.filter(s => s.checked).forEach(s => {
                 const selectionId = s.timeAvailableOptionId;
                 const count = selectionIdToCount.get(selectionId);
                 if (typeof count === "undefined") {

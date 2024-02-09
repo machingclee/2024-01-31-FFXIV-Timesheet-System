@@ -109,8 +109,8 @@ const OptionsColumn = ({
             <tbody>
                 <tr>
                     <td
-
                         style={{
+                            cursor: "pointer",
                             textAlign: "center",
                             opacity: participantMessage ? 1 : 0.2,
                         }}
@@ -177,6 +177,7 @@ const OptionsColumn = ({
                         }
                     })()
 
+                    const isSuccessId = successSelectionIds.includes(id);
 
                     return (
                         <tr key={`${id}-opt`} draggable={false}>
@@ -187,7 +188,9 @@ const OptionsColumn = ({
                                     cursor: "pointer",
                                     pointerEvents: "auto",
                                 }}
+                                className={cx(isSuccessId ? classes.successCell : null)}
                             >
+
                                 <CustomMouseEnterCheckbox
                                     defaultChecked={defaultChecked}
                                     addUpdate={addUpdate}
