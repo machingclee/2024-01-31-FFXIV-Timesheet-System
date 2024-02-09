@@ -35,6 +35,8 @@ export type Selection = {
     id: number,
     participantId: number,
     timeAvailableOptionId: number
+    checked: boolean
+
 }
 
 export type Participant = {

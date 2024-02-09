@@ -14,6 +14,7 @@ import { DataGridPremium } from '@mui/x-data-grid-premium';
 import { tss } from "tss-react";
 import { FaCheck } from "react-icons/fa";
 import constants from "@/constants/constants";
+import sleepUtil from "@/util/sleepUtil";
 
 const OptionsColumn = ({
     participantMessage,
@@ -74,17 +75,24 @@ const OptionsColumn = ({
         await refreshParticipants();
     }
 
-    const updateRecords = useRef<CheckUpdate[]>([]);
+    const updateRecordsRef = useRef<CheckUpdate[]>([]);
 
     const deboundedUpdate = useMemo(
-        () => debounce((update: CheckUpdate[]) => { checksUpdate(update) }, 300),
+        () => debounce((update: CheckUpdate[]) => {
+            checksUpdate(update);
+            updateRecordsRef.current = [];
+        }, 300),
         []
     );
     const addUpdate = (update: CheckUpdate) => {
-        updateRecords.current.push(update);
+        const existingIndex = updateRecordsRef.current.findIndex(up => up.selectionId === update.selectionId);
+        if (existingIndex > -1) {
+            return;
+        }
+        updateRecordsRef.current.push(update);
     }
     const dispatchUpdate = async () => {
-        const updates = updateRecords.current;
+        const updates = updateRecordsRef.current;
         deboundedUpdate(updates);
     }
 
@@ -150,8 +158,8 @@ const OptionsColumn = ({
                 {options?.map(opt => {
                     const { id } = opt;
                     const defaultChecked = (() => {
-                        const exists = selections.find(s => s.timeAvailableOptionId === id);
-                        if (exists) {
+                        const choice = selections.find(s => s.timeAvailableOptionId === id);
+                        if (choice?.checked) {
                             return true;
                         } else {
                             return false;
@@ -213,8 +221,7 @@ const CustomMouseEnterCheckbox = ({
     const { classes, cx } = useStyles();
     const [checked, setChecked] = useState(defaultChecked);
 
-    const toggle = () => {
-        setChecked(c => !c);
+    const toggle = useMemo(() => () => {
         addUpdate({
             checked: !checked,
             selectionId: selectionId,
@@ -222,7 +229,8 @@ const CustomMouseEnterCheckbox = ({
             userUUID: userUUID
         })
         dispatchUpdate();
-    }
+        setChecked(c => !c);
+    }, [checked])
     return (
         <>
             <div
