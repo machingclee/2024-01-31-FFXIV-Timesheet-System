@@ -75,24 +75,32 @@ const OptionsColumn = ({
         await refreshParticipants();
     }
 
-    const updateRecordsRef = useRef<CheckUpdate[]>([]);
+    const updateRecordsRef = useRef<Map<string, boolean>>(new Map<string, boolean>());
 
     const deboundedUpdate = useMemo(
         () => debounce((update: CheckUpdate[]) => {
             checksUpdate(update);
-            updateRecordsRef.current = [];
+            updateRecordsRef.current = new Map<string, boolean>();
         }, 300),
         []
     );
     const addUpdate = (update: CheckUpdate) => {
-        const existingIndex = updateRecordsRef.current.findIndex(up => up.selectionId === update.selectionId);
-        if (existingIndex > -1) {
-            return;
-        }
-        updateRecordsRef.current.push(update);
+        const { checked, selectionId, timeslotDailyId, userUUID } = update;
+        const id = `${timeslotDailyId},${selectionId},${userUUID}`;
+        updateRecordsRef.current.set(id, checked);
     }
     const dispatchUpdate = async () => {
-        const updates = updateRecordsRef.current;
+        const updates: CheckUpdate[] = []
+        for (const result of updateRecordsRef.current) {
+            const [id, value] = result;
+            const [timeslotDailyId, selectionId, userUUID] = id.split(",");
+            updates.push({
+                checked: value,
+                selectionId: Number(selectionId),
+                timeslotDailyId: Number(timeslotDailyId),
+                userUUID: userUUID
+            })
+        }
         deboundedUpdate(updates);
     }
 
@@ -100,18 +108,21 @@ const OptionsColumn = ({
         <table>
             <tbody>
                 <tr>
-                    <td style={{
-                        textAlign: "center",
-                        opacity: participantMessage ? 1 : 0.2,
-                        cursor: "pointer"
-                    }}
+                    <td
+
+                        style={{
+                            textAlign: "center",
+                            opacity: participantMessage ? 1 : 0.2,
+                        }}
                         onClick={async () => {
                             WarningDialog.setContent({
-                                title: "",
-                                desc: () => <MessageContent
-                                    updateDialogMessageDialogContent={updateDialogMessageDialogContent}
-                                    uuid={uuid}
-                                />,
+                                title: "Message",
+                                desc: () => (
+                                    <MessageContent
+                                        updateDialogMessageDialogContent={updateDialogMessageDialogContent}
+                                        uuid={uuid}
+                                    />
+                                ),
                                 no: {
                                     text: "Cancel"
                                 },
@@ -165,12 +176,17 @@ const OptionsColumn = ({
                             return false;
                         }
                     })()
-                    const isSuccessId = successSelectionIds.includes(id);
+
 
                     return (
-                        <tr key={`${id}-opt`}>
-                            <td style={{ textAlign: "center" }}
-                                className={cx(isSuccessId ? classes.successCell : null)}
+                        <tr key={`${id}-opt`} draggable={false}>
+                            <td
+                                draggable={false}
+                                style={{
+                                    textAlign: "center",
+                                    cursor: "pointer",
+                                    pointerEvents: "auto",
+                                }}
                             >
                                 <CustomMouseEnterCheckbox
                                     defaultChecked={defaultChecked}
@@ -234,6 +250,7 @@ const CustomMouseEnterCheckbox = ({
     return (
         <>
             <div
+                draggable={false}
                 className={cx(classes.checkCell)}
                 onMouseDown={e => {
                     toggle()
@@ -259,16 +276,28 @@ const MessageContent = ({
     updateDialogMessageDialogContent: (msg: string) => void
 }) => {
     const { classes, cx } = useTimesheetStyles();
+    const dispatch = useAppDispatch();
     const apiClient = useApiClient();
+    const msgDispatched = useRef(false);
     const [msg, setMsg] = useState("");
     useEffect(() => {
-        apiClient.get<{ result: { message: string } }>(
-            `/timesheet/get-message/${uuid}`
-        ).then((res) => {
-            const msg_ = res.data.result.message;
-            setMsg(msg_);
-        });
+        if (!msgDispatched.current) {
+            dispatch(appSlice.actions.setLoading(true));
+            apiClient.get<{ result: { message: string } }>(
+                `/timesheet/get-message/${uuid}`
+            ).then((res) => {
+                const msg_ = res.data.result.message;
+                setMsg(msg_);
+            }).finally(() => {
+                setTimeout(() => {
+                    dispatch(appSlice.actions.setLoading(false));
+                }, 500);
+
+            });
+            msgDispatched.current = true;
+        }
     }, [])
+
     return (
         <textarea
             defaultValue={msg}
