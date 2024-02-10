@@ -12,13 +12,13 @@ import { useTheme } from '@mui/material/styles';
 import { tss } from 'tss-react';
 
 type DialogContent = {
-    title: string,
+    title?: string,
     desc: () => JSX.Element,
-    no: {
+    no?: {
         text?: string,
         action?: () => void
     },
-    yes: {
+    yes?: {
         text?: string,
         action?: () => void
     }
@@ -75,13 +75,13 @@ export default class MyDialog {
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        {no.text && <Button autoFocus onClick={() => {
+                        {no?.text && <Button autoFocus onClick={() => {
                             no?.action?.();
                             handleClose()
                         }}>
                             {no.text}
                         </Button>}
-                        {yes.text && <Button onClick={() => {
+                        {yes?.text && <Button onClick={() => {
                             yes?.action?.();
                             handleClose()
                         }} autoFocus>

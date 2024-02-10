@@ -9,89 +9,102 @@ import { PropsWithChildren, useState } from 'react';
 import { Collapse } from '@mui/material';
 import MyButton from '@/component/MyButton';
 import { tss } from 'tss-react';
+import colors from '@/constants/colors';
+import FadeIn from '@/component/FadeIn';
 
 const useStyles = tss.create(() => ({
     unordered: {
+        "& ul": {
+            listStyleType: "none"
+        },
+        "& .MuiButtonBase-root.MuiButton-root.MuiButton-contained": {
+            width: 200,
+            color: "rgba(0,0,0,0.75)",
+            marginRight: 15,
+            backgroundColor: "transparent",
+            padding: 10,
+            "& b": {
+                fontWeight: 500,
+                fontSize: 15
+            }
+        },
+        "& .MuiCollapse-wrapperInner": {
+            marginTop: 20,
+            borderLeft: `10px solid rgb(224, 224, 224)`,
+            paddingLeft: 20,
+            marginBottom: 20
+        },
+        "& img": {
+            maxWidth: "100%",
+            height: "auto"
+        },
         "& li": {
-            marginBottom: 10
+            marginBottom: 10,
         }
     }
 }))
 
+const returnIndex = (idx: number) => (i: number) => {
+    return idx
+}
+
 export default () => {
     const [expandIndex, setExpandIndex] = useState(0);
     const { classes, cx } = useStyles();
+    const show0 = expandIndex === 0;
+    const show1 = expandIndex === 1;
+    const show2 = expandIndex === 2;
+    const show3 = expandIndex === 3;
 
     return <div className={cx(classes.unordered)}>
-        <ul>
-            <li>
-                <div>
-                    <MyButton variant="contained" color='inherit' onClick={() => setExpandIndex(0)}>
-                        <b>Create an event.</b>
-                    </MyButton>
-                </div>
-                <Collapse in={expandIndex === 0}>
-                    <Spacer />
-                    <Spacer />
-                    <div>
-                        <Image src={addEventGif} alt="Create an event" />
-                    </div>
-                    <Spacer />
-                    <Spacer />
-                    <Spacer />
-                </Collapse>
-            </li>
+        <h2 style={{ color: colors.BLUE }}>Usage</h2>
 
-            <li>
-                <div>
-                    <MyButton variant="contained" color='inherit' onClick={() => setExpandIndex(1)}>
-                        <b>Share a timesheet to members and fill in the available timeslots.</b>
-                    </MyButton>
-                </div>
-                <Collapse in={expandIndex === 1}>
-                    <Spacer />
-                    <Spacer />
-                    <div>
-                        <Image src={makeSelectionGif} alt="Fill timeslots" />
-                    </div>
-                    <Spacer />
-                    <Spacer />
-                </Collapse>
-            </li>
+        <div style={{ display: "flex" }}>
+            <MyButton variant="contained" color='inherit' onClick={() => setExpandIndex(returnIndex(0))}>
+                <b>1. Create an event</b>
+            </MyButton>
 
-            <li>
-                <div>
-                    <MyButton variant="contained" color='inherit' onClick={() => setExpandIndex(2)}>
-                        <b>Add comments for potential delay.</b>
-                    </MyButton>
-                </div>
-                <Collapse in={expandIndex === 2}>
-                    <Spacer />
-                    <Spacer />
-                    <div>
-                        <Image src={addCommentGif} alt="Fill timeslots" />
-                    </div>
-                    <Spacer />
-                    <Spacer />
-                    <Spacer />
-                </Collapse>
-            </li>
+            <MyButton variant="contained" color='inherit' onClick={() => setExpandIndex(returnIndex(3))}>
+                <b>2. Add users and try to highlight available timeslots, OR</b>
+            </MyButton>
 
-            <li>
-                <div>
-                    <MyButton variant="contained" color='inherit' onClick={() => setExpandIndex(3)}>
-                        <b>Add users and try to highlight available timeslots</b>
-                    </MyButton>
-                </div>
-                <Collapse in={expandIndex === 3}>
-                    <Spacer />
-                    <Spacer />
-                    <div>
-                        <Image src={hightLightsGif} alt="Fill timeslots" />
-                    </div>
-                </Collapse>
-            </li>
-        </ul>
-        <Spacer height={300} />
+            <MyButton variant="contained" color='inherit' onClick={() => setExpandIndex(returnIndex(1))}>
+                <b>3. Share it to members and let them fill the available timeslots</b>
+            </MyButton>
+
+            <MyButton variant="contained" color='inherit' onClick={() => setExpandIndex(returnIndex(2))}>
+                <b>4. Add comments for potential delay</b>
+            </MyButton>
+        </div>
+
+        <Spacer />
+        <Spacer />
+
+        {show0 && <FadeIn>
+            <div>
+                <Image src={addEventGif} alt="Create an event" />
+            </div>
+        </FadeIn>}
+        {show1 && <FadeIn>
+            <div>
+                <Image src={makeSelectionGif} alt="Fill timeslots" />
+            </div>
+        </FadeIn>}
+
+
+        {show2 && <FadeIn>
+            <div>
+                <Image src={addCommentGif} alt="Fill timeslots" />
+            </div>
+        </FadeIn>}
+
+
+
+        {show3 && <FadeIn>
+            <div>
+                <Image src={hightLightsGif} alt="Fill timeslots" />
+            </div>
+        </FadeIn>}
+
     </div>
 }
