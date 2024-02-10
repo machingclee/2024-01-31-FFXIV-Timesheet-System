@@ -12,6 +12,16 @@ import { tss } from 'tss-react';
 import colors from '@/constants/colors';
 import FadeIn from '@/component/FadeIn';
 import boxShadow from '@/constants/boxShadow';
+import Head from "next/head";
+
+const gifs = [
+    addEventGif,
+    makeSelectionGif,
+    hightLightsGif,
+    addCommentGif
+]
+
+
 
 const useStyles = tss.create(() => ({
     active: {
@@ -64,55 +74,61 @@ export default () => {
     const show2 = expandIndex === 2;
     const show3 = expandIndex === 3;
 
-    return <div className={cx(classes.unordered)}>
-        <h2 style={{ color: colors.BLUE }}>Usage</h2>
-
-        <div style={{ display: "flex" }}>
-            <MyButton variant="contained" color='inherit' onClick={() => setExpandIndex(returnIndex(0))} className={cx(show0 ? classes.active : null)}>
-                <b>1. Create an event to get timetables for 1 week in a row</b>
-            </MyButton>
-
-            <MyButton variant="contained" color='inherit' onClick={() => setExpandIndex(returnIndex(1))} className={cx(show1 ? classes.active : null)}>
-                <b>2. Add users and fill the timeslots OR</b>
-            </MyButton>
-
-            <MyButton variant="contained" color='inherit' onClick={() => setExpandIndex(returnIndex(2))} className={cx(show2 ? classes.active : null)}>
-                <b>3. Share it to members and let them fill the available timeslots</b>
-            </MyButton>
-
-            <MyButton variant="contained" color='inherit' onClick={() => setExpandIndex(returnIndex(3))} className={cx(show3 ? classes.active : null)}>
-                <b>4. Add comments for potential delay</b>
-            </MyButton>
+    return <>
+        <div>
+            {gifs.map((gif) => <Image style={{ display: "none" }} src={gif} alt="Fill timeslots" />)}
         </div>
-        <Spacer />
+        <div className={cx(classes.unordered)}>
 
-        <div style={{ boxShadow: boxShadow.SHADOW_58, padding: 20, borderRadius: 10, maxWidth: 600 }}>
-            {show0 && <FadeIn>
-                <div>
-                    <Image src={addEventGif} alt="Create an event" />
-                </div>
-            </FadeIn>}
-            {show1 && <FadeIn>
-                <div>
-                    <Image src={makeSelectionGif} alt="Fill timeslots" />
-                </div>
-            </FadeIn>}
+            <h2 style={{ color: colors.BLUE }}>Usage</h2>
+
+            <div style={{ display: "flex" }}>
+                <MyButton variant="contained" color='inherit' onClick={() => setExpandIndex(returnIndex(0))} className={cx(show0 ? classes.active : null)}>
+                    <b>1. Create an event to get timetables for 1 week in a row</b>
+                </MyButton>
+
+                <MyButton variant="contained" color='inherit' onClick={() => setExpandIndex(returnIndex(1))} className={cx(show1 ? classes.active : null)}>
+                    <b>2. Add users and fill the timeslots OR</b>
+                </MyButton>
+
+                <MyButton variant="contained" color='inherit' onClick={() => setExpandIndex(returnIndex(2))} className={cx(show2 ? classes.active : null)}>
+                    <b>3. Share it to members and let them fill the available timeslots</b>
+                </MyButton>
+
+                <MyButton variant="contained" color='inherit' onClick={() => setExpandIndex(returnIndex(3))} className={cx(show3 ? classes.active : null)}>
+                    <b>4. Add comments for potential delay</b>
+                </MyButton>
+            </div>
+            <Spacer />
+
+            <div style={{ boxShadow: boxShadow.SHADOW_58, padding: 20, borderRadius: 10, maxWidth: 600 }}>
+                {show0 && <FadeIn>
+                    <div>
+                        <Image src={addEventGif} alt="Create an event" />
+                    </div>
+                </FadeIn>}
+                {show1 && <FadeIn>
+                    <div>
+                        <Image src={makeSelectionGif} alt="Fill timeslots" />
+                    </div>
+                </FadeIn>}
 
 
-            {show2 && <FadeIn>
-                <div>
-                    <Image src={hightLightsGif} alt="Fill timeslots" />
-                </div>
-            </FadeIn>}
+                {show2 && <FadeIn>
+                    <div>
+                        <Image src={hightLightsGif} alt="Fill timeslots" />
+                    </div>
+                </FadeIn>}
 
 
 
-            {show3 && <FadeIn>
-                <div>
-                    <Image src={addCommentGif} alt="Fill timeslots" />
-                </div>
-            </FadeIn>}
+                {show3 && <FadeIn>
+                    <div>
+                        <Image src={addCommentGif} alt="Fill timeslots" />
+                    </div>
+                </FadeIn>}
+            </div>
+            <Spacer height={60} />
         </div>
-        <Spacer height={60} />
-    </div>
+    </>
 }
