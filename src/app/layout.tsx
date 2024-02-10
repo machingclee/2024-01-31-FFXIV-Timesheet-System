@@ -36,7 +36,7 @@ export default function RootLayout({
                         <LoginNavBar />
                         <DialogInit />
                         <div style={{
-                            height: "calc(100vh - 56px)",
+                            height: "calc(100vh - 40px)",
                             overflowY: "auto",
                         }}>
                             <Container>

@@ -11,6 +11,7 @@ import MyButton from '@/component/MyButton';
 import { tss } from 'tss-react';
 import colors from '@/constants/colors';
 import FadeIn from '@/component/FadeIn';
+import boxShadow from '@/constants/boxShadow';
 
 const useStyles = tss.create(() => ({
     active: {
@@ -42,7 +43,7 @@ const useStyles = tss.create(() => ({
             marginBottom: 20
         },
         "& img": {
-            maxWidth: "100%",
+            maxWidth: 600,
             height: "auto"
         },
         "& li": {
@@ -83,35 +84,35 @@ export default () => {
                 <b>4. Add comments for potential delay</b>
             </MyButton>
         </div>
-
-        <Spacer />
         <Spacer />
 
-        {show0 && <FadeIn>
-            <div>
-                <Image src={addEventGif} alt="Create an event" />
-            </div>
-        </FadeIn>}
-        {show1 && <FadeIn>
-            <div>
-                <Image src={makeSelectionGif} alt="Fill timeslots" />
-            </div>
-        </FadeIn>}
+        <div style={{ boxShadow: boxShadow.SHADOW_58, padding: 20, borderRadius: 10, maxWidth: 600 }}>
+            {show0 && <FadeIn>
+                <div>
+                    <Image src={addEventGif} alt="Create an event" />
+                </div>
+            </FadeIn>}
+            {show1 && <FadeIn>
+                <div>
+                    <Image src={makeSelectionGif} alt="Fill timeslots" />
+                </div>
+            </FadeIn>}
 
 
-        {show2 && <FadeIn>
-            <div>
-                <Image src={hightLightsGif} alt="Fill timeslots" />
-            </div>
-        </FadeIn>}
+            {show2 && <FadeIn>
+                <div>
+                    <Image src={hightLightsGif} alt="Fill timeslots" />
+                </div>
+            </FadeIn>}
 
 
 
-        {show3 && <FadeIn>
-            <div>
-                <Image src={addCommentGif} alt="Fill timeslots" />
-            </div>
-        </FadeIn>}
-
+            {show3 && <FadeIn>
+                <div>
+                    <Image src={addCommentGif} alt="Fill timeslots" />
+                </div>
+            </FadeIn>}
+        </div>
+        <Spacer height={60} />
     </div>
 }

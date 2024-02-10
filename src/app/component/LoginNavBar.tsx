@@ -9,11 +9,21 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import authSlice from "@/redux/slices/authSlices";
 import { Button, Container } from "@mui/material";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { tss } from "tss-react";
 
 
 const useDialogStyles = tss.create(() => ({
+    link: {
+        "& button": {
+            fontWeight: 400,
+        },
+        "&.selected": {
+            "& button": {
+                fontWeight: 600,
+            },
+        },
+    },
     dialog: {
         paddingRight: 20,
         "& li": {
@@ -24,10 +34,12 @@ const useDialogStyles = tss.create(() => ({
 
 export default () => {
     const apiClient = useApiClient();
+    const pathname = usePathname();
     const accessToken = useAppSelector(s => s.auth.accessToken);
     const email = useAppSelector(s => s.auth.email);
     const dispatch = useAppDispatch();
     const { cx, classes } = useDialogStyles();
+
 
     const login = async () => {
         const res = await apiClient.get<{ url: string }>("/auth/login");
@@ -72,15 +84,20 @@ export default () => {
 
     return (
         <div style={{ boxShadow: boxShadow.SHADOW_61 }}>
+
             <Container style={{
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
                 height: 40
             }}>
-                <div>
-                    <Link href={"/timesheet"} >
+                <div style={{ display: "flex" }}>
+                    <Link href={"/timesheet"} className={cx(classes.link, pathname === "/timesheet" ? "selected" : "")}>
                         <MyButton variant="text" disabled={!accessToken} >Timesheets</MyButton>
+                    </Link>
+                    <Spacer />
+                    <Link href={"/user-guide"} className={cx(classes.link, pathname === "/user-guide" ? "selected" : "")}>
+                        <MyButton variant="text" >User Guide</MyButton>
                     </Link>
 
                 </div>

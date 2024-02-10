@@ -3,7 +3,7 @@
 import Spacer from "@/component/Spacer";
 import AddTimeSlot from "../component/AddTimeSlot";
 import Events from "./component/Events";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Event } from "@/dto/dto";
 import useApiClient from "@/hooks/useApiClient";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
@@ -15,6 +15,7 @@ export default () => {
     const dispatch = useAppDispatch();
     const [weeklyEvents, setWeeklyEvents] = useState<Event[]>([])
     const accessToken = useAppSelector(s => s.auth.accessToken);
+    const dataFetched = useRef(false);
     const getWeeklyEvents = () => {
         dispatch(appSlice.actions.setLoading(true));
         apiClient.get<{ result: { events: Event[] } }>("/timesheet/get-events").then((res) => {
@@ -25,7 +26,10 @@ export default () => {
         })
     }
     useEffect(() => {
-        getWeeklyEvents();
+        if (!dataFetched.current) {
+            getWeeklyEvents();
+            dataFetched.current = true;
+        }
     }, [])
 
     return <>
@@ -39,6 +43,5 @@ export default () => {
             <Events events={weeklyEvents} getWeeklyEvents={getWeeklyEvents} />
 
         </div >
-        {!accessToken && <UsageGuide />}
     </>
 }

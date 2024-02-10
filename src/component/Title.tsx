@@ -1,6 +1,5 @@
 export default (props: { title: string }) => {
-    return <div style={{ fontWeight: 600, fontSize: 20 }}>
+    return <h2 style={{ color: "rgb(25, 118, 210)" }}>
         {props.title}
-    </div>
-
+    </h2>
 }
