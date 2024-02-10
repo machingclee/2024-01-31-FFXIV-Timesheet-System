@@ -75,7 +75,7 @@ export default () => {
     const show3 = expandIndex === 3;
 
     return <>
-        <div>
+        <div style={{ height: 0 }}>
             {gifs.map((gif) => <Image style={{ height: 0 }} src={gif} alt="Fill timeslots" />)}
         </div>
         <div className={cx(classes.unordered)}>
