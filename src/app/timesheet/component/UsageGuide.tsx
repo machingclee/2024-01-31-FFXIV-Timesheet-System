@@ -13,6 +13,13 @@ import colors from '@/constants/colors';
 import FadeIn from '@/component/FadeIn';
 
 const useStyles = tss.create(() => ({
+    active: {
+        "&.MuiButtonBase-root.MuiButton-root.MuiButton-contained": {
+            backgroundColor: "rgb(25, 118, 210)",
+            color: "white"
+        }
+    },
+
     unordered: {
         "& ul": {
             listStyleType: "none"
@@ -60,19 +67,19 @@ export default () => {
         <h2 style={{ color: colors.BLUE }}>Usage</h2>
 
         <div style={{ display: "flex" }}>
-            <MyButton variant="contained" color='inherit' onClick={() => setExpandIndex(returnIndex(0))}>
-                <b>1. Create an event</b>
+            <MyButton variant="contained" color='inherit' onClick={() => setExpandIndex(returnIndex(0))} className={cx(show0 ? classes.active : null)}>
+                <b>1. Create an event to get timetables for 1 week in a row</b>
             </MyButton>
 
-            <MyButton variant="contained" color='inherit' onClick={() => setExpandIndex(returnIndex(3))}>
-                <b>2. Add users and try to highlight available timeslots, OR</b>
+            <MyButton variant="contained" color='inherit' onClick={() => setExpandIndex(returnIndex(1))} className={cx(show1 ? classes.active : null)}>
+                <b>2. Add users and fill the timeslots OR</b>
             </MyButton>
 
-            <MyButton variant="contained" color='inherit' onClick={() => setExpandIndex(returnIndex(1))}>
+            <MyButton variant="contained" color='inherit' onClick={() => setExpandIndex(returnIndex(2))} className={cx(show2 ? classes.active : null)}>
                 <b>3. Share it to members and let them fill the available timeslots</b>
             </MyButton>
 
-            <MyButton variant="contained" color='inherit' onClick={() => setExpandIndex(returnIndex(2))}>
+            <MyButton variant="contained" color='inherit' onClick={() => setExpandIndex(returnIndex(3))} className={cx(show3 ? classes.active : null)}>
                 <b>4. Add comments for potential delay</b>
             </MyButton>
         </div>
@@ -94,7 +101,7 @@ export default () => {
 
         {show2 && <FadeIn>
             <div>
-                <Image src={addCommentGif} alt="Fill timeslots" />
+                <Image src={hightLightsGif} alt="Fill timeslots" />
             </div>
         </FadeIn>}
 
@@ -102,7 +109,7 @@ export default () => {
 
         {show3 && <FadeIn>
             <div>
-                <Image src={hightLightsGif} alt="Fill timeslots" />
+                <Image src={addCommentGif} alt="Fill timeslots" />
             </div>
         </FadeIn>}
 
