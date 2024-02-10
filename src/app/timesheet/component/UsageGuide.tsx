@@ -76,7 +76,7 @@ export default () => {
 
     return <>
         <div>
-            {gifs.map((gif) => <Image style={{ display: "none" }} src={gif} alt="Fill timeslots" />)}
+            {gifs.map((gif) => <Image style={{ height: 0 }} src={gif} alt="Fill timeslots" />)}
         </div>
         <div className={cx(classes.unordered)}>
 
