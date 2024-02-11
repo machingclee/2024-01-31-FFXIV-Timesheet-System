@@ -15,6 +15,14 @@ export const TEXT_COLOR = "rgb(220,220,220)"
 
 const bodyStyle = tss.create(() => ({
     body: {
+        "& .date-picker": {
+            "& svg": {
+                color: TEXT_COLOR
+            }
+        },
+        "& h2": {
+            color: `${TEXT_COLOR} !important`
+        },
         backgroundColor: "rgba(0,0,0,0.9)",
         color: TEXT_COLOR,
         "& .timecolumn": {

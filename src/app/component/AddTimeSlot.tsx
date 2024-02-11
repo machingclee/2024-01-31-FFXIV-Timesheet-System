@@ -63,7 +63,7 @@ export default ({ getWeeklyEvents: getEvents }: {
                 placeholder="Event Name"
             />
             <Spacer />
-            <div>
+            <div className="date-picker">
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
                         className={cx(classes.timePicker)}
@@ -74,7 +74,7 @@ export default ({ getWeeklyEvents: getEvents }: {
             </div>
             <Spacer />
             <Spacer width={20} />
-            <MyButton onClick={addATimeSlot}>Add a timeslot</MyButton>
+            <MyButton onClick={addATimeSlot}>Add an Event</MyButton>
             <Spacer width={8} />
             <FaInfoCircle title="7 days will be added in a row" />
         </div>

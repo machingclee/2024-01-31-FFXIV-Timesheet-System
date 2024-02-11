@@ -1,6 +1,7 @@
 "use client";
 
 import MyButton from "@/component/MyButton";
+import MyLink from "@/component/MyLink";
 import Spacer from "@/component/Spacer";
 import WarningDialog from "@/component/dialogs/WarningDialog";
 import boxShadow from "@/constants/boxShadow";
@@ -91,17 +92,17 @@ export default () => {
                 height: 40
             }}>
                 <div style={{ display: "flex" }}>
-                    <Link href={"/timesheet"} className={cx(classes.link, pathname === "/timesheet" ? "selected" : "")}>
+                    <MyLink href={"/timesheet"} className={cx(classes.link, pathname === "/timesheet" ? "selected" : "")}>
                         <MyButton variant="text" disabled={!accessToken} >Timesheets</MyButton>
-                    </Link>
+                    </MyLink>
                     <Spacer />
-                    <Link href={"/user-guide"} className={cx(classes.link, pathname === "/user-guide" ? "selected" : "")}>
+                    <MyLink href={"/user-guide"} className={cx(classes.link, pathname === "/user-guide" ? "selected" : "")}>
                         <MyButton variant="text" >User Guide</MyButton>
-                    </Link>
+                    </MyLink>
 
                 </div>
                 <div style={{ display: "flex" }}>
-                    <MyButton variant="text" onClick={openAboutAuthor} >About Author</MyButton>
+                    <MyButton variant="text" onClick={openAboutAuthor}>About Author</MyButton>
                     <Spacer width={30} />
                     {!accessToken && <Button variant="contained" onClick={login} >Login</Button>}
                     {accessToken && <div style={{ display: "flex", alignItems: "center" }}>

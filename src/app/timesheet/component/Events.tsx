@@ -95,7 +95,7 @@ export default ({ events, getWeeklyEvents }: { events: Event[], getWeeklyEvents:
                                                     {from}
                                                 </td>
                                                 <td>
-                                                    <HiOutlineChevronDoubleRight size={24} />
+                                                    <HiOutlineChevronDoubleRight size={22} />
                                                 </td>
                                                 <td>
                                                     {to}
