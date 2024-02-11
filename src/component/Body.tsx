@@ -39,7 +39,7 @@ const bodyStyle = tss.create(() => ({
         },
         "& .selectionRow": {
             "& svg": {
-                color: "#6ce98e !important"
+                color: "#a0f3b6 !important"
             }
         },
         "& .MuiInputBase-root.MuiOutlinedInput-root": {
