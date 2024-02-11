@@ -8,11 +8,12 @@ import boxShadow from "@/constants/boxShadow";
 import useApiClient from "@/hooks/useApiClient";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import authSlice from "@/redux/slices/authSlices";
-import { Button, Container } from "@mui/material";
+import { Button, Container, Fab } from "@mui/material";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { tss } from "tss-react";
-
+import { FaRegMoon } from "react-icons/fa6";
+import DarkModeButton from "./DarkModeButton";
 
 const useDialogStyles = tss.create(() => ({
     link: {
@@ -35,6 +36,7 @@ const useDialogStyles = tss.create(() => ({
 
 export default () => {
     const apiClient = useApiClient();
+
     const pathname = usePathname();
     const accessToken = useAppSelector(s => s.auth.accessToken);
     const email = useAppSelector(s => s.auth.email);
@@ -106,9 +108,11 @@ export default () => {
                     <Spacer width={30} />
                     {!accessToken && <Button variant="contained" onClick={login} >Login</Button>}
                     {accessToken && <div style={{ display: "flex", alignItems: "center" }}>
-                        <div style={{ fontSize: 12 }}>{email}</div>
+                        <div style={{ fontSize: 12 }} className="email">{email}</div>
                         <Spacer />
                         <MyButton onClick={logout}>Logout</MyButton>
+                        <Spacer />
+                        <DarkModeButton />
                     </div>
                     }
                 </div>

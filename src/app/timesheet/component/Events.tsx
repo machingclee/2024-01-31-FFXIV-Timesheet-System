@@ -98,7 +98,7 @@ export default ({ events, getWeeklyEvents }: { events: Event[], getWeeklyEvents:
     const { menu, openMenu } = useMyMenu({
         menuItems: [
             {
-                label: "Edit",
+                label: "Edit Name",
                 action: () => { openEditDialog() }
             },
             {

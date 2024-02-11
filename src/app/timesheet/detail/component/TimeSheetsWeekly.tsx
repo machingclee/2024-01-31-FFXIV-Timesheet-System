@@ -13,14 +13,14 @@ const Ruler = ({ height = 1, color = "rgba(255,255,255,0.4)" }: { height?: numbe
 
 const HeaderSeparator = () => {
     return (
-        <div style={{ display: "flex", alignItems: "center" }}>
-            <div style={{ flex: 1, display: "flex", alignItems: "center" }}>
+        <div style={{ display: "flex", alignItems: "center" }} className="title-separator">
+            <div style={{ flex: 1, display: "flex", alignItems: "center" }} className="ruler">
                 <Ruler height={2} />
             </div>
             <div style={{ display: "flex", alignItems: "center", paddingLeft: 30, paddingRight: 30 }} >
                 <BsDiamondFill color="rgba(255,255,255,0.4)" />
             </div>
-            <div style={{ flex: 1, display: "flex", alignItems: "center" }}>
+            <div style={{ flex: 1, display: "flex", alignItems: "center" }} className="ruler">
                 <Ruler height={2} />
             </div>
         </div >

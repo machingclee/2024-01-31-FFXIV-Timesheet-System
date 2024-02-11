@@ -1,3 +1,4 @@
+import { useAppSelector } from "@/redux/hooks";
 import { makeStyles } from "@mui/styles";
 import { useEffect, useState } from "react";
 import { HiOutlineChevronDoubleRight } from "react-icons/hi"
@@ -7,6 +8,7 @@ import { HiOutlineChevronDoubleRight } from "react-icons/hi"
 
 export default () => {
     const classes = useStyles();
+    const darkMode = useAppSelector(s => s.auth.darkMode);
     const [startAni, setStartAni] = useState(false);
     useEffect(() => {
         setStartAni(true)

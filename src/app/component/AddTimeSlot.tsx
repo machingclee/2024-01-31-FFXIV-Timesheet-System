@@ -56,6 +56,7 @@ export default ({ getWeeklyEvents: getEvents }: {
         <Spacer />
         <div style={{ display: "flex", alignItems: "center" }}>
             <MyTextField
+                className="event-name-input"
                 id="outlined-size-small"
                 defaultValue=""
                 onChange={e => newTimeslotName.current = e.target.value}

@@ -127,7 +127,7 @@ export default (props: {
                 <div style={{
                     height: 50,
                     display: "flex",
-                    backgroundColor: "rgba(0,0,0,0.45)",
+                    backgroundColor: "rgba(0,0,0,0)",
                     justifyContent: "space-between",
                     alignItems: "center"
                 }}>

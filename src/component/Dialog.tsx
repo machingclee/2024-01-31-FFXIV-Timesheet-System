@@ -10,6 +10,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import { tss } from 'tss-react';
+import { TEXT_COLOR } from './Body';
 
 type DialogContent = {
     title?: string,
@@ -96,6 +97,11 @@ export default class MyDialog {
 
 const useStyles = tss.create(() => ({
     customDialog: {
+        "& .MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded": {
+            "& p": {
+                color: `black !important`
+            }
+        },
         "& textarea": {
             fontSize: "18px !important",
         },

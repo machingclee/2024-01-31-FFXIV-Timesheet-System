@@ -109,6 +109,7 @@ const OptionsColumn = ({
             <tbody>
                 <tr>
                     <td
+                        className="message-bubble"
                         style={{
                             cursor: "pointer",
                             textAlign: "center",

@@ -34,10 +34,8 @@ export default function RootLayout({
                 <body
                     className={inter.className + " " + "gradient-background"}
                     style={{ margin: 0 }}
-                >
-                    <Body>
-                        <StoreProvider>
-
+                >   <StoreProvider>
+                        <Body>
                             <LoadingScreen />
                             <LoginNavBar />
                             <DialogInit />
@@ -50,8 +48,8 @@ export default function RootLayout({
                                     {children}
                                 </Container>
                             </div>
-                        </StoreProvider>
-                    </Body>
+                        </Body>
+                    </StoreProvider>
                 </body>
             </AppRouterCacheProvider>
         </html>
