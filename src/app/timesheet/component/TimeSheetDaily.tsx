@@ -13,6 +13,7 @@ import boxShadow from "@/constants/boxShadow";
 import OptionsColumn from "./OptionsColumn";
 import AddIcon from '@mui/icons-material/Add';
 import constants from "@/constants/constants";
+import { TEXT_COLOR } from "@/component/Body";
 
 export default (props: {
     day: Day,
@@ -119,28 +120,39 @@ export default (props: {
     return (
         <>
             <div style={{
-                borderBottom: "4px solid rgba(0,0,0,0.4)",
                 display: "flex",
                 justifyContent: "space-between"
             }}>
                 <div style={{ display: "flex" }}>
-                    <div style={{
-                        backgroundColor: "rgba(0,0,0,0.4)",
-                        color: "white",
-                        padding: "10px 20px",
-                        fontWeight: 600,
-                        borderTopLeftRadius: 5,
-                        borderTopRightRadius: 5
-                    }}>
-                        {startingDate}  ({weekDay})
+                    <div style={{ borderRight: "4px solid rgba(0,0,0,0.4)" }}>
+                        <Spacer height={10} />
+                        <div style={{
+                            // backgroundColor: "rgba(0,0,0,0.4)",
+                            color: TEXT_COLOR,
+                            padding: "10px 20px",
+                            paddingLeft: 0,
+                            fontWeight: 700,
+                            fontSize: 18,
+                            borderTopLeftRadius: 5,
+                            borderTopRightRadius: 5,
+                            display: "flex",
+                            justifyContent: "flex-end"
+                        }}>
+                            {startingDate}
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "flex-end", paddingRight: 20 }}>{weekDay}</div>
+                        <Spacer />
                     </div>
                     <Spacer width={20} />{showSpinner && <CircularProgress size={20} />}
                 </div>
 
-                <div>
-                    <span style={{ opacity: turnOnFilter ? 0.8 : 0.4 }}>
-                        Highlight Available:
-                    </span>  <Switch onChange={(e) => { setTurnOnfilter(e.target.checked) }} />
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                    <div style={{ flex: 1 }}></div>
+                    <div >
+                        <span style={{ opacity: turnOnFilter ? 0.8 : 0.4 }}>
+                            Highlight Available:
+                        </span>  <Switch onChange={(e) => { setTurnOnfilter(e.target.checked) }} />
+                    </div>
                 </div>
             </div>
             <Spacer height={10} />
@@ -162,9 +174,9 @@ export default (props: {
                             const to = xdayjs(option).add(1, "hour").format("hh:mm a")
                             return (
                                 <tr key={id}>
-                                    <td style={{ textAlign: "right" }}>{from}</td>
-                                    <td style={{ textAlign: "right" }}> - </td>
-                                    <td style={{ textAlign: "right" }}>{to}</td>
+                                    <td style={{ textAlign: "right", width: 55 }}>{from}</td>
+                                    <td style={{ textAlign: "center", width: 10 }}> - </td>
+                                    <td style={{ textAlign: "left", width: 55 }}>{to}</td>
                                 </tr>
                             )
                         })}
