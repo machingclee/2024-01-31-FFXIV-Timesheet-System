@@ -95,20 +95,16 @@ export default (props: {
 
     useEffect(() => {
         if (turnOnFilter) {
-            apiClient.get<{ result: { timeslot: Day } }>(
-                `/timesheet/get-event-specfic-timeslot/${dailyId}`
-            ).then(res => {
-                const day_ = res.data.result.timeslot;
-                const numOfParticipants = day_.participants.length;
-                const selectionIdToCount = getFinalResultCount(day_);
-                const ids: number[] = [];
-                for (const [selectionId, count] of selectionIdToCount) {
-                    if (count === numOfParticipants) {
-                        ids.push(selectionId);
-                    }
+            const numOfParticipants = day.participants.length;
+            const selectionIdToCount = getFinalResultCount(day);
+            const ids: number[] = [];
+            for (const [selectionId, count] of selectionIdToCount) {
+                if (count === numOfParticipants) {
+                    ids.push(selectionId);
                 }
-                setSuccessSelectionIds(ids);
-            })
+            }
+            setSuccessSelectionIds(ids);
+
         } else {
             setSuccessSelectionIds([]);
         }
