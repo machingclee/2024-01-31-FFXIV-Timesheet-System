@@ -17,6 +17,7 @@ import Weekday from "../../../component/WeekDay";
 import { HiDotsVertical } from "react-icons/hi";
 import useMyMenu from "@/hooks/useMyMenu";
 import MyTextField from "@/component/MyTextField";
+import AnimatedRightArrow from "@/component/AnimatedRightArrow";
 
 
 export default ({ events, getWeeklyEvents }: { events: Event[], getWeeklyEvents: () => void }) => {
@@ -157,7 +158,7 @@ export default ({ events, getWeeklyEvents }: { events: Event[], getWeeklyEvents:
                                 onClick={() => { goToDetail(weekyId) }}
                             >
                                 <div style={{
-                                    fontWeight: 500,
+                                    fontWeight: 600,
                                     paddingRight: 20,
                                     fontSize: 18,
                                     paddingTop: 3,
@@ -173,7 +174,7 @@ export default ({ events, getWeeklyEvents }: { events: Event[], getWeeklyEvents:
                                                     {from}
                                                 </td>
                                                 <td>
-                                                    <HiOutlineChevronDoubleRight size={22} />
+                                                    <AnimatedRightArrow />
                                                 </td>
                                                 <td>
                                                     {to}
