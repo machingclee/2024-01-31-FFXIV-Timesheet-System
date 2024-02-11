@@ -31,7 +31,10 @@ export default function RootLayout({
     return (
         <html lang="en">
             <AppRouterCacheProvider options={{ enableCssLayer: true }}>
-                <body className={inter.className} style={{ margin: 0 }}>
+                <body
+                    className={inter.className + " " + "gradient-background"}
+                    style={{ margin: 0 }}
+                >
                     <Body>
                         <StoreProvider>
 
@@ -39,7 +42,7 @@ export default function RootLayout({
                             <LoginNavBar />
                             <DialogInit />
                             <div style={{
-                                height: "calc(100vh - 41px)",
+                                height: "calc(100vh - 40px)",
                                 overflowY: "auto",
                             }}>
                                 <Container>

@@ -51,7 +51,6 @@ const bodyStyle = tss.create(() => ({
         },
         "& .navbar": {
             backgroundColor: "rgba(0,0,0,0.65)",
-            borderBottom: "1px solid rgba(255,255,255,0.2)"
         },
         "& .user-guide-tag": {
             "& .MuiButtonBase-root.MuiButton-root": {

@@ -5,6 +5,27 @@ import Spacer from "@/component/Spacer";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import appSlice from "@/redux/slices/appSlice";
 import TimeSheetDaily from "../../component/TimeSheetDaily";
+import { BsDiamondFill } from "react-icons/bs";
+
+const Ruler = ({ height = 1, color = "rgba(255,255,255,0.4)" }: { height?: number, color?: string }) => {
+    return <div style={{ height, backgroundColor: color, width: "100%" }}></div>
+}
+
+const HeaderSeparator = () => {
+    return (
+        <div style={{ display: "flex", alignItems: "center" }}>
+            <div style={{ flex: 1, display: "flex", alignItems: "center" }}>
+                <Ruler height={2} />
+            </div>
+            <div style={{ display: "flex", alignItems: "center", paddingLeft: 30, paddingRight: 30 }} >
+                <BsDiamondFill color="rgba(255,255,255,0.4)" />
+            </div>
+            <div style={{ flex: 1, display: "flex", alignItems: "center" }}>
+                <Ruler height={2} />
+            </div>
+        </div >
+    )
+}
 
 
 export default ({ weeklyId }: { weeklyId: string }) => {
@@ -26,8 +47,16 @@ export default ({ weeklyId }: { weeklyId: string }) => {
 
     return (
         <>
-            <div style={{ fontSize: 26, fontWeight: 600 }}>{timeslot?.title}</div>
+            <div style={{
+                fontSize: 30,
+                fontWeight: 600,
+                display: "flex",
+                justifyContent: "center"
+            }}>
+                {timeslot?.title}
+            </div>
             <Spacer />
+            <HeaderSeparator />
             <Spacer />
             <Spacer width={20} />
             <div key={timeslot?.weeklyId || ""}>

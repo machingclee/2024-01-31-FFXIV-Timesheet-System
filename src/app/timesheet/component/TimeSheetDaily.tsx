@@ -3,7 +3,7 @@ import useApiClient from "@/hooks/useApiClient";
 import { useAppSelector, useAppDispatch } from "@/redux/hooks";
 import xdayjs from "@/util/xdayjs";
 import { debounce, cloneDeep } from "lodash";
-import { useState, useEffect } from "react";
+import { useState, useEffect, PropsWithChildren, HTMLAttributes } from "react";
 import appSlice from "../../../../appSlice";
 import useTimesheetStyles from "./styles/useTimesheetStyles";
 import { v4 as uuidv4 } from "uuid";
@@ -121,99 +121,107 @@ export default (props: {
     return (
         <>
             <div style={{
-                display: "flex",
-                justifyContent: "space-between"
-            }}>
-                <div style={{ display: "flex" }}>
-                    <div style={{}}>
-                        <div style={{
-                            // backgroundColor: "rgba(0,0,0,0.4)",
-                            color: TEXT_COLOR,
-                            padding: "10px 20px",
-                            paddingTop: 0,
-                            paddingLeft: 0,
-                            fontWeight: 600,
-                            fontSize: 20,
-                            borderTopLeftRadius: 5,
-                            borderTopRightRadius: 5,
-                            display: "flex",
-                            justifyContent: "flex-end"
-                        }}>
-                            {startingDate}
-                            <Spacer />
-                            <Weekday>
-                                {weekDay}
-                            </Weekday>
+                boxShadow: boxShadow.SHADOW_58,
+                borderRadius: 10,
+                overflow: "hidden"
+            }}
+                className={cx(classes.table, "timesheet")}
+            >
+
+                <div style={{
+                    height: 50,
+                    display: "flex",
+                    backgroundColor: "rgba(0,0,0,0.45)",
+                    justifyContent: "space-between",
+                    alignItems: "center"
+                }}>
+                    <HPadding style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
+                        <div style={{ display: "flex", }}>
+                            <div style={{
+                                // backgroundColor: "rgba(0,0,0,0.4)",
+                                color: TEXT_COLOR,
+                                fontWeight: 600,
+                                fontSize: 16,
+                                display: "flex",
+                                alignItems: "center"
+                            }}>
+                                {startingDate}
+                                <Spacer />
+                                <Weekday>
+                                    {weekDay}
+                                </Weekday>
+                            </div>
+
+                            {showSpinner && <CircularProgress size={20} />}
                         </div>
 
-                        <Spacer height={5} />
-                    </div>
-                    <Spacer width={20} />{showSpinner && <CircularProgress size={20} />}
+
+                        <div >
+                            <span style={{ opacity: turnOnFilter ? 0.8 : 0.4, fontSize: 14 }}>
+                                Highlight Available:
+                            </span>  <Switch onChange={(e) => { setTurnOnfilter(e.target.checked) }} />
+                        </div>
+
+                    </HPadding>
                 </div>
 
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                    <div style={{ flex: 1 }}></div>
-                    <div >
-                        <span style={{ opacity: turnOnFilter ? 0.8 : 0.4 }}>
-                            Highlight Available:
-                        </span>  <Switch onChange={(e) => { setTurnOnfilter(e.target.checked) }} />
-                    </div>
-                </div>
-            </div>
+                <HPadding>
+                    <div style={{ display: "flex" }}>
+                        <table className={cx(classes.firstColumn, "timecolumn")}>
+                            <tbody>
+                                <tr><td style={{ textAlign: "right", height: 31 }} colSpan={3}></td></tr>
+                                <tr><td style={{ textAlign: "right", height: 23 }} colSpan={3}></td></tr>
+                                {day.options.map(opt => {
+                                    const { id, option } = opt;
+                                    const from = xdayjs(option).format("hh:mm a")
+                                    const to = xdayjs(option).add(1, "hour").format("hh:mm a")
+                                    return (
+                                        <tr key={id}>
+                                            <td style={{ textAlign: "right", width: 55, minWidth: 55, textOverflow: "ellipsis" }}>{from}</td>
+                                            <td style={{ textAlign: "center", width: 10, textOverflow: "ellipsis" }}> - </td>
+                                            <td style={{ textAlign: "left", width: 55, minWidth: 55, textOverflow: "ellipsis" }}>{to}</td>
+                                        </tr>
+                                    )
+                                })}
+                            </tbody>
+                        </table>
 
 
-            <div style={{
-                display: "flex",
-                boxShadow: boxShadow.SHADOW_58,
-                padding: 10,
-                borderRadius: 10
-            }}
-                className={cx(classes.table, "timesheet")}>
-                <table className={cx(classes.firstColumn, "timecolumn")}>
-                    <tbody>
-                        <tr><td style={{ textAlign: "right", height: 31 }} colSpan={3}></td></tr>
-                        <tr><td style={{ textAlign: "right", height: 23 }} colSpan={3}></td></tr>
-                        {day.options.map(opt => {
-                            const { id, option } = opt;
-                            const from = xdayjs(option).format("hh:mm a")
-                            const to = xdayjs(option).add(1, "hour").format("hh:mm a")
+                        {particiants.map(user => {
+                            const { frontendUUID, username, message } = user;
                             return (
-                                <tr key={id}>
-                                    <td style={{ textAlign: "right", width: 55 }}>{from}</td>
-                                    <td style={{ textAlign: "center", width: 10 }}> - </td>
-                                    <td style={{ textAlign: "left", width: 55 }}>{to}</td>
-                                </tr>
+                                <OptionsColumn
+                                    refreshParticipants={refreshParticipants}
+                                    participantMessage={message}
+                                    successSelectionIds={successSelectionIds}
+                                    key={frontendUUID}
+                                    username={username}
+                                    dailyId={dailyId}
+                                    options={day.options}
+                                    uuid={frontendUUID}
+                                    checksUpdate={checksUpdate}
+                                    upsertParticipant={upsertParticipant}
+                                    setParticipants={setParticipants}
+                                    selections={user.selections}
+                                />
                             )
                         })}
-                    </tbody>
-                </table>
-
-                {particiants.map(user => {
-                    const { frontendUUID, username, message } = user;
-                    return (
-                        <OptionsColumn
-                            refreshParticipants={refreshParticipants}
-                            participantMessage={message}
-                            successSelectionIds={successSelectionIds}
-                            key={frontendUUID}
-                            username={username}
-                            dailyId={dailyId}
-                            options={day.options}
-                            uuid={frontendUUID}
-                            checksUpdate={checksUpdate}
-                            upsertParticipant={upsertParticipant}
-                            setParticipants={setParticipants}
-                            selections={user.selections}
-                        />
-                    )
-                })}
-                <Spacer width={30} />
-                <Fab style={{ backgroundColor: "rgba(0,0,0,0.3)", width: 36, height: 36, marginTop: 10 }} onClick={addUser}>
-                    <AddIcon style={{ color: "white" }} />
-                </Fab>
+                        <Spacer width={30} />
+                        <Fab style={{ backgroundColor: "rgba(0,0,0,0.3)", width: 36, height: 36, marginTop: 10 }} onClick={addUser}>
+                            <AddIcon style={{ color: "white" }} />
+                        </Fab>
+                    </div>
+                </HPadding>
+                <Spacer height={10} />
             </div>
             <Spacer />
             <Spacer />
         </ >
+    )
+}
+
+const HPadding = ({ children, style, ...props }: HTMLAttributes<HTMLDivElement>) => {
+    return (
+        <div style={{ paddingLeft: 10, paddingRight: 10, ...style }}{...props}>{children}</div>
     )
 }
