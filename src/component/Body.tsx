@@ -77,7 +77,10 @@ const bodyStyle = tss.withParams<{ darkMode: boolean }>()
             backgroundColor: darkMode ? "rgba(0,0,0,0.65)" : "rgba(255,255,255,0.1)",
             color: TEXT_COLOR,
             "& .timecolumn": {
-                color: darkMode ? "white !important" : "black"
+                color: darkMode ? "white !important" : "black",
+                "& input": {
+                    // backgroundColor: "rgba(0,0,0,0.2) !important"
+                }
             },
             "& .timesheet": {
                 backgroundColor: darkMode ? "rgba(0,0,0,0.2)" : "rgba(255,255,255,0.8)",
@@ -95,7 +98,7 @@ const bodyStyle = tss.withParams<{ darkMode: boolean }>()
             },
             "& .MuiInputBase-root.MuiOutlinedInput-root": {
                 color: "white",
-                backgroundColor: darkMode ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.8)"
+                backgroundColor: darkMode ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.04)"
 
             },
             "& div": {
