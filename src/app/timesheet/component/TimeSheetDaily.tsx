@@ -161,6 +161,8 @@ export default (props: {
                     </HPadding>
                 </div>
 
+                <Spacer height={8} />
+
                 <HPadding>
                     <div style={{ display: "flex" }}>
                         <table className={cx(classes.firstColumn, "timecolumn")}>
