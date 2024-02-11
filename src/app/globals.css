@@ -16,9 +16,9 @@
 .gradient-background {
     background: #0F2027;
     /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #9fb9ff, #cfc3ff, #f3ffe7, #f3ffe7);
+    background: -webkit-linear-gradient(152deg, #555555, #9b9a9f, #f3ffe7, #f3ffe7);
     /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #9fb9ff, #cfc3ff, #f3ffe7, #f3ffe7);
+    background: linear-gradient(152deg, #555555, #9b9a9f, #f3ffe7, #f3ffe7);
     /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
 }
