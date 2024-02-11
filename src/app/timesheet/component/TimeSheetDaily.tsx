@@ -118,7 +118,11 @@ export default (props: {
 
     return (
         <>
-            <div style={{ borderBottom: "4px solid rgba(0,0,0,0.4)", display: "flex", justifyContent: "space-between" }}>
+            <div style={{
+                borderBottom: "4px solid rgba(0,0,0,0.4)",
+                display: "flex",
+                justifyContent: "space-between"
+            }}>
                 <div style={{ display: "flex" }}>
                     <div style={{
                         backgroundColor: "rgba(0,0,0,0.4)",
@@ -141,8 +145,14 @@ export default (props: {
             </div>
             <Spacer height={10} />
 
-            <div style={{ display: "flex", boxShadow: boxShadow.SHADOW_58, padding: 10, borderRadius: 10 }} className={cx(classes.table)}>
-                <table className={cx(classes.firstColumn)}>
+            <div style={{
+                display: "flex",
+                boxShadow: boxShadow.SHADOW_58,
+                padding: 10,
+                borderRadius: 10
+            }}
+                className={cx(classes.table, "timesheet")}>
+                <table className={cx(classes.firstColumn, "timecolumn")}>
                     <tbody>
                         <tr><td style={{ textAlign: "right", height: 31 }} colSpan={3}></td></tr>
                         <tr><td style={{ textAlign: "right", height: 34 }} colSpan={3}></td></tr>

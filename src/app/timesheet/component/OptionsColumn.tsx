@@ -180,7 +180,7 @@ const OptionsColumn = ({
                     const isSuccessId = successSelectionIds.includes(id);
 
                     return (
-                        <tr key={`${id}-opt`} draggable={false}>
+                        <tr key={`${id}-opt`} draggable={false} className="selectionRow">
                             <td
                                 draggable={false}
                                 style={{

@@ -13,6 +13,7 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+import Body from '@/component/Body';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,21 +32,23 @@ export default function RootLayout({
         <html lang="en">
             <AppRouterCacheProvider options={{ enableCssLayer: true }}>
                 <body className={inter.className} style={{ margin: 0 }}>
-                    <StoreProvider>
-                        <LoadingScreen />
-                        <LoginNavBar />
-                        <DialogInit />
-                        <div style={{
-                            height: "calc(100vh - 40px)",
-                            overflowY: "auto",
-                        }}>
-                            <Container>
-                                <Spacer />
-                                {children}
-                            </Container>
-                        </div>
+                    <Body>
+                        <StoreProvider>
 
-                    </StoreProvider>
+                            <LoadingScreen />
+                            <LoginNavBar />
+                            <DialogInit />
+                            <div style={{
+                                height: "calc(100vh - 41px)",
+                                overflowY: "auto",
+                            }}>
+                                <Container>
+                                    <Spacer />
+                                    {children}
+                                </Container>
+                            </div>
+                        </StoreProvider>
+                    </Body>
                 </body>
             </AppRouterCacheProvider>
         </html>

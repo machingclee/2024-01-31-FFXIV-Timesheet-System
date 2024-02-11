@@ -55,7 +55,7 @@ export default () => {
         WarningDialog.setContent({
             desc: () => {
                 return (
-                    <div style={{ fontSize: 16, color: "black" }} className={cx(classes.dialog)}>
+                    <div style={{ fontSize: 16 }} className={cx(classes.dialog)}>
                         <ul>
                             <li>
                                 Author's Repo: <a href="https://github.com/machingclee?tab=repositories">Github Page</a>.
@@ -83,8 +83,7 @@ export default () => {
 
 
     return (
-        <div style={{ boxShadow: boxShadow.SHADOW_61 }}>
-
+        <div style={{ boxShadow: boxShadow.SHADOW_61 }} className="navbar">
             <Container style={{
                 display: "flex",
                 justifyContent: "space-between",

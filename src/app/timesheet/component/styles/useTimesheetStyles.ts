@@ -36,7 +36,7 @@ const useTimesheetStyles = tss.create(() => ({
         }
     },
     table: {
-    
+
         "& .MuiButtonBase-root.MuiCheckbox-root": {
             padding: 0,
         },
@@ -51,7 +51,7 @@ const useTimesheetStyles = tss.create(() => ({
             fontSize: 12,
         },
         "& tr:nth-child(2n)": {
-            backgroundColor: "rgba(0,0,0,0.1)"
+            // backgroundColor: "rgba(0,0,0,0.1)"
         },
         "& tr:nth-child(2)": {
             backgroundColor: "unset"

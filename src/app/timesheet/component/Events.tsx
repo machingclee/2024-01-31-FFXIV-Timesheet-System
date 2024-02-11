@@ -11,6 +11,9 @@ import Spacer from "@/component/Spacer";
 import WarningDialog from "@/component/dialogs/WarningDialog";
 import { useAppDispatch } from "@/redux/hooks";
 import appSlice from "@/redux/slices/appSlice";
+import boxShadow from "@/constants/boxShadow";
+
+
 
 export default ({ events, getWeeklyEvents }: { events: Event[], getWeeklyEvents: () => void }) => {
     const apiClient = useApiClient();
@@ -29,19 +32,30 @@ export default ({ events, getWeeklyEvents }: { events: Event[], getWeeklyEvents:
                 const to = firstOpt.add(6, "days").format("YYYY-MM-DD (ddd)")
                 return (
                     <>
-                        <div style={{ display: "flex", alignItems: "center" }}>
+                        <div style={{
+                            display: "flex",
+                            alignItems: "center",
+                        }}>
                             <div
                                 className="clickable"
                                 key={e.id}
-                                style={{ flex: 1, display: "flex", justifyContent: "space-between" }}
+                                style={{
+                                    flex: 1,
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    borderRadius: 4,
+                                    marginRight: 10,
+                                    boxShadow: boxShadow.DARK_MODE_01
+                                }}
                                 onClick={() => { goToDetail(weekyId) }}
                             >
                                 <div>{e.title}</div> <div>{from} to {to}</div>
                             </div>
                             <Spacer />
                             <Fab
+                                className={cx(classes.deleteButton)}
                                 color="primary"
-                                style={{ width: 36, height: 36, backgroundColor: "red" }}
+                                style={{ width: 36, height: 36, backgroundColor: "#593b3b" }}
                                 onClick={() => {
                                     WarningDialog.setContent({
                                         title: `Delete ${e.title}?`,
@@ -64,7 +78,7 @@ export default ({ events, getWeeklyEvents }: { events: Event[], getWeeklyEvents:
                                 <DeleteForeverIcon />
                             </Fab>
                         </div>
-                        <Spacer height={5} />
+                        <Spacer height={10} />
                     </>
                 )
             })}
@@ -73,15 +87,24 @@ export default ({ events, getWeeklyEvents }: { events: Event[], getWeeklyEvents:
 }
 
 const useStyles = tss.create(() => ({
+    deleteButton: {
+        transition: "opacity 0.1s ease-in-out",
+        "&: hover": {
+            opacity: 0.5
+        }
+    },
     tableLikeDiv: {
+        "& .clickable": {
+            backgroundColor: "rgba(255,255,255,0.2)"
+        },
         "& > div:nth-child(4n+3)": {
             "& .clickable": {
-                backgroundColor: "rgba(0,0,0,0.05)"
+                backgroundColor: "rgba(255,255,255,0.1)"
             }
         },
         "& > div:nth-child(4n+1)": {
             "& .clickable": {
-                backgroundColor: "rgba(0,0,0,0.1)"
+                backgroundColor: "rgba(255,255,255,0.05)"
             }
         },
         "& > div": {

@@ -53,7 +53,6 @@ const useStyles = tss.create(() => ({
             marginBottom: 20
         },
         "& img": {
-            maxWidth: 600,
             height: "auto"
         },
         "& li": {
@@ -82,26 +81,29 @@ export default () => {
 
             <h2 style={{ color: colors.BLUE }}>Usage</h2>
 
-            <div style={{ display: "flex" }}>
-                <MyButton variant="contained" color='inherit' onClick={() => setExpandIndex(returnIndex(0))} className={cx(show0 ? classes.active : null)}>
+            <div style={{ display: "flex" }} className="user-guide-tag">
+                <MyButton variant="contained" color='inherit' onClick={() => setExpandIndex(returnIndex(0))} className={cx(show0 ? classes.active : "unselected")}>
                     <b>1. Create an event to get timetables for 1 week in a row</b>
                 </MyButton>
 
-                <MyButton variant="contained" color='inherit' onClick={() => setExpandIndex(returnIndex(1))} className={cx(show1 ? classes.active : null)}>
+                <MyButton variant="contained" color='inherit' onClick={() => setExpandIndex(returnIndex(1))} className={cx(show1 ? classes.active : "unselected")}>
                     <b>2. Add users and fill the timeslots OR</b>
                 </MyButton>
 
-                <MyButton variant="contained" color='inherit' onClick={() => setExpandIndex(returnIndex(2))} className={cx(show2 ? classes.active : null)}>
+                <MyButton variant="contained" color='inherit' onClick={() => setExpandIndex(returnIndex(2))} className={cx(show2 ? classes.active : "unselected")}>
                     <b>3. Share it to members and let them fill the available timeslots</b>
                 </MyButton>
 
-                <MyButton variant="contained" color='inherit' onClick={() => setExpandIndex(returnIndex(3))} className={cx(show3 ? classes.active : null)}>
+                <MyButton variant="contained" color='inherit' onClick={() => setExpandIndex(returnIndex(3))} className={cx(show3 ? classes.active : "unselected")}>
                     <b>4. Add comments for potential delay</b>
                 </MyButton>
             </div>
             <Spacer />
 
-            <div style={{ boxShadow: boxShadow.SHADOW_58, padding: 20, borderRadius: 10, maxWidth: 600 }}>
+            <div
+                style={{ boxShadow: boxShadow.SHADOW_58, padding: 5, borderRadius: 10, opacity: 0.95 }}
+                className="user-guide-container"
+            >
                 {show0 && <FadeIn>
                     <div>
                         <Image src={addEventGif} alt="Create an event" />

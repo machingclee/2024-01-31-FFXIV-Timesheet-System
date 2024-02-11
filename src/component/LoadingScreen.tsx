@@ -11,7 +11,7 @@ export default () => {
     return <div style={{
         width: "100vw",
         height: "100vh",
-        backgroundColor: "rgba(255,255,255,0.8)",
+        backgroundColor: "rgba(255,255,255,0.2)",
         position: "absolute",
         top: 0,
         left: 0,

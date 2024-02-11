@@ -96,6 +96,9 @@ export default class MyDialog {
 
 const useStyles = tss.create(() => ({
     customDialog: {
+        "& textarea": {
+            fontSize: "18px !important",
+        },
         "& .MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation24.MuiDialog-paper.MuiDialog-paperScrollPaper": {
             minWidth: "460px"
         }
