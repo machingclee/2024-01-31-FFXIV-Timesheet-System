@@ -3,7 +3,7 @@ import { Event } from "@/dto/dto";
 import useApiClient from "@/hooks/useApiClient"
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { PropsWithChildren, useEffect, useState } from "react";
 import { tss } from "tss-react";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { Fab } from "@mui/material";
@@ -12,7 +12,22 @@ import WarningDialog from "@/component/dialogs/WarningDialog";
 import { useAppDispatch } from "@/redux/hooks";
 import appSlice from "@/redux/slices/appSlice";
 import boxShadow from "@/constants/boxShadow";
+import { HiOutlineChevronDoubleRight } from "react-icons/hi";
 
+const Weekday = ({ children }: PropsWithChildren) => {
+    return (
+        <div style={{
+            fontSize: 13,
+            backgroundColor: "rgba(255,255,255,0.2)",
+            marginTop: 10,
+            padding: "2px 10px",
+            borderRadius: 20,
+            fontWeight: 600
+        }}>
+            {children}
+        </div>
+    )
+}
 
 
 export default ({ events, getWeeklyEvents }: { events: Event[], getWeeklyEvents: () => void }) => {
@@ -28,8 +43,22 @@ export default ({ events, getWeeklyEvents }: { events: Event[], getWeeklyEvents:
             {events.map(e => {
                 const { firstOption, id: weekyId, title } = e;
                 const firstOpt = dayjs(firstOption.option);
-                const from = firstOpt.format("YYYY-MM-DD (ddd)")
-                const to = firstOpt.add(6, "days").format("YYYY-MM-DD (ddd)")
+                const from = <div>
+                    <div style={{ display: "flex", justifyContent: "center" }} >{firstOpt.format("YYYY-MM-DD")}</div>
+                    <div style={{
+                        display: "flex",
+                        justifyContent: "center"
+                    }}>
+                        <Weekday>
+                            {firstOpt.format("dddd")}
+                        </Weekday>
+                    </div>
+                </div>
+                const to = <div>
+                    <div style={{ display: "flex", justifyContent: "center" }}>{firstOpt.add(6, "days").format("YYYY-MM-DD")}</div>
+                    <div style={{ display: "flex", justifyContent: "center" }}>  <Weekday>{firstOpt.add(6, "days").format("dddd")}</Weekday></div>
+                </div>
+
                 return (
                     <>
                         <div style={{
@@ -49,7 +78,32 @@ export default ({ events, getWeeklyEvents }: { events: Event[], getWeeklyEvents:
                                 }}
                                 onClick={() => { goToDetail(weekyId) }}
                             >
-                                <div>{e.title}</div> <div>{from} to {to}</div>
+                                <div style={{
+                                    fontWeight: 500,
+                                    borderRight: "4px solid rgba(0,0,0,0.3)",
+                                    paddingRight: 20,
+                                    fontSize: 18,
+                                    paddingTop: 3
+                                }}>
+                                    {e.title}
+                                </div>
+                                <div>
+                                    <table className="date">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    {from}
+                                                </td>
+                                                <td>
+                                                    <HiOutlineChevronDoubleRight size={24} />
+                                                </td>
+                                                <td>
+                                                    {to}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                             <Spacer />
                             <Fab
@@ -94,6 +148,18 @@ const useStyles = tss.create(() => ({
         }
     },
     tableLikeDiv: {
+        "& table.date": {
+            "& td:nth-child(1)": {
+                width: 100
+            },
+            "& td:nth-child(2)": {
+                textAlign: "center",
+                width: 50
+            },
+            "& td:nth-child(3)": {
+                width: 100
+            }
+        },
         "& .clickable": {
             backgroundColor: "rgba(255,255,255,0.2)"
         },
