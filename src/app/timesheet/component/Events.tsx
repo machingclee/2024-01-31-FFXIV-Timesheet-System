@@ -3,7 +3,7 @@ import { Event } from "@/dto/dto";
 import useApiClient from "@/hooks/useApiClient"
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
-import { PropsWithChildren, useEffect, useState } from "react";
+import { PropsWithChildren, useEffect, useRef, useState } from "react";
 import { tss } from "tss-react";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { Fab } from "@mui/material";
@@ -14,7 +14,9 @@ import appSlice from "@/redux/slices/appSlice";
 import boxShadow from "@/constants/boxShadow";
 import { HiOutlineChevronDoubleRight } from "react-icons/hi";
 import Weekday from "../../../component/WeekDay";
-
+import { HiDotsVertical } from "react-icons/hi";
+import useMyMenu from "@/hooks/useMyMenu";
+import MyTextField from "@/component/MyTextField";
 
 
 export default ({ events, getWeeklyEvents }: { events: Event[], getWeeklyEvents: () => void }) => {
@@ -25,10 +27,96 @@ export default ({ events, getWeeklyEvents }: { events: Event[], getWeeklyEvents:
     const goToDetail = (weeklyId: string) => {
         router.push(`/timesheet/detail?weeklyId=${weeklyId}`)
     }
+
+    const [currentEvent, setCurrentEvent] = useState<Event | null>(null);
+
+    const openDeleteDialog = () => {
+        if (!currentEvent) {
+            return
+        }
+        const e = currentEvent;
+        const { id: weekyId, title } = currentEvent
+        WarningDialog.setContent({
+            title: `Delete ${e.title}?`,
+            desc: () => <>Are you sure to delete {title}?</>,
+            no: { text: "No" },
+            yes: {
+                text: "Yes", action: () => {
+                    dispatch(appSlice.actions.setLoading(true));
+                    apiClient.delete(`/timesheet/delete-weekly/${weekyId}`).finally(() => {
+                        dispatch(appSlice.actions.setLoading(false));
+                        getWeeklyEvents();
+                    })
+
+                }
+            }
+        })
+        WarningDialog.open()
+    }
+
+
+    const changeTitleRef = useRef(currentEvent?.title);
+
+    const changeTitle = (text: string) => {
+        changeTitleRef.current = text;
+    }
+
+    const openEditDialog = () => {
+        if (!currentEvent) {
+            return
+        }
+        const e = currentEvent;
+        const { id: weeklyId, title } = currentEvent
+        WarningDialog.setContent({
+            title: `Edit Title`,
+            desc: () => <MyTextField
+                className={classes.inputField}
+                style={{
+                    width: "100%",
+                }}
+                defaultValue={currentEvent.title}
+                onChange={e => changeTitle(e.target.value)}
+            />,
+            no: { text: "No" },
+            yes: {
+                text: "Yes", action: () => {
+                    dispatch(appSlice.actions.setLoading(true));
+                    apiClient
+                        .put(`/timesheet/edit-weekly/${weeklyId}`, { title: changeTitleRef.current })
+                        .finally(() => {
+                            dispatch(appSlice.actions.setLoading(false));
+                            getWeeklyEvents();
+                        })
+
+                }
+            }
+        })
+        WarningDialog.open()
+    }
+
+    const { menu, openMenu } = useMyMenu({
+        menuItems: [
+            {
+                label: "Edit",
+                action: () => { openEditDialog() }
+            },
+            {
+                label: "Delete",
+                action: () => { openDeleteDialog() }
+            }
+        ]
+    });
+
+    useEffect(() => {
+        changeTitleRef.current = currentEvent?.title;
+    }, [currentEvent])
+
     return (
         <div className={cx(classes.tableLikeDiv)}>
-            {events.map(e => {
-                const { firstOption, id: weekyId, title } = e;
+            {events.map(event => {
+                const { firstOption, id: weekyId, title } = event;
+
+
                 const firstOpt = dayjs(firstOption.option);
                 const from = <div>
                     <div style={{ display: "flex", justifyContent: "center" }} >{firstOpt.format("YYYY-MM-DD")}</div>
@@ -57,7 +145,7 @@ export default ({ events, getWeeklyEvents }: { events: Event[], getWeeklyEvents:
                         }}>
                             <div
                                 className="clickable"
-                                key={e.id}
+                                key={event.id}
                                 style={{
                                     flex: 1,
                                     display: "flex",
@@ -70,12 +158,12 @@ export default ({ events, getWeeklyEvents }: { events: Event[], getWeeklyEvents:
                             >
                                 <div style={{
                                     fontWeight: 500,
-                                    borderRight: "4px solid rgba(0,0,0,0.3)",
                                     paddingRight: 20,
                                     fontSize: 18,
-                                    paddingTop: 3
+                                    paddingTop: 3,
+
                                 }}>
-                                    {e.title}
+                                    {event.title}
                                 </div>
                                 <div>
                                     <table className="date">
@@ -97,30 +185,17 @@ export default ({ events, getWeeklyEvents }: { events: Event[], getWeeklyEvents:
                             </div>
                             <Spacer />
                             <Fab
-                                className={cx(classes.deleteButton)}
+                                className={cx(classes.deleteButton, "dots")}
                                 color="primary"
                                 style={{ width: 36, height: 36, backgroundColor: "#593b3b" }}
-                                onClick={() => {
-                                    WarningDialog.setContent({
-                                        title: `Delete ${e.title}?`,
-                                        desc: () => <>Are you sure to delete {e.title}?</>,
-                                        no: { text: "No" },
-                                        yes: {
-                                            text: "Yes", action: () => {
-                                                dispatch(appSlice.actions.setLoading(true));
-                                                apiClient.delete(`/timesheet/delete-weekly/${weekyId}`).finally(() => {
-                                                    dispatch(appSlice.actions.setLoading(false));
-                                                    getWeeklyEvents();
-                                                })
-
-                                            }
-                                        }
-                                    })
-                                    WarningDialog.open()
+                                onClick={(e) => {
+                                    setCurrentEvent(event);
+                                    openMenu(e);
                                 }}
                             >
-                                <DeleteForeverIcon />
+                                <HiDotsVertical size={20} />
                             </Fab>
+                            {menu()}
                         </div>
                         <Spacer height={10} />
                     </>
@@ -131,10 +206,17 @@ export default ({ events, getWeeklyEvents }: { events: Event[], getWeeklyEvents:
 }
 
 const useStyles = tss.create(() => ({
+    inputField: {
+        "& input": {
+            padding: "10px !important",
+            fontSize: "16px !important"
+        }
+    },
     deleteButton: {
-        transition: "opacity 0.1s ease-in-out",
-        "&: hover": {
-            opacity: 0.5
+        "&:hover": {
+            "&.MuiFab-root.MuiFab-circular": {
+                backgroundColor: "rgba(255,255,255,0.2) !important"
+            }
         }
     },
     tableLikeDiv: {
@@ -170,10 +252,9 @@ const useStyles = tss.create(() => ({
                 cursor: "pointer"
             }
         },
-        "& > div:hover": {
-            "& .clickable": {
-                opacity: 0.5
-            }
-        },
+        "& .clickable:hover": {
+            opacity: 0.5
+        }
+
     }
 }))
