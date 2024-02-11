@@ -41,7 +41,6 @@ export default () => {
             <AddTimeSlot getWeeklyEvents={getWeeklyEvents} />
             <Spacer />
             <Events events={weeklyEvents} getWeeklyEvents={getWeeklyEvents} />
-
         </div >
     </>
 }

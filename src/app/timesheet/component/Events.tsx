@@ -109,7 +109,7 @@ const useStyles = tss.create(() => ({
         },
         "& > div": {
             "& .clickable": {
-                padding: 10,
+                padding: "20px 20px",
                 transition: "opacity 0.1s ease-in-out",
                 cursor: "pointer"
             }
