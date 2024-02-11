@@ -4,7 +4,7 @@ import useTimesheetStyles from "./styles/useTimesheetStyles";
 import useApiClient from "@/hooks/useApiClient";
 import MyTextField from "@/component/MyTextField";
 import WarningDialog from "@/component/dialogs/WarningDialog";
-import { useAppDispatch } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { Checkbox, CheckboxProps } from "@mui/material";
 import { debounce, cloneDeep } from "lodash";
 import { BiMessageRounded } from "react-icons/bi";
@@ -42,6 +42,7 @@ const OptionsColumn = ({
     checksUpdate: (props: CheckUpdate[]) => void,
     upsertParticipant: (params: UpsertParticipantParam) => void
 }) => {
+    const darkMode = useAppSelector(s => s.auth.darkMode);
     const { classes, cx } = useTimesheetStyles();
     const apiClient = useApiClient();
     const [name, setName] = useState(username || "");
@@ -164,7 +165,7 @@ const OptionsColumn = ({
                         />
                         <DeleteIcon
                             onClick={() => { deleteColumn() }}
-                            className={cx(classes.deleteButton)}
+                            className={cx(classes.deleteButton, "delete-button")}
                             fontSize={"small"}
                             style={{
                                 position: "absolute",
@@ -287,6 +288,7 @@ const MessageContent = ({
     uuid: string,
     updateDialogMessageDialogContent: (msg: string) => void
 }) => {
+    const darkMode = useAppSelector(s => s.auth.darkMode);
     const { classes, cx } = useTimesheetStyles();
     const dispatch = useAppDispatch();
     const apiClient = useApiClient();

@@ -20,6 +20,10 @@ export const TEXT_DARK_COLOR = "rgba(0,0,0,0.85)"
 const bodyStyle = tss.withParams<{ darkMode: boolean }>()
     .create(({ darkMode = true }) => ({
         body: {
+            "& .delete-button": {
+                color: darkMode ? TEXT_COLOR : `${TEXT_DARK_COLOR} !important`,
+            },
+
             "& .event-name-input": {
                 "& input": {
                     padding: "10px 10px",
@@ -83,7 +87,8 @@ const bodyStyle = tss.withParams<{ darkMode: boolean }>()
                 }
             },
             "& .timesheet": {
-                backgroundColor: darkMode ? "rgba(0,0,0,0.2)" : "rgba(255,255,255,0.8)",
+
+                backgroundColor: darkMode ? "rgba(0,0,0,0.2)" : "rgba(255,255,255,0.65)",
                 "& tr:nth-child(2n)": {
                     backgroundColor: darkMode ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.1)"
                 },
