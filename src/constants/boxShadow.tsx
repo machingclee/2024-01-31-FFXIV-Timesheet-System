@@ -99,5 +99,5 @@ export default {
         "rgba(9, 30, 66, 0.25) 0px 1px 1px,rgba(9, 30, 66, 0.13) 0px 0px 1px 1px",
     SHADOW_62:
         "rgba(9, 30, 66, 0.25) 0px 4px 8px -2px,rgba(9, 30, 66, 0.08) 0px 0px 0px 1px",
-    DARK_MODE_01: "rgba(0, 0, 0, 0.1) 0px 0px 5px 2px, rgb(90, 90, 90) 0px 0px 0px 1px inset"
+    DARK_MODE_01: "rgba(0, 0, 0, 0.1) 0px 0px 5px 2px, rgb(60, 60, 60) 0px 0px 0px 1px inset"
 };
