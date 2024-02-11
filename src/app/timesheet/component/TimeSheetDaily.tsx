@@ -14,6 +14,7 @@ import OptionsColumn from "./OptionsColumn";
 import AddIcon from '@mui/icons-material/Add';
 import constants from "@/constants/constants";
 import { TEXT_COLOR } from "@/component/Body";
+import Weekday from "@/component/WeekDay";
 
 export default (props: {
     day: Day,
@@ -124,24 +125,28 @@ export default (props: {
                 justifyContent: "space-between"
             }}>
                 <div style={{ display: "flex" }}>
-                    <div style={{ borderRight: "4px solid rgba(0,0,0,0.4)" }}>
-                        <Spacer height={10} />
+                    <div style={{}}>
                         <div style={{
                             // backgroundColor: "rgba(0,0,0,0.4)",
                             color: TEXT_COLOR,
                             padding: "10px 20px",
+                            paddingTop: 0,
                             paddingLeft: 0,
-                            fontWeight: 700,
-                            fontSize: 18,
+                            fontWeight: 600,
+                            fontSize: 20,
                             borderTopLeftRadius: 5,
                             borderTopRightRadius: 5,
                             display: "flex",
                             justifyContent: "flex-end"
                         }}>
                             {startingDate}
+                            <Spacer />
+                            <Weekday>
+                                {weekDay}
+                            </Weekday>
                         </div>
-                        <div style={{ display: "flex", justifyContent: "flex-end", paddingRight: 20 }}>{weekDay}</div>
-                        <Spacer />
+
+                        <Spacer height={5} />
                     </div>
                     <Spacer width={20} />{showSpinner && <CircularProgress size={20} />}
                 </div>
@@ -155,7 +160,7 @@ export default (props: {
                     </div>
                 </div>
             </div>
-            <Spacer height={10} />
+
 
             <div style={{
                 display: "flex",
@@ -167,7 +172,7 @@ export default (props: {
                 <table className={cx(classes.firstColumn, "timecolumn")}>
                     <tbody>
                         <tr><td style={{ textAlign: "right", height: 31 }} colSpan={3}></td></tr>
-                        <tr><td style={{ textAlign: "right", height: 34 }} colSpan={3}></td></tr>
+                        <tr><td style={{ textAlign: "right", height: 23 }} colSpan={3}></td></tr>
                         {day.options.map(opt => {
                             const { id, option } = opt;
                             const from = xdayjs(option).format("hh:mm a")

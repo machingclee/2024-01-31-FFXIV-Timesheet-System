@@ -138,11 +138,19 @@ const OptionsColumn = ({
                     </td>
                 </tr>
                 <tr>
-                    <td style={{ textAlign: "center", width: constants.COLUMN_WIDTH, position: "relative" }}>
+                    <td style={{
+                        textAlign: "center",
+                        width: constants.COLUMN_WIDTH, position: "relative",
+                        paddingLeft: 5,
+                        paddingRight: 5
+                    }}>
                         <MyTextField
                             defaultValue={name}
                             placeholder="Name"
-                            style={{ paddingTop: 0, paddingBottom: 0 }}
+                            style={{
+                                paddingTop: 0,
+                                paddingBottom: 0,
+                            }}
                             onChange={e => {
                                 const text = e.target.value;
                                 updateName(text);
@@ -159,7 +167,7 @@ const OptionsColumn = ({
                             fontSize={"small"}
                             style={{
                                 position: "absolute",
-                                top: 5,
+                                top: 1,
                                 right: 5,
                                 cursor: "pointer",
                                 zIndex: 10

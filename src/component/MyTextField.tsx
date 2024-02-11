@@ -5,6 +5,11 @@ import { tss } from "tss-react";
 
 const useStyles = tss.create(() => ({
     input: {
+        "& input": {
+            paddingTop: 4,
+            paddingBottom: 4,
+            fontSize: 14,
+        },
         "& fieldset": {
             display: "none",
         },

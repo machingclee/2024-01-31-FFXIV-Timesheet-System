@@ -23,7 +23,7 @@ const bodyStyle = tss.create(() => ({
         "& h2": {
             color: `${TEXT_COLOR} !important`
         },
-        backgroundColor: "rgba(0,0,0,0.9)",
+        backgroundColor: "rgba(0,0,0,0.8)",
         color: TEXT_COLOR,
         "& .timecolumn": {
             color: "white !important"
@@ -39,7 +39,7 @@ const bodyStyle = tss.create(() => ({
         },
         "& .selectionRow": {
             "& svg": {
-                color: "#32e763 !important"
+                color: "#6ce98e !important"
             }
         },
         "& .MuiInputBase-root.MuiOutlinedInput-root": {

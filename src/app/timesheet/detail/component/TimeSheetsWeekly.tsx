@@ -28,6 +28,8 @@ export default ({ weeklyId }: { weeklyId: string }) => {
         <>
             <div style={{ fontSize: 26, fontWeight: 600 }}>{timeslot?.title}</div>
             <Spacer />
+            <Spacer />
+            <Spacer width={20} />
             <div key={timeslot?.weeklyId || ""}>
                 <TimeSheetWeekly timeSheets={timeslot} />
             </div>

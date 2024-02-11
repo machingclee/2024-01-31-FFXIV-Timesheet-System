@@ -31,7 +31,7 @@ const useTimesheetStyles = tss.create(() => ({
             "& .Mui-checked": {
                 color: "white !important"
             },
-            backgroundColor: "#9aaa3a91 !important",
+            backgroundColor: "#c2cf7391 !important",
             color: "white",
         }
     },

@@ -13,21 +13,8 @@ import { useAppDispatch } from "@/redux/hooks";
 import appSlice from "@/redux/slices/appSlice";
 import boxShadow from "@/constants/boxShadow";
 import { HiOutlineChevronDoubleRight } from "react-icons/hi";
+import Weekday from "../../../component/WeekDay";
 
-const Weekday = ({ children }: PropsWithChildren) => {
-    return (
-        <div style={{
-            fontSize: 13,
-            backgroundColor: "rgba(255,255,255,0.2)",
-            marginTop: 10,
-            padding: "2px 10px",
-            borderRadius: 20,
-            fontWeight: 600
-        }}>
-            {children}
-        </div>
-    )
-}
 
 
 export default ({ events, getWeeklyEvents }: { events: Event[], getWeeklyEvents: () => void }) => {
@@ -45,10 +32,12 @@ export default ({ events, getWeeklyEvents }: { events: Event[], getWeeklyEvents:
                 const firstOpt = dayjs(firstOption.option);
                 const from = <div>
                     <div style={{ display: "flex", justifyContent: "center" }} >{firstOpt.format("YYYY-MM-DD")}</div>
+                    <Spacer height={5} />
                     <div style={{
                         display: "flex",
                         justifyContent: "center"
                     }}>
+
                         <Weekday>
                             {firstOpt.format("dddd")}
                         </Weekday>
@@ -56,7 +45,8 @@ export default ({ events, getWeeklyEvents }: { events: Event[], getWeeklyEvents:
                 </div>
                 const to = <div>
                     <div style={{ display: "flex", justifyContent: "center" }}>{firstOpt.add(6, "days").format("YYYY-MM-DD")}</div>
-                    <div style={{ display: "flex", justifyContent: "center" }}>  <Weekday>{firstOpt.add(6, "days").format("dddd")}</Weekday></div>
+                    <Spacer height={5} />
+                    <div style={{ display: "flex", justifyContent: "center" }}> <Weekday>{firstOpt.add(6, "days").format("dddd")}</Weekday></div>
                 </div>
 
                 return (
