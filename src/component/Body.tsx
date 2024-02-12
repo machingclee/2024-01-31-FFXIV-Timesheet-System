@@ -25,8 +25,12 @@ const bodyStyle = tss.withParams<{ darkMode: boolean }>()
             },
 
             "& .event-name-input": {
+                backgroundColor: darkMode ? "rgba(255,255,255,0)" : "rgba(255,255,255,0.1)",
                 "& input": {
                     padding: "10px 10px",
+                },
+                "& input::placeholder": {
+                    opacity: 1
                 }
             },
             "& .dots": {
@@ -72,7 +76,7 @@ const bodyStyle = tss.withParams<{ darkMode: boolean }>()
 
             "& .date-picker": {
                 "& svg": {
-                    color: TEXT_COLOR
+                    color: darkMode ? TEXT_COLOR : `${TEXT_DARK_COLOR} !important`
                 }
             },
             "& h2": {
@@ -102,7 +106,7 @@ const bodyStyle = tss.withParams<{ darkMode: boolean }>()
             },
             "& .MuiInputBase-root.MuiOutlinedInput-root": {
                 color: "white",
-                backgroundColor: darkMode ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.04)"
+                backgroundColor: darkMode ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.2)",
 
             },
             "& div": {

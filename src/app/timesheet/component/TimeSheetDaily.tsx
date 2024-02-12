@@ -72,10 +72,6 @@ export default (props: { day: Day }) => {
         return selectionIdToCount;
     }
 
-    const refreshParticipants = async () => {
-        dispatch(TimetableThunkActions.getTimesheetDaily({ dailyId: day.dailyId }))
-    }
-
     const filterRows = useMemo(() => {
         return debounce(() => {
             const numOfParticipants = day.participants.length;
