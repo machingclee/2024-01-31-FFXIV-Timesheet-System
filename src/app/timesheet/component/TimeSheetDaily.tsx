@@ -15,7 +15,7 @@ import AddIcon from '@mui/icons-material/Add';
 import constants from "@/constants/constants";
 import { TEXT_COLOR } from "@/component/Body";
 import Weekday from "@/component/WeekDay";
-import timetableSlice, { TimetableThunkActions } from "@/redux/slices/timetableSlice";
+import timetableSlice, { TimesheetThunkActions } from "@/redux/slices/timesheetSlice";
 
 export default (props: { day: Day }) => {
     const { loading, loadingDailyId: loadingId } = useAppSelector(s => s.app.dailyTable);
@@ -31,14 +31,14 @@ export default (props: { day: Day }) => {
     const dispatch = useAppDispatch();
     const checksUpdate = (checks: CheckUpdate[]) => {
         dispatch(appSlice.actions.setTableLoading({ loading: true, loadingDailyId: dailyId }))
-        dispatch(TimetableThunkActions.updateChecks({ checks }))
+        dispatch(TimesheetThunkActions.updateChecks({ checks }))
             .unwrap()
             .finally(() => {
                 dispatch(appSlice.actions.setTableLoading({ loading: false, loadingDailyId: 0 }))
             })
     }
     const upsertParticipant_ = (params: UpsertParticipantParam) => {
-        dispatch(TimetableThunkActions.upsertParticipant(params));
+        dispatch(TimesheetThunkActions.upsertParticipant(params));
     }
 
     const upsertParticipant = debounce(upsertParticipant_, 500)

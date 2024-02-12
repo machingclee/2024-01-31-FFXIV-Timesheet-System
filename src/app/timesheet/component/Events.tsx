@@ -18,7 +18,7 @@ import { HiDotsVertical } from "react-icons/hi";
 import useMyMenu from "@/hooks/useMyMenu";
 import MyTextField from "@/component/MyTextField";
 import AnimatedRightArrow from "@/component/AnimatedRightArrow";
-import { TimetableThunkActions } from "@/redux/slices/timetableSlice";
+import { TimesheetThunkActions } from "@/redux/slices/timesheetSlice";
 
 
 export default ({ events }: { events: Event[] }) => {
@@ -44,7 +44,7 @@ export default ({ events }: { events: Event[] }) => {
             no: { text: "No" },
             yes: {
                 text: "Yes", action: () => {
-                    dispatch(TimetableThunkActions.deleteWeekly({ weeklyId }))
+                    dispatch(TimesheetThunkActions.deleteWeekly({ weeklyId }))
                 }
             }
         })
@@ -78,7 +78,7 @@ export default ({ events }: { events: Event[] }) => {
             yes: {
                 text: "Yes", action: () => {
                     const newTitle = changeTitleRef.current || "";
-                    dispatch(TimetableThunkActions.updateWeekly({ title: newTitle, weeklyId }));
+                    dispatch(TimesheetThunkActions.updateWeekly({ title: newTitle, weeklyId }));
                 }
             }
         })

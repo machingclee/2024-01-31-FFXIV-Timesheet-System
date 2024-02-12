@@ -15,7 +15,7 @@ import { tss } from "tss-react";
 import { FaCheck } from "react-icons/fa";
 import constants from "@/constants/constants";
 import sleepUtil from "@/util/sleepUtil";
-import timetableSlice, { TimetableThunkActions } from "@/redux/slices/timetableSlice";
+import timetableSlice, { TimesheetThunkActions } from "@/redux/slices/timesheetSlice";
 
 const OptionsColumn = ({
     participantMessage,
@@ -50,14 +50,14 @@ const OptionsColumn = ({
     }, 1000)
 
     const deleteColumn = () => {
-        dispatch(TimetableThunkActions.deleteParticipant({
+        dispatch(TimesheetThunkActions.deleteParticipant({
             userUuid: uuid,
             dailyId
         }));
     }
 
     const updateMessage = () => {
-        dispatch(TimetableThunkActions.updateMessage({
+        dispatch(TimesheetThunkActions.updateMessage({
             dailyId,
             msgUpdate: {
                 message: messageDialogContent.current,

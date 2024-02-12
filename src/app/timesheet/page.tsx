@@ -9,7 +9,7 @@ import useApiClient from "@/hooks/useApiClient";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import appSlice from "@/redux/slices/appSlice";
 import UsageGuide from "./component/UsageGuide";
-import { TimetableThunkActions } from "@/redux/slices/timetableSlice";
+import { TimesheetThunkActions } from "@/redux/slices/timesheetSlice";
 import { getApiClient } from "@/axios/apiClient";
 
 export default () => {
@@ -21,7 +21,7 @@ export default () => {
 
     useEffect(() => {
         if (!dataFetched.current) {
-            dispatch(TimetableThunkActions.getEvents());
+            dispatch(TimesheetThunkActions.getEvents());
             dataFetched.current = true;
         }
     }, [])

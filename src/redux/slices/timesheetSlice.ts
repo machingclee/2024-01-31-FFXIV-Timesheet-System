@@ -76,24 +76,24 @@ const timetableSlice = createSlice(
         },
         extraReducers(builder) {
             builder
-                .addCase(TimetableThunkActions.getEvents.fulfilled, (state, action) => {
+                .addCase(TimesheetThunkActions.getEvents.fulfilled, (state, action) => {
                     const result = action.payload;
                     state.events = result!.events;
                 })
-                .addCase(TimetableThunkActions.selectEvent.fulfilled, (state, action) => {
+                .addCase(TimesheetThunkActions.selectEvent.fulfilled, (state, action) => {
                     const { days, title, weeklyId } = action.payload;
                     const { idToObject, ids } = normalize({ idAttribute: "dailyId", targetArr: days })
                     state.selectedWeek.days = { ids, idToObject };
                     state.selectedWeek.title = title;
                     state.selectedWeek.weeklyId = weeklyId;
                 })
-                .addCase(TimetableThunkActions.getTimesheetDaily.fulfilled, (state, action) => {
+                .addCase(TimesheetThunkActions.getTimesheetDaily.fulfilled, (state, action) => {
                     const { timeslot: day } = action.payload;
                     if (state.selectedWeek.days.idToObject?.[day.dailyId]) {
                         state.selectedWeek.days.idToObject[day.dailyId] = day;
                     }
                 })
-                .addCase(TimetableThunkActions.deleteParticipant.fulfilled, (state, action) => {
+                .addCase(TimesheetThunkActions.deleteParticipant.fulfilled, (state, action) => {
                     const { userUuid, dailyId } = action.payload;
                     const day = state.selectedWeek.days.idToObject?.[dailyId];
                     if (day) {
@@ -104,7 +104,7 @@ const timetableSlice = createSlice(
     }
 )
 
-export class TimetableThunkActions {
+export class TimesheetThunkActions {
     public static updateMessage = createAsyncThunk(
         "timetable/updateMessage",
         async (params: { msgUpdate: UpsertMessageParam, dailyId: number }, api) => {
@@ -226,35 +226,36 @@ export class TimetableThunkActions {
 
 export const timetableMiddleware = createListenerMiddleware();
 registerEffects(timetableMiddleware, [
-    ...loadingActions(TimetableThunkActions.getEvents),
-    ...loadingActions(TimetableThunkActions.createWeekly),
-    ...loadingActions(TimetableThunkActions.deleteWeekly),
-    ...loadingActions(TimetableThunkActions.updateWeekly),
-    ...loadingActions(TimetableThunkActions.getTimesheetDaily),
-    ...loadingActions(TimetableThunkActions.updateMessage),
+    ...loadingActions(TimesheetThunkActions.getEvents),
+    ...loadingActions(TimesheetThunkActions.selectEvent),
+    ...loadingActions(TimesheetThunkActions.createWeekly),
+    ...loadingActions(TimesheetThunkActions.deleteWeekly),
+    ...loadingActions(TimesheetThunkActions.updateWeekly),
+    ...loadingActions(TimesheetThunkActions.getTimesheetDaily),
+    ...loadingActions(TimesheetThunkActions.updateMessage),
     {
-        action: TimetableThunkActions.createWeekly.fulfilled,
+        action: TimesheetThunkActions.createWeekly.fulfilled,
         effect: (action, api) => {
-            api.dispatch(TimetableThunkActions.getEvents());
+            api.dispatch(TimesheetThunkActions.getEvents());
         }
     },
     {
-        action: TimetableThunkActions.deleteWeekly.fulfilled,
+        action: TimesheetThunkActions.deleteWeekly.fulfilled,
         effect: (action, api) => {
-            api.dispatch(TimetableThunkActions.getEvents());
+            api.dispatch(TimesheetThunkActions.getEvents());
         }
     },
     {
-        action: TimetableThunkActions.updateWeekly.fulfilled,
+        action: TimesheetThunkActions.updateWeekly.fulfilled,
         effect: (action, api) => {
-            api.dispatch(TimetableThunkActions.getEvents());
+            api.dispatch(TimesheetThunkActions.getEvents());
         }
     },
     {
-        action: TimetableThunkActions.updateMessage.fulfilled,
+        action: TimesheetThunkActions.updateMessage.fulfilled,
         effect: (action, api) => {
-            const { dailyId } = (action as ReturnType<typeof TimetableThunkActions.updateMessage.fulfilled>).payload;
-            api.dispatch(TimetableThunkActions.getTimesheetDaily({ dailyId }));
+            const { dailyId } = (action as ReturnType<typeof TimesheetThunkActions.updateMessage.fulfilled>).payload;
+            api.dispatch(TimesheetThunkActions.getTimesheetDaily({ dailyId }));
         }
     }
 ])

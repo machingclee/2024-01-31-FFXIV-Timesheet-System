@@ -4,7 +4,7 @@ import useParams from "@/hooks/useParams";
 import TimeSheetsWeekly from "./component/TimeSheetsWeekly";
 import { useEffect } from "react";
 import { useAppDispatch } from "@/redux/hooks";
-import timetableSlice from "@/redux/slices/timetableSlice";
+import timetableSlice from "@/redux/slices/timesheetSlice";
 
 export default () => {
     const params = useParams<{ weeklyId: string }>();
