@@ -12,10 +12,42 @@ import appSlice from "../../../../appSlice";
 import DeleteIcon from '@mui/icons-material/Clear';
 import { DataGridPremium } from '@mui/x-data-grid-premium';
 import { tss } from "tss-react";
-import { FaCheck } from "react-icons/fa";
+import { FaCheck, FaCheckCircle, FaRegCheckCircle } from "react-icons/fa";
 import constants from "@/constants/constants";
 import sleepUtil from "@/util/sleepUtil";
 import timetableSlice, { TimesheetThunkActions } from "@/redux/slices/timesheetSlice";
+import { FiCircle } from "react-icons/fi";
+import { FaCircle } from "react-icons/fa6";
+import { FaGrinStars } from "react-icons/fa";
+import { FaSmileBeam } from "react-icons/fa";
+import { FaFaceSmileBeam } from "react-icons/fa6";
+import { FaFaceSmileWink } from "react-icons/fa6";
+import { BsEmojiSmileUpsideDownFill } from "react-icons/bs";
+import { PiSmileyXEyesFill } from "react-icons/pi";
+import { PiSmileyAngryFill } from "react-icons/pi";
+import { BsEmojiGrinFill } from "react-icons/bs";
+import { BsEmojiKissFill } from "react-icons/bs";
+import { BsEmojiSunglassesFill } from "react-icons/bs";
+import { BsFillEmojiSunglassesFill } from "react-icons/bs";
+const randomNum = (num: number) => {
+    return Math.floor(Math.random() * 9);
+}
+const smiles = [
+    <FaFaceSmileBeam color="green" size={16} />,
+    <FaFaceSmileWink color="green" size={16} />,
+    <BsEmojiSmileUpsideDownFill color="green" size={16} />,
+    <PiSmileyXEyesFill color="green" size={20} />,
+    <PiSmileyAngryFill color="green" size={20} />,
+    <FaSmileBeam color="green" size={16} />,
+    <BsEmojiGrinFill color="green" size={16} />,
+    <BsEmojiKissFill color="green" size={16} />,
+    <BsFillEmojiSunglassesFill color="green" size={16} />
+]
+const RandomEmoji = () => {
+    const index = randomNum(smiles.length);
+    return smiles[index];
+}
+
 
 const OptionsColumn = ({
     participantMessage,
@@ -189,10 +221,10 @@ const OptionsColumn = ({
                                     cursor: "pointer",
                                     pointerEvents: "auto",
                                 }}
-                                className={cx(isSuccessId ? classes.successCell : null)}
                             >
 
                                 <CustomMouseEnterCheckbox
+                                    isSuccessId={isSuccessId}
                                     defaultChecked={defaultChecked}
                                     addUpdate={addUpdate}
                                     dispatchUpdate={dispatchUpdate}
@@ -224,6 +256,7 @@ const useStyles = tss.create(() => ({
     }
 }))
 const CustomMouseEnterCheckbox = ({
+    isSuccessId,
     addUpdate,
     dispatchUpdate,
     selectionId,
@@ -231,6 +264,7 @@ const CustomMouseEnterCheckbox = ({
     userUUID,
     defaultChecked,
 }: {
+    isSuccessId: boolean,
     addUpdate: (update: CheckUpdate) => void,
     dispatchUpdate: () => void,
     selectionId: number,
@@ -265,7 +299,13 @@ const CustomMouseEnterCheckbox = ({
                     }
                 }}
             >
-                {checked && <FaCheck color="green" size={16} />}
+                {checked && (() => {
+                    if (!isSuccessId) {
+                        return <FaCheck color="green" size={16} />
+                    } else {
+                        return <RandomEmoji />
+                    }
+                })()}
                 {!checked && <></>}
             </div>
         </>

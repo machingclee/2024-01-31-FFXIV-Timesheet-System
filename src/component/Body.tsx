@@ -82,7 +82,7 @@ const bodyStyle = tss.withParams<{ darkMode: boolean }>()
             "& h2": {
                 color: darkMode ? TEXT_COLOR : `${TEXT_DARK_COLOR} !important`,
             },
-            backgroundColor: darkMode ? "rgba(0,0,0,0.65)" : "rgba(255,255,255,0.1)",
+            backgroundColor: darkMode ? "rgba(0,0,0,0.65)" : "rgba(255,255,255,0)",
             color: TEXT_COLOR,
             "& .timecolumn": {
                 color: darkMode ? "white !important" : "black",
