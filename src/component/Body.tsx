@@ -15,7 +15,7 @@ export default ({ children }: PropsWithChildren) => {
 }
 
 export const TEXT_COLOR = "rgb(220,220,220)"
-export const TEXT_DARK_COLOR = "rgba(0,0,0,0.85)"
+export const TEXT_DARK_COLOR = "rgba(0,0,0,0.7)"
 
 const bodyStyle = tss.withParams<{ darkMode: boolean }>()
     .create(({ darkMode = true }) => ({
@@ -39,7 +39,7 @@ const bodyStyle = tss.withParams<{ darkMode: boolean }>()
             },
             "& .clickable": {
                 boxShadow: darkMode ? `${boxShadow.DARK_MODE_01} !important` : `${boxShadow.SHADOW_62} !important`,
-                backgroundColor: darkMode ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.4) !important",
+                backgroundColor: darkMode ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.2) !important",
                 "& svg": {
                     color: darkMode ? TEXT_COLOR : `${TEXT_DARK_COLOR} !important`,
                 }
@@ -87,8 +87,7 @@ const bodyStyle = tss.withParams<{ darkMode: boolean }>()
                 }
             },
             "& .timesheet": {
-
-                backgroundColor: darkMode ? "rgba(0,0,0,0.2)" : "rgba(255,255,255,0.65)",
+                backgroundColor: darkMode ? "rgba(0,0,0,0.2)" : "rgba(255,255,255,0.6)",
                 "& tr:nth-child(2n)": {
                     backgroundColor: darkMode ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.1)"
                 },

@@ -107,14 +107,15 @@ export default () => {
                     <MyButton variant="text" onClick={openAboutAuthor}>About Author</MyButton>
                     <Spacer width={30} />
                     {!accessToken && <Button variant="contained" onClick={login} >Login</Button>}
-                    {accessToken && <div style={{ display: "flex", alignItems: "center" }}>
-                        <div style={{ fontSize: 12 }} className="email">{email}</div>
-                        <Spacer />
-                        <MyButton onClick={logout}>Logout</MyButton>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                        {accessToken && <>
+                            <div style={{ fontSize: 12 }} className="email">{email}</div>
+                            <Spacer />
+                            <MyButton onClick={logout}>Logout</MyButton>
+                        </>}
                         <Spacer />
                         <DarkModeButton />
                     </div>
-                    }
                 </div>
             </Container >
         </div >

@@ -9,25 +9,19 @@ import useApiClient from "@/hooks/useApiClient";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import appSlice from "@/redux/slices/appSlice";
 import UsageGuide from "./component/UsageGuide";
+import { TimetableThunkActions } from "@/redux/slices/timetableSlice";
+import { getApiClient } from "@/axios/apiClient";
 
 export default () => {
-    const apiClient = useApiClient();
+    const apiClient = getApiClient();
     const dispatch = useAppDispatch();
-    const [weeklyEvents, setWeeklyEvents] = useState<Event[]>([])
+    const weeklyEvents = useAppSelector(s => s.timetable.events);
     const accessToken = useAppSelector(s => s.auth.accessToken);
     const dataFetched = useRef(false);
-    const getWeeklyEvents = () => {
-        dispatch(appSlice.actions.setLoading(true));
-        apiClient.get<{ result: { events: Event[] } }>("/timesheet/get-events").then((res) => {
-            const events_ = res.data.result.events;
-            setWeeklyEvents(events_);
-        }).finally(() => {
-            dispatch(appSlice.actions.setLoading(false));
-        })
-    }
+
     useEffect(() => {
         if (!dataFetched.current) {
-            getWeeklyEvents();
+            dispatch(TimetableThunkActions.getEvents());
             dataFetched.current = true;
         }
     }, [])
@@ -38,9 +32,9 @@ export default () => {
             pointerEvents: accessToken ? "auto" : "none"
         }}
         >
-            <AddTimeSlot getWeeklyEvents={getWeeklyEvents} />
+            <AddTimeSlot />
             <Spacer />
-            <Events events={weeklyEvents} getWeeklyEvents={getWeeklyEvents} />
+            <Events events={weeklyEvents} />
         </div >
     </>
 }

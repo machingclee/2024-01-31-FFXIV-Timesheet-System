@@ -5,6 +5,13 @@ export type CreateTimeSlotParam = {
     startDate: string
 }
 
+export type MyResponse<T> = {
+    success: true,
+    result: T
+} | {
+    success: false,
+    errorMessage: Object
+}
 
 export type Option = {
     id: number,
@@ -32,11 +39,8 @@ export type Event = {
 }
 
 export type Selection = {
-    id: number,
-    participantId: number,
     timeAvailableOptionId: number
     checked: boolean
-
 }
 
 export type Participant = {
@@ -53,7 +57,7 @@ export type UpsertParticipantParam = {
 }
 
 export type CheckUpdate = {
-    selectionId: number,
+    optionId: number,
     userUUID: string,
     timeslotDailyId: number,
     checked: boolean

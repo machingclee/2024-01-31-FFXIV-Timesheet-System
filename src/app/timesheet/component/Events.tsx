@@ -18,9 +18,10 @@ import { HiDotsVertical } from "react-icons/hi";
 import useMyMenu from "@/hooks/useMyMenu";
 import MyTextField from "@/component/MyTextField";
 import AnimatedRightArrow from "@/component/AnimatedRightArrow";
+import { TimetableThunkActions } from "@/redux/slices/timetableSlice";
 
 
-export default ({ events, getWeeklyEvents }: { events: Event[], getWeeklyEvents: () => void }) => {
+export default ({ events }: { events: Event[] }) => {
     const apiClient = useApiClient();
     const dispatch = useAppDispatch();
     const { classes, cx } = useStyles();
@@ -36,19 +37,14 @@ export default ({ events, getWeeklyEvents }: { events: Event[], getWeeklyEvents:
             return
         }
         const e = currentEvent;
-        const { id: weekyId, title } = currentEvent
+        const { id: weeklyId, title } = currentEvent;
         WarningDialog.setContent({
             title: `Delete ${e.title}?`,
             desc: () => <>Are you sure to delete {title}?</>,
             no: { text: "No" },
             yes: {
                 text: "Yes", action: () => {
-                    dispatch(appSlice.actions.setLoading(true));
-                    apiClient.delete(`/timesheet/delete-weekly/${weekyId}`).finally(() => {
-                        dispatch(appSlice.actions.setLoading(false));
-                        getWeeklyEvents();
-                    })
-
+                    dispatch(TimetableThunkActions.deleteWeekly({ weeklyId }))
                 }
             }
         })
@@ -67,7 +63,7 @@ export default ({ events, getWeeklyEvents }: { events: Event[], getWeeklyEvents:
             return
         }
         const e = currentEvent;
-        const { id: weeklyId, title } = currentEvent
+        const { id: weeklyId } = currentEvent
         WarningDialog.setContent({
             title: `Edit Title`,
             desc: () => <MyTextField
@@ -81,14 +77,8 @@ export default ({ events, getWeeklyEvents }: { events: Event[], getWeeklyEvents:
             no: { text: "No" },
             yes: {
                 text: "Yes", action: () => {
-                    dispatch(appSlice.actions.setLoading(true));
-                    apiClient
-                        .put(`/timesheet/edit-weekly/${weeklyId}`, { title: changeTitleRef.current })
-                        .finally(() => {
-                            dispatch(appSlice.actions.setLoading(false));
-                            getWeeklyEvents();
-                        })
-
+                    const newTitle = changeTitleRef.current || "";
+                    dispatch(TimetableThunkActions.updateWeekly({ title: newTitle, weeklyId }));
                 }
             }
         })

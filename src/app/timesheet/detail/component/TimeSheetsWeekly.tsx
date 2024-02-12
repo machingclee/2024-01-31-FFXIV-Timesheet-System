@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import appSlice from "@/redux/slices/appSlice";
 import TimeSheetDaily from "../../component/TimeSheetDaily";
 import { BsDiamondFill } from "react-icons/bs";
+import { TimetableSliceState, TimetableThunkActions } from "@/redux/slices/timetableSlice";
 
 const Ruler = ({ height = 1, color = "rgba(255,255,255,0.4)" }: { height?: number, color?: string }) => {
     return <div style={{ height, backgroundColor: color, width: "100%" }}></div>
@@ -29,20 +30,13 @@ const HeaderSeparator = () => {
 
 
 export default ({ weeklyId }: { weeklyId: string }) => {
-    const [timeslot, setTimeslot] = useState<TimeSheetsWeeklyProps | null>(null);
+    const { days, title } = useAppSelector(s => s.timetable.selectedWeek)
     const dispatch = useAppDispatch();
-    const apiClient = useApiClient();
     useEffect(() => {
         if (!weeklyId) {
             return;
         }
-        dispatch(appSlice.actions.setLoading(true));
-        apiClient
-            .get<{ result: { timeslots: TimeSheetsWeeklyProps } }>(`/timesheet/get-event-timeslot/${weeklyId}`)
-            .then(res => { setTimeslot(res.data.result.timeslots) })
-            .finally(() => {
-                dispatch(appSlice.actions.setLoading(false));
-            })
+        dispatch(TimetableThunkActions.selectEvent({ weeklyId }))
     }, [weeklyId])
 
     return (
@@ -53,31 +47,30 @@ export default ({ weeklyId }: { weeklyId: string }) => {
                 display: "flex",
                 justifyContent: "center"
             }}>
-                {timeslot?.title}
+                {title}
             </div>
             <Spacer />
             <HeaderSeparator />
             <Spacer />
             <Spacer width={20} />
-            <div key={timeslot?.weeklyId || ""}>
-                <TimeSheetWeekly timeSheets={timeslot} />
+            <div key={weeklyId || ""}>
+                <TimeSheetWeekly days={days} />
             </div>
             <Spacer height={200} />
         </>
     )
 }
 
-const TimeSheetWeekly = ({ timeSheets }: { timeSheets: TimeSheetsWeeklyProps | null }) => {
-    if (!timeSheets) {
+const TimeSheetWeekly = ({ days }: { days: TimetableSliceState["selectedWeek"]["days"] }) => {
+    if (!days) {
         return null;
     }
-    const { days, weeklyId } = timeSheets;
     return (
         <div>
-            {days.map(day => {
-                const { dailyId } = day;
+            {days.ids?.map(dailyId => {
+                const day = days.idToObject?.[dailyId];
                 return (
-                    <TimeSheetDaily key={dailyId} day={day} />
+                    <TimeSheetDaily key={dailyId} day={day!} />
                 )
             })}
         </div>

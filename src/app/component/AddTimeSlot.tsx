@@ -18,6 +18,7 @@ import { FaInfoCircle } from "react-icons/fa";
 import { tss } from "tss-react";
 import xdayjs from "../../util/xdayjs"
 import TimeSlots from "../timesheet/detail/component/TimeSheetsWeekly";
+import { TimetableThunkActions } from "@/redux/slices/timetableSlice";
 
 const useStyles = tss.create(() => ({
     timePicker: {
@@ -27,9 +28,7 @@ const useStyles = tss.create(() => ({
     },
 }))
 
-export default ({ getWeeklyEvents: getEvents }: {
-    getWeeklyEvents: () => void
-}) => {
+export default () => {
     const email = useAppSelector(s => s.auth.email);
     const dispatch = useAppDispatch();
     const newTimeslotName = useRef("");
@@ -38,17 +37,13 @@ export default ({ getWeeklyEvents: getEvents }: {
     const [value, setValue] = useState<Dayjs | null>(currDayjs);
     const { classes, cx } = useStyles();
     const addATimeSlot = () => {
-        dispatch(appSlice.actions.setLoading(true));
         const timeZone = getTimezone();
-        apiClient.post("/timesheet/create-timeslot", {
+        dispatch(TimetableThunkActions.createWeekly({
             email,
             name: newTimeslotName.current,
-            startDate: value?.format("YYYY-MM-DD"),
+            startDate: value?.format("YYYY-MM-DD") || "",
             timeZone
-        } as CreateTimeSlotParam).finally(() => {
-            getEvents();
-            dispatch(appSlice.actions.setLoading(false));
-        })
+        }))
     }
 
     return <>

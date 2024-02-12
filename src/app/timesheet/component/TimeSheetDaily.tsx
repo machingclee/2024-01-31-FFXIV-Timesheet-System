@@ -3,7 +3,7 @@ import useApiClient from "@/hooks/useApiClient";
 import { useAppSelector, useAppDispatch } from "@/redux/hooks";
 import xdayjs from "@/util/xdayjs";
 import { debounce, cloneDeep } from "lodash";
-import { useState, useEffect, PropsWithChildren, HTMLAttributes } from "react";
+import { useState, useEffect, PropsWithChildren, HTMLAttributes, useMemo } from "react";
 import appSlice from "../../../../appSlice";
 import useTimesheetStyles from "./styles/useTimesheetStyles";
 import { v4 as uuidv4 } from "uuid";
@@ -15,10 +15,9 @@ import AddIcon from '@mui/icons-material/Add';
 import constants from "@/constants/constants";
 import { TEXT_COLOR } from "@/component/Body";
 import Weekday from "@/component/WeekDay";
+import timetableSlice, { TimetableThunkActions } from "@/redux/slices/timetableSlice";
 
-export default (props: {
-    day: Day,
-}) => {
+export default (props: { day: Day }) => {
     const { loading, loadingDailyId: loadingId } = useAppSelector(s => s.app.dailyTable);
     const [successSelectionIds, setSuccessSelectionIds] = useState<number[]>([]);
     const { day } = props;
@@ -27,43 +26,33 @@ export default (props: {
     const startingDayjs = xdayjs(day.options?.[0].option);
     const startingDate = startingDayjs.format("YYYY-MM-DD");
     const weekDay = startingDayjs.format("dddd");
-    const [turnOnFilter, setTurnOnfilter] = useState(false);
+    const [turnOnFilter, setTurnOnfilter] = useState(true);
     const { classes, cx } = useTimesheetStyles();
-    const [particiants, setParticipants] = useState<Participant[]>([]);
     const dispatch = useAppDispatch();
-    const apiClient = useApiClient();
     const checksUpdate = (checks: CheckUpdate[]) => {
         dispatch(appSlice.actions.setTableLoading({ loading: true, loadingDailyId: dailyId }))
-        apiClient.post(
-            "/timesheet/make-selection",
-            { selections: checks }
-        ).finally(() => {
-            dispatch(appSlice.actions.setTableLoading({ loading: false, loadingDailyId: 0 }))
-        })
+        dispatch(TimetableThunkActions.updateChecks({ checks }))
+            .unwrap()
+            .finally(() => {
+                dispatch(appSlice.actions.setTableLoading({ loading: false, loadingDailyId: 0 }))
+            })
     }
     const upsertParticipant_ = (params: UpsertParticipantParam) => {
-        apiClient.post("/timesheet/upsert-participant", params);
+        dispatch(TimetableThunkActions.upsertParticipant(params));
     }
 
     const upsertParticipant = debounce(upsertParticipant_, 500)
-
     const addUser = () => {
         const userUUID = uuidv4();
-        setTurnOnfilter(false);
+        // setTurnOnfilter(false);
+        dispatch(timetableSlice.actions.addParticipantLocal({
+            dailyId,
+            userUUID
+        }))
         upsertParticipant({
             dailyId,
             username: "",
             userUUID,
-        })
-        setParticipants(ps => {
-            const newPs = cloneDeep(ps);
-            newPs.push({
-                frontendUUID: userUUID,
-                message: "",
-                selections: [],
-                username: "",
-            })
-            return newPs;
         })
     }
     const getFinalResultCount = (day: Day) => {
@@ -84,14 +73,27 @@ export default (props: {
     }
 
     const refreshParticipants = async () => {
-        dispatch(appSlice.actions.setLoading(true));
-        const res = await apiClient.get<{ result: { timeslot: Day } }>(
-            `/timesheet/get-event-specfic-timeslot/${dailyId}`
-        )
-        dispatch(appSlice.actions.setLoading(false));
-        const day_ = res.data.result.timeslot;
-        setParticipants(day_.participants);
+        dispatch(TimetableThunkActions.getTimesheetDaily({ dailyId: day.dailyId }))
     }
+
+    const filterRows = useMemo(() => {
+        return debounce(() => {
+            const numOfParticipants = day.participants.length;
+            const selectionIdToCount = getFinalResultCount(day);
+            const ids: number[] = [];
+            for (const [selectionId, count] of selectionIdToCount) {
+                if (count === numOfParticipants && numOfParticipants >= 2) {
+                    ids.push(selectionId);
+                }
+            }
+            setSuccessSelectionIds(ids);
+        }, 300)
+    }, [day])
+
+    useEffect(() => {
+        filterRows();
+    }, [day])
+
 
     useEffect(() => {
         if (turnOnFilter) {
@@ -110,9 +112,7 @@ export default (props: {
         }
     }, [turnOnFilter])
 
-    useEffect(() => {
-        setParticipants(day.participants);
-    }, [day])
+
 
     return (
         <>
@@ -153,9 +153,9 @@ export default (props: {
 
 
                         <div >
-                            <span style={{ opacity: turnOnFilter ? 0.8 : 0.4, fontSize: 14 }}>
+                            {/* <span style={{ opacity: turnOnFilter ? 0.8 : 0.4, fontSize: 14 }}>
                                 Highlight Available:
-                            </span>  <Switch onChange={(e) => { setTurnOnfilter(e.target.checked) }} />
+                            </span>  <Switch onChange={(e) => { setTurnOnfilter(e.target.checked) }} /> */}
                         </div>
 
                     </HPadding>
@@ -185,11 +185,10 @@ export default (props: {
                         </table>
 
 
-                        {particiants.map(user => {
+                        {day.participants.map(user => {
                             const { frontendUUID, username, message } = user;
                             return (
                                 <OptionsColumn
-                                    refreshParticipants={refreshParticipants}
                                     participantMessage={message}
                                     successSelectionIds={successSelectionIds}
                                     key={frontendUUID}
@@ -199,7 +198,6 @@ export default (props: {
                                     uuid={frontendUUID}
                                     checksUpdate={checksUpdate}
                                     upsertParticipant={upsertParticipant}
-                                    setParticipants={setParticipants}
                                     selections={user.selections}
                                 />
                             )

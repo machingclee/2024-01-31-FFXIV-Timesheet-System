@@ -15,6 +15,7 @@ import { tss } from "tss-react";
 import { FaCheck } from "react-icons/fa";
 import constants from "@/constants/constants";
 import sleepUtil from "@/util/sleepUtil";
+import timetableSlice, { TimetableThunkActions } from "@/redux/slices/timetableSlice";
 
 const OptionsColumn = ({
     participantMessage,
@@ -24,12 +25,9 @@ const OptionsColumn = ({
     dailyId,
     selections,
     successSelectionIds,
-    refreshParticipants,
     checksUpdate,
-    setParticipants,
     upsertParticipant
 }: {
-
     participantMessage: string,
     username: string,
     uuid: string,
@@ -37,14 +35,10 @@ const OptionsColumn = ({
     options?: Option[],
     selections: Selection[],
     successSelectionIds: number[],
-    refreshParticipants: () => Promise<void>,
-    setParticipants: Dispatch<SetStateAction<Participant[]>>,
     checksUpdate: (props: CheckUpdate[]) => void,
     upsertParticipant: (params: UpsertParticipantParam) => void
 }) => {
-    const darkMode = useAppSelector(s => s.auth.darkMode);
     const { classes, cx } = useTimesheetStyles();
-    const apiClient = useApiClient();
     const [name, setName] = useState(username || "");
     const messageDialogContent = useRef<string>("");
     const updateDialogMessageDialogContent = (msg: string) => {
@@ -56,24 +50,20 @@ const OptionsColumn = ({
     }, 1000)
 
     const deleteColumn = () => {
-        setParticipants(ps => {
-            const deleteIndex = ps.findIndex(p => p.frontendUUID === uuid);
-            const ps_ = cloneDeep(ps);
-            const newPs = [...ps_.slice(0, deleteIndex), ...ps_.slice(deleteIndex + 1)];
-            return newPs;
-        })
-        apiClient.delete(`/timesheet/delete-participant/${uuid}`)
+        dispatch(TimetableThunkActions.deleteParticipant({
+            userUuid: uuid,
+            dailyId
+        }));
     }
 
-    const updateMessage = async () => {
-        const reqBody: UpsertMessageParam = {
-            message: messageDialogContent.current,
-            participantUUID: uuid
-        };
-        dispatch(appSlice.actions.setLoading(true));
-        await apiClient.post("/timesheet/upsert-message", reqBody);
-        dispatch(appSlice.actions.setLoading(false));
-        await refreshParticipants();
+    const updateMessage = () => {
+        dispatch(TimetableThunkActions.updateMessage({
+            dailyId,
+            msgUpdate: {
+                message: messageDialogContent.current,
+                participantUUID: uuid
+            }
+        }))
     }
 
     const updateRecordsRef = useRef<Map<string, boolean>>(new Map<string, boolean>());
@@ -81,12 +71,13 @@ const OptionsColumn = ({
     const deboundedUpdate = useMemo(
         () => debounce((update: CheckUpdate[]) => {
             checksUpdate(update);
+            dispatch(timetableSlice.actions.batchChecksUpdate({ checks: update }))
             updateRecordsRef.current = new Map<string, boolean>();
         }, 300),
         []
     );
     const addUpdate = (update: CheckUpdate) => {
-        const { checked, selectionId, timeslotDailyId, userUUID } = update;
+        const { checked, optionId: selectionId, timeslotDailyId, userUUID } = update;
         const id = `${timeslotDailyId},${selectionId},${userUUID}`;
         updateRecordsRef.current.set(id, checked);
     }
@@ -97,7 +88,7 @@ const OptionsColumn = ({
             const [timeslotDailyId, selectionId, userUUID] = id.split(",");
             updates.push({
                 checked: value,
-                selectionId: Number(selectionId),
+                optionId: Number(selectionId),
                 timeslotDailyId: Number(timeslotDailyId),
                 userUUID: userUUID
             })
@@ -253,7 +244,7 @@ const CustomMouseEnterCheckbox = ({
     const toggle = useMemo(() => () => {
         addUpdate({
             checked: !checked,
-            selectionId: selectionId,
+            optionId: selectionId,
             timeslotDailyId: timeslotDailyId,
             userUUID: userUUID
         })
