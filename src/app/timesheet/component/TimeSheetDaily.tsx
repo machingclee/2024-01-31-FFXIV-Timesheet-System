@@ -1,4 +1,4 @@
-import { Participant, CheckUpdate, UpsertParticipantParam, Day } from "@/dto/dto";
+import { Participant, CheckUpdate, UpsertParticipantParam, Day as string, Day } from "@/dto/dto";
 import useApiClient from "@/hooks/useApiClient";
 import { useAppSelector, useAppDispatch } from "@/redux/hooks";
 import xdayjs from "@/util/xdayjs";
@@ -17,13 +17,19 @@ import { TEXT_COLOR } from "@/component/Body";
 import Weekday from "@/component/WeekDay";
 import timetableSlice, { TimesheetThunkActions } from "@/redux/slices/timesheetSlice";
 
-export default (props: { day: Day }) => {
+const SelectionLoadingSpinner = (props: { dailyId: number }) => {
+    const { dailyId } = props;
     const { loading, loadingDailyId: loadingId } = useAppSelector(s => s.app.dailyTable);
-    const [successSelectionIds, setSuccessSelectionIds] = useState<number[]>([]);
-    const { day } = props;
-    const { dailyId } = day;
     const showSpinner = (dailyId === loadingId) && loading;
-    const startingDayjs = xdayjs(day.options?.[0].option);
+    return <>{showSpinner && <CircularProgress size={20} />}</>
+}
+
+
+export default (props: { dailyId: number }) => {
+    const { dailyId } = props;
+    const day: Day | undefined = useAppSelector(s => s.timetable.selectedWeek.days.idToObject?.[dailyId]);
+    const [successSelectionIds, setSuccessSelectionIds] = useState<number[]>([]);
+    const startingDayjs = xdayjs(day?.options?.[0].option);
     const startingDate = startingDayjs.format("YYYY-MM-DD");
     const weekDay = startingDayjs.format("dddd");
     const [turnOnFilter, setTurnOnfilter] = useState(true);
@@ -74,6 +80,9 @@ export default (props: { day: Day }) => {
 
     const filterRows = useMemo(() => {
         return debounce(() => {
+            if (!day) {
+                return;
+            }
             const numOfParticipants = day.participants.length;
             const selectionIdToCount = getFinalResultCount(day);
             const ids: number[] = [];
@@ -93,6 +102,9 @@ export default (props: { day: Day }) => {
 
     useEffect(() => {
         if (turnOnFilter) {
+            if (!day) {
+                return;
+            }
             const numOfParticipants = day.participants.length;
             const selectionIdToCount = getFinalResultCount(day);
             const ids: number[] = [];
@@ -144,7 +156,7 @@ export default (props: { day: Day }) => {
                                 </Weekday>
                             </div>
 
-                            {showSpinner && <CircularProgress size={20} />}
+                            <SelectionLoadingSpinner dailyId={dailyId} />
                         </div>
 
 
@@ -165,7 +177,7 @@ export default (props: { day: Day }) => {
                             <tbody>
                                 <tr><td style={{ textAlign: "right", height: 31 }} colSpan={3}></td></tr>
                                 <tr><td style={{ textAlign: "right", height: 23 }} colSpan={3}></td></tr>
-                                {day.options.map(opt => {
+                                {day?.options.map(opt => {
                                     const { id, option } = opt;
                                     const from = xdayjs(option).format("hh:mm a")
                                     const to = xdayjs(option).add(1, "hour").format("hh:mm a")
@@ -181,7 +193,7 @@ export default (props: { day: Day }) => {
                         </table>
 
 
-                        {day.participants.map(user => {
+                        {day?.participants.map(user => {
                             const { frontendUUID, username, message } = user;
                             return (
                                 <OptionsColumn

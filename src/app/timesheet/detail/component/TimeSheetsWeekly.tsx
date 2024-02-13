@@ -30,7 +30,8 @@ const HeaderSeparator = () => {
 
 
 export default ({ weeklyId }: { weeklyId: string }) => {
-    const { days, title } = useAppSelector(s => s.timetable.selectedWeek)
+    const dailyIds = useAppSelector(s => s.timetable.selectedWeek.days.ids);
+    const title = useAppSelector(s => s.timetable.selectedWeek.title);
     const dispatch = useAppDispatch();
     useEffect(() => {
         if (!weeklyId) {
@@ -54,23 +55,22 @@ export default ({ weeklyId }: { weeklyId: string }) => {
             <Spacer />
             <Spacer width={20} />
             <div key={weeklyId || ""}>
-                <TimeSheetWeekly days={days} />
+                <TimeSheetWeekly dailyIds={dailyIds || []} />
             </div>
             <Spacer height={200} />
         </>
     )
 }
 
-const TimeSheetWeekly = ({ days }: { days: TimetableSliceState["selectedWeek"]["days"] }) => {
-    if (!days) {
+const TimeSheetWeekly = ({ dailyIds }: { dailyIds: number[] }) => {
+    if (!dailyIds) {
         return null;
     }
     return (
         <div>
-            {days.ids?.map(dailyId => {
-                const day = days.idToObject?.[dailyId];
+            {dailyIds.map(dailyId => {
                 return (
-                    <TimeSheetDaily key={dailyId} day={day!} />
+                    <TimeSheetDaily key={dailyId} dailyId={dailyId} />
                 )
             })}
         </div>

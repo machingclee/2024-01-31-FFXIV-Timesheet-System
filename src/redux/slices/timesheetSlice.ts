@@ -14,8 +14,8 @@ export type TimetableSliceState = {
         title: string,
         weeklyId: string,
         days: {
-            ids?: string[]
-            idToObject?: { [id: string]: Day }
+            ids?: number[]
+            idToObject?: { [id: number]: Day }
         }
     }
 }
@@ -82,7 +82,7 @@ const timetableSlice = createSlice(
                 })
                 .addCase(TimesheetThunkActions.selectEvent.fulfilled, (state, action) => {
                     const { days, title, weeklyId } = action.payload;
-                    const { idToObject, ids } = normalize({ idAttribute: "dailyId", targetArr: days })
+                    const { idToObject, ids } = normalize<Day, number>({ idAttribute: "dailyId", targetArr: days })
                     state.selectedWeek.days = { ids, idToObject };
                     state.selectedWeek.title = title;
                     state.selectedWeek.weeklyId = weeklyId;
