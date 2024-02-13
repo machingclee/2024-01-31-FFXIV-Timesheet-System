@@ -4,7 +4,6 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -15,9 +14,9 @@ import useDialogStyle from '@/app/style/useMenuStyle';
 import { useAppSelector } from '@/redux/hooks';
 import boxShadow from '@/constants/boxShadow';
 import FadeIn from './FadeIn';
-import { Collapse } from '@mui/material';
+import { DialogContent } from '@mui/material';
 
-type DialogContent = {
+type DialogSetStateContent = {
     title?: string,
     desc: () => JSX.Element,
     no?: {
@@ -27,7 +26,8 @@ type DialogContent = {
     yes?: {
         text?: string,
         action?: () => void
-    }
+    },
+    upperRightButton?: () => JSX.Element
 }
 
 
@@ -41,18 +41,19 @@ const defaultDialogState = {
 export default class MyDialog {
     public open = () => console.log("not initialized")
     public close = () => console.log("not initialized")
-    public setContent: (content: DialogContent) => void = () => { console.log("not initialized") }
+    public setContent: (content: DialogSetStateContent) => void = () => { console.log("not initialized") }
 
 
     public render = () => {
         const darkMode = useAppSelector(s => s.auth.darkMode);
         const { classes, cx } = useStyles({ darkMode });
         const [open, setOpen] = React.useState(false);
-        const [content, setContent] = React.useState<DialogContent>(defaultDialogState)
+        const [content, setContent] = React.useState<DialogSetStateContent>(defaultDialogState)
         this.open = () => { setOpen(true) };
         this.close = () => { setOpen(false) };
         this.setContent = setContent;
-        const { desc: Desc_, no, title, yes } = content
+        const { desc: Desc_, no, title, yes, upperRightButton } = content
+        const UpperRight = upperRightButton || (() => <></>);
         const Desc = () => (
             <FadeIn dependencies={[open]}>
                 <Desc_ />
@@ -75,8 +76,17 @@ export default class MyDialog {
                     onClose={handleClose}
                     aria-labelledby="responsive-dialog-title"
                 >
-                    <DialogTitle id="responsive-dialog-title" style={{ fontWeight: 600 }}>
-                        {title}
+                    <DialogTitle id="responsive-dialog-title" style={{
+                        fontWeight: 600,
+                        display: "flex",
+                        justifyContent: "space-between"
+                    }}>
+                        <div>
+                            {title}
+                        </div>
+                        <div>
+                            {<UpperRight />}
+                        </div>
                     </DialogTitle>
                     <DialogContent>
                         <DialogContentText>
@@ -127,8 +137,8 @@ const useStyles = tss.withParams<{ darkMode: boolean }>().create(({ darkMode }) 
             fontSize: "18px !important",
         },
         "& .MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation24.MuiDialog-paper.MuiDialog-paperScrollPaper": {
-            minWidth: 600,
-            width: 600
+            minWidth: 620,
+            width: 620
         }
     }
 }))

@@ -9,7 +9,7 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { Fab } from "@mui/material";
 import Spacer from "@/component/Spacer";
 import WarningDialog from "@/component/dialogs/WarningDialog";
-import { useAppDispatch } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import appSlice from "@/redux/slices/appSlice";
 import boxShadow from "@/constants/boxShadow";
 import { HiOutlineChevronDoubleRight } from "react-icons/hi";
@@ -18,19 +18,15 @@ import { HiDotsVertical } from "react-icons/hi";
 import useMyMenu from "@/hooks/useMyMenu";
 import MyTextField from "@/component/MyTextField";
 import AnimatedRightArrow from "@/component/AnimatedRightArrow";
-import { TimesheetThunkActions } from "@/redux/slices/timetableSlice";
+import timetableSlice, { TimesheetThunkActions } from "@/redux/slices/timetableSlice";
 import TimeRange from "./TimeRange";
-
-
-
+import Cache from "@/util/Cache";
 
 export default ({ events }: { events: Event[] }) => {
-    const apiClient = useApiClient();
     const dispatch = useAppDispatch();
     const { classes, cx } = useStyles();
     const [currentEvent, setCurrentEvent] = useState<Event | null>(null);
     const changeTitleRef = useRef(currentEvent?.title);
-    const enabledList = useRef<Map<number, boolean>>(new Map<number, boolean>());
     const router = useRouter()
 
     const goToDetail = (weeklyId: string) => {
@@ -39,7 +35,7 @@ export default ({ events }: { events: Event[] }) => {
     }
 
     const resetEnabledList = () => {
-        enabledList.current = new Map<number, boolean>();
+        Cache.enableList = new Map<number, boolean>();
     }
 
     const openDeleteDialog = () => {
@@ -61,30 +57,43 @@ export default ({ events }: { events: Event[] }) => {
         WarningDialog.open()
     }
 
+    const applyFirstDayToAll = () => {
+        dispatch(timetableSlice.actions.duplicateTimeRangeOfFirstDay());
+        dispatch(timetableSlice.actions.setTimerangeRerenderFlag(false));
+        setTimeout(() => {
+            dispatch(timetableSlice.actions.setTimerangeRerenderFlag(true));
+        }, 1)
+    }
+
     const openEditTimeRangeDialog = () => {
         if (!currentEvent) {
             return
         }
         const e = currentEvent;
-        const { id: weeklyId, title } = currentEvent;
         WarningDialog.setContent({
             title: `Enable/Disable Timeslots for ${e.title}`,
-            desc: () => <TimeRange event={currentEvent} enabledList={enabledList} />,
+            desc: () => <TimeRange event={currentEvent} enabledList={Cache.enableList} />,
             no: { text: "Cancel" },
             yes: {
                 text: "Submit", action: () => {
                     const updateList: UpdateOptionEnabled[] = [];
-                    for (const [optionId, enabled] of enabledList.current) {
+                    for (const [optionId, enabled] of Cache.enableList) {
                         updateList.push({ optionId, enabled });
                     }
                     dispatch(TimesheetThunkActions.updateEnabledTimeslot(updateList));
                 }
-            }
+            },
+            upperRightButton: () => (
+                <MyButton onClick={applyFirstDayToAll}>
+                    <div>
+                        <div>Apply First Day</div>
+                        <div>to All</div>
+                    </div>
+                </MyButton>
+            )
         })
         WarningDialog.open()
     }
-
-
 
     const changeTitle = (text: string) => {
         changeTitleRef.current = text;

@@ -192,7 +192,7 @@ export default (props: { dailyId: number }) => {
                                     const to = xdayjs(option).add(1, "hour").format("hh:mm a")
                                     return (
                                         <tr key={id}>
-                                            <td style={{ textAlign: "right", width: 55, minWidth: 55, textOverflow: "ellipsis" }}>{from}</td>
+                                            <td style={{ textAlign: "right", width: 60, minWidth: 60, textOverflow: "ellipsis" }}>{from}</td>
                                             <td style={{
                                                 textAlign: "center",
                                                 width: 10,
@@ -201,7 +201,7 @@ export default (props: { dailyId: number }) => {
                                             }}>
                                                 <FaArrowRightLong style={{ padding: "0px 10px", paddingTop: 4 }} size={11} />
                                             </td>
-                                            <td style={{ textAlign: "left", width: 55, minWidth: 55, textOverflow: "ellipsis" }}>{to}</td>
+                                            <td style={{ textAlign: "left", width: 60, minWidth: 60, textOverflow: "ellipsis" }}>{to}</td>
                                         </tr>
                                     )
                                 })}

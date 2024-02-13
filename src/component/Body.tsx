@@ -21,6 +21,7 @@ export const TEXT_DARK_COLOR = "rgba(0,0,0,0.7)"
 const bodyStyle = tss.withParams<{ darkMode: boolean }>()
     .create(({ darkMode = true }) => ({
         body: {
+            fontSize: "0.85rem",
             "& .delete-button": {
                 color: darkMode ? TEXT_COLOR : `${TEXT_DARK_COLOR} !important`,
             },
@@ -81,7 +82,7 @@ const bodyStyle = tss.withParams<{ darkMode: boolean }>()
                     color: darkMode ? TEXT_COLOR : `${TEXT_DARK_COLOR} !important`
                 }
             },
-            backgroundColor: darkMode ? "rgba(0,0,0,0.65)" : "rgba(255,255,255,0)",
+            backgroundColor: darkMode ? "rgba(0,0,0,0.75)" : "rgba(255,255,255,0)",
             color: TEXT_COLOR,
             "& .timecolumn": {
                 "& svg": {

@@ -6,22 +6,28 @@ export default tss.withParams<{ darkMode: boolean }>()
     .create(({ darkMode }) => ({
         eventMenu: {
             "& .MuiPaper-root.MuiPopover-paper": {
-                border: darkMode ? "1px solid rgba(0,0,0,0.2)" : "0px solid black",
-                boxShadow: darkMode ? `unset !important` :
-                    `rgba(0,0,0, 0.1) 0px 4px 8px -2px,rgba(0,0,0, 0.08) 0px 0px 0px 1px !important`
+                border: darkMode ? "1px solid rgb(35,35,35)" : "1px solid rgba(0,0,0,0.2)",
+                boxShadow: "unset"
             },
             "& li": {
+                fontSize: "0.9rem !important",
                 color: darkMode ? TEXT_COLOR : `${TEXT_DARK_COLOR} !important`
             },
             transform: "translateX(-10px)",
             "& .MuiPaper-root": {
+
                 width: 200,
                 color: TEXT_COLOR,
                 "& .MuiMenu-list": {
                     paddingTop: 0,
-                    paddingBottom: 0
+                    paddingBottom: 0,
+                    "& li": {
+                        "&:hover": {
+                            backgroundColor: "rgba(0,0,0,0.2)"
+                        }
+                    }
                 },
-                backgroundColor: darkMode ? "rgba(0,0,0,0.05)" : "rgba(255,255,255,0.4)",
+                backgroundColor: darkMode ? "rgb(70,70,70)" : "rgb(230,230,230)",
                 backdropFilter: "blur(100px)"
             }
         }

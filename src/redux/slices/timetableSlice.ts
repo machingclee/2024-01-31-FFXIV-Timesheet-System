@@ -7,9 +7,14 @@ import { processRes } from "../util/processRes";
 import { loadingActions } from "../util/loadingActions";
 import { v4 as uuidv4 } from "uuid";
 import normalize from "@/util/normalize";
+import Cache from "@/util/Cache";
 
 export type TimetableSliceState = {
     events: Event[],
+    timerange: {
+        rerenderFlag: boolean,
+        options: TimesheetOption[][]
+    },
     selectedWeek: {
         title: string,
         weeklyId: string,
@@ -22,6 +27,10 @@ export type TimetableSliceState = {
 
 const initialState: TimetableSliceState = {
     events: [],
+    timerange: {
+        rerenderFlag: true,
+        options: [],
+    },
     selectedWeek: {
         title: "",
         weeklyId: "",
@@ -34,6 +43,25 @@ const timetableSlice = createSlice(
         name: "timetable",
         initialState,
         reducers: {
+            setTimerangeRerenderFlag: (state, action: PayloadAction<boolean>) => {
+                state.timerange.rerenderFlag = action.payload;
+            },
+            duplicateTimeRangeOfFirstDay: (state) => {
+                const dayOneOptions = state.timerange.options?.[0]
+                const dayOneIds = dayOneOptions.map(opt => opt.id);
+                for (const [optionId, enabled] of Cache.enableList) {
+                    if (dayOneIds.includes(optionId)) {
+                        const target = dayOneOptions.find(opt => opt.id === optionId);
+                        target!.enabled = enabled;
+                    }
+                }
+                state.timerange.options.forEach(opts => {
+                    for (const i in opts) {
+                        opts[i].enabled = dayOneOptions[i].enabled;
+                        Cache.enableList.set(opts[i].id, dayOneOptions[i].enabled);
+                    }
+                })
+            },
             addParticipantLocal: (state, action: PayloadAction<{ userUUID: string, dailyId: number }>) => {
                 const { dailyId, userUUID } = action.payload;
                 const day = state.selectedWeek.days.idToObject?.[dailyId];
@@ -100,7 +128,10 @@ const timetableSlice = createSlice(
                         day.participants = day.participants.filter(u => u.frontendUUID !== userUuid);
                     }
                 })
-        },
+                .addCase(TimesheetThunkActions.getTimeOptionsWeekly.fulfilled, (state, action) => {
+                    state.timerange.options = action.payload.map(u => u.options);
+                })
+        }
     }
 )
 
@@ -255,6 +286,7 @@ registerEffects(timetableMiddleware, [
     ...loadingActions(TimesheetThunkActions.getTimesheetDaily),
     ...loadingActions(TimesheetThunkActions.updateMessage),
     ...loadingActions(TimesheetThunkActions.updateEnabledTimeslot),
+    ...loadingActions(TimesheetThunkActions.getTimeOptionsWeekly),
     {
         action: TimesheetThunkActions.createWeekly.fulfilled,
         effect: (action, api) => {
