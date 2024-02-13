@@ -9,7 +9,6 @@ import { PropsWithChildren, useState } from 'react';
 import { Collapse } from '@mui/material';
 import MyButton from '@/component/MyButton';
 import { tss } from 'tss-react';
-import colors from '@/constants/colors';
 import FadeIn from '@/component/FadeIn';
 import boxShadow from '@/constants/boxShadow';
 import Head from "next/head";
@@ -79,7 +78,7 @@ export default () => {
         </div>
         <div className={cx(classes.unordered)}>
 
-            <h2 style={{ color: colors.BLUE }}>Usage</h2>
+            <h2>Usage</h2>
 
             <div style={{ display: "flex" }} className="user-guide-tag">
                 <MyButton variant="contained" color='inherit' onClick={() => setExpandIndex(returnIndex(0))} className={cx(show0 ? classes.active : "unselected")}>

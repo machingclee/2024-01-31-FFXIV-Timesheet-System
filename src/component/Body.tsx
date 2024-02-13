@@ -17,17 +17,22 @@ export default ({ children }: PropsWithChildren) => {
 export const TEXT_COLOR = "rgb(220,220,220)"
 export const TEXT_DARK_COLOR = "rgba(0,0,0,0.7)"
 
+
 const bodyStyle = tss.withParams<{ darkMode: boolean }>()
     .create(({ darkMode = true }) => ({
         body: {
             "& .delete-button": {
                 color: darkMode ? TEXT_COLOR : `${TEXT_DARK_COLOR} !important`,
             },
-
+            "& h2": {
+                color: darkMode ? `${TEXT_COLOR} !important` : `${TEXT_DARK_COLOR} !important`,
+            },
             "& .event-name-input": {
+                border: `1px solid ${darkMode ? "rgba(0,0,0,0)" : "rgba(0,0,0,0.2)"}`,
                 backgroundColor: darkMode ? "rgba(255,255,255,0)" : "rgba(255,255,255,0.1)",
                 "& input": {
-                    padding: "10px 10px",
+                    padding: "9px 10px",
+                    paddingBottom: 8,
                 },
                 "& input::placeholder": {
                     opacity: 1
@@ -48,9 +53,6 @@ const bodyStyle = tss.withParams<{ darkMode: boolean }>()
                     color: darkMode ? TEXT_COLOR : `${TEXT_DARK_COLOR} !important`,
                 }
             },
-            ".event-title": {
-                color: darkMode ? TEXT_COLOR : `${TEXT_DARK_COLOR} !important`,
-            },
             "& .message-bubble": {
                 "& div, svg": {
                     color: darkMode ? TEXT_COLOR : `${TEXT_DARK_COLOR} !important`,
@@ -64,7 +66,7 @@ const bodyStyle = tss.withParams<{ darkMode: boolean }>()
                     }
                 }
             },
-            "h2, div": {
+            "& h2, & div": {
                 "& svg": {
                     color: `${TEXT_COLOR} !important`
                 },
@@ -78,9 +80,6 @@ const bodyStyle = tss.withParams<{ darkMode: boolean }>()
                 "& svg": {
                     color: darkMode ? TEXT_COLOR : `${TEXT_DARK_COLOR} !important`
                 }
-            },
-            "& h2": {
-                color: darkMode ? TEXT_COLOR : `${TEXT_DARK_COLOR} !important`,
             },
             backgroundColor: darkMode ? "rgba(0,0,0,0.65)" : "rgba(255,255,255,0)",
             color: TEXT_COLOR,
