@@ -6,13 +6,13 @@ import { tss } from 'tss-react';
 import { TEXT_COLOR, TEXT_DARK_COLOR } from '@/component/Body';
 import { useAppSelector } from '@/redux/hooks';
 import boxShadow from '@/constants/boxShadow';
-import useDialogStyle from '@/app/style/useMenuStyle';
+import useMenuStyle from '@/app/style/useMenuStyle';
 
 export default ({ menuItems }: {
     menuItems: { label: string, action: () => (void | Promise<void>) }[]
 }) => {
     const darkMode = useAppSelector(s => s.auth.darkMode);
-    const { classes, cx } = useDialogStyle({ darkMode });
+    const { classes, cx } = useMenuStyle({ darkMode });
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const openMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
