@@ -37,12 +37,17 @@ export default () => {
     const [value, setValue] = useState<Dayjs | null>(currDayjs);
     const { classes, cx } = useStyles();
     const addATimeSlot = () => {
-        const timeZone = getTimezone();
+        const currDate = new Date();
+        const year = currDate.getFullYear();
+        const month = currDate.getMonth().toString().padStart(2, "0");
+        const date = currDate.getDate().toString().padStart(2, "0");
+        const timestamp = dayjs(`${year} ${month} ${date} 07:00:01`).valueOf();
+
         dispatch(TimesheetThunkActions.createWeekly({
             email,
             name: newTimeslotName.current,
-            startDate: value?.format("YYYY-MM-DD") || "",
-            timeZone
+            startTimestamp: timestamp,
+            timeZone: getTimezone()
         }))
     }
 

@@ -1,8 +1,8 @@
 export type CreateTimeSlotParam = {
     email: string,
     name: string,
-    timeZone: string,
-    startDate: string
+    startTimestamp: number,
+    timeZone: string
 }
 
 export type MyResponse<T> = {
