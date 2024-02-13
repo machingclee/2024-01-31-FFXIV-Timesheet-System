@@ -282,7 +282,7 @@ const useStyles = tss.create(() => ({
         },
         "& > div:nth-child(4n+1)": {
             "& .clickable": {
-                backgroundColor: "rgba(255,255,255,0.05)"
+                backgroundColor: "rgba(255,255,255,0.1)"
             }
         },
         "& > div": {
