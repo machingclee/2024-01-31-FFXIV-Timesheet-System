@@ -15,7 +15,8 @@ import AddIcon from '@mui/icons-material/Add';
 import constants from "@/constants/constants";
 import { TEXT_COLOR } from "@/component/Body";
 import Weekday from "@/component/WeekDay";
-import timetableSlice, { TimesheetThunkActions } from "@/redux/slices/timesheetSlice";
+import timetableSlice, { TimesheetThunkActions } from "@/redux/slices/timetableSlice";
+import { FaArrowRightLong } from "react-icons/fa6";
 
 const SelectionLoadingSpinner = (props: { dailyId: number }) => {
     const { dailyId } = props;
@@ -29,7 +30,8 @@ export default (props: { dailyId: number }) => {
     const { dailyId } = props;
     const day: Day | undefined = useAppSelector(s => s.timetable.selectedWeek.days.idToObject?.[dailyId]);
     const [successSelectionIds, setSuccessSelectionIds] = useState<number[]>([]);
-    const startingDayjs = xdayjs(day?.options?.[0].option);
+    const startTime = day?.options?.[0]?.option;
+    const startingDayjs = xdayjs(day?.options?.[0]?.option);
     const startingDate = startingDayjs.format("YYYY-MM-DD");
     const weekDay = startingDayjs.format("dddd");
     const [turnOnFilter, setTurnOnfilter] = useState(true);
@@ -120,7 +122,11 @@ export default (props: { dailyId: number }) => {
         }
     }, [turnOnFilter])
 
+    if (!startTime) {
+        return null;
+    }
 
+    const noOption = day.options?.filter(opt => opt.enabled).length === 0;
 
     return (
         <>
@@ -178,13 +184,23 @@ export default (props: { dailyId: number }) => {
                                 <tr><td style={{ textAlign: "right", height: 31 }} colSpan={3}></td></tr>
                                 <tr><td style={{ textAlign: "right", height: 23 }} colSpan={3}></td></tr>
                                 {day?.options.map(opt => {
-                                    const { id, option } = opt;
+                                    const { id, option, enabled } = opt;
+                                    if (!enabled) {
+                                        return null;
+                                    }
                                     const from = xdayjs(option).format("hh:mm a")
                                     const to = xdayjs(option).add(1, "hour").format("hh:mm a")
                                     return (
                                         <tr key={id}>
                                             <td style={{ textAlign: "right", width: 55, minWidth: 55, textOverflow: "ellipsis" }}>{from}</td>
-                                            <td style={{ textAlign: "center", width: 10, textOverflow: "ellipsis" }}> - </td>
+                                            <td style={{
+                                                textAlign: "center",
+                                                width: 10,
+                                                textOverflow: "ellipsis",
+                                                verticalAlign: "middle"
+                                            }}>
+                                                <FaArrowRightLong style={{ padding: "0px 10px", paddingTop: 4 }} size={11} />
+                                            </td>
                                             <td style={{ textAlign: "left", width: 55, minWidth: 55, textOverflow: "ellipsis" }}>{to}</td>
                                         </tr>
                                     )
@@ -193,8 +209,11 @@ export default (props: { dailyId: number }) => {
                         </table>
 
 
-                        {day?.participants.map(user => {
+                        {!noOption && <> {day?.participants.map(user => {
                             const { frontendUUID, username, message } = user;
+                            if (noOption) {
+                                return null;
+                            }
                             return (
                                 <OptionsColumn
                                     participantMessage={message}
@@ -210,10 +229,17 @@ export default (props: { dailyId: number }) => {
                                 />
                             )
                         })}
-                        <Spacer width={30} />
-                        <Fab style={{ backgroundColor: "rgba(0,0,0,0.3)", width: 36, height: 36, marginTop: 10 }} onClick={addUser}>
-                            <AddIcon style={{ color: "white" }} />
-                        </Fab>
+                            <Spacer width={30} />
+                            <Fab style={{ backgroundColor: "rgba(0,0,0,0.3)", width: 36, height: 36, marginTop: 10 }} onClick={addUser}>
+                                <AddIcon style={{ color: "white" }} />
+                            </Fab>
+                        </>}
+
+                        {noOption && <>
+                            No option available
+                        </>}
+
+
                     </div>
                 </HPadding>
                 <Spacer height={10} />

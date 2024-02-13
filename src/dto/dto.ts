@@ -15,7 +15,8 @@ export type MyResponse<T> = {
 
 export type Option = {
     id: number,
-    option: number
+    option: number,
+    enabled: boolean
 }
 
 
@@ -66,4 +67,15 @@ export type CheckUpdate = {
 export type UpsertMessageParam = {
     participantUUID: string,
     message: string
+}
+
+export type TimesheetOption = {
+    id: number,
+    enabled: boolean,
+    option: number
+}
+
+export type UpdateOptionEnabled = {
+    optionId: number,
+    enabled: boolean
 }

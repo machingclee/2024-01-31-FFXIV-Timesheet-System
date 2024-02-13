@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import appSlice from "@/redux/slices/appSlice";
 import TimeSheetDaily from "../../component/TimeSheetDaily";
 import { BsDiamondFill } from "react-icons/bs";
-import { TimetableSliceState, TimesheetThunkActions } from "@/redux/slices/timesheetSlice";
+import { TimetableSliceState, TimesheetThunkActions } from "@/redux/slices/timetableSlice";
 
 const Ruler = ({ height = 1, color = "rgba(255,255,255,0.4)" }: { height?: number, color?: string }) => {
     return <div style={{ height, backgroundColor: color, width: "100%" }}></div>

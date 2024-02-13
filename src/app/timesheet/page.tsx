@@ -9,7 +9,7 @@ import useApiClient from "@/hooks/useApiClient";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import appSlice from "@/redux/slices/appSlice";
 import UsageGuide from "./component/UsageGuide";
-import { TimesheetThunkActions } from "@/redux/slices/timesheetSlice";
+import { TimesheetThunkActions } from "@/redux/slices/timetableSlice";
 import { getApiClient } from "@/axios/apiClient";
 
 export default () => {

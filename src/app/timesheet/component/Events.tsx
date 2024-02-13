@@ -1,5 +1,5 @@
 import MyButton from "@/component/MyButton";
-import { Event } from "@/dto/dto";
+import { Event, UpdateOptionEnabled } from "@/dto/dto";
 import useApiClient from "@/hooks/useApiClient"
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
@@ -18,19 +18,29 @@ import { HiDotsVertical } from "react-icons/hi";
 import useMyMenu from "@/hooks/useMyMenu";
 import MyTextField from "@/component/MyTextField";
 import AnimatedRightArrow from "@/component/AnimatedRightArrow";
-import { TimesheetThunkActions } from "@/redux/slices/timesheetSlice";
+import { TimesheetThunkActions } from "@/redux/slices/timetableSlice";
+import TimeRange from "./TimeRange";
+
+
 
 
 export default ({ events }: { events: Event[] }) => {
     const apiClient = useApiClient();
     const dispatch = useAppDispatch();
     const { classes, cx } = useStyles();
+    const [currentEvent, setCurrentEvent] = useState<Event | null>(null);
+    const changeTitleRef = useRef(currentEvent?.title);
+    const enabledList = useRef<Map<number, boolean>>(new Map<number, boolean>());
     const router = useRouter()
+
     const goToDetail = (weeklyId: string) => {
+        dispatch(appSlice.actions.setLoading(true));
         router.push(`/timesheet/detail?weeklyId=${weeklyId}`)
     }
 
-    const [currentEvent, setCurrentEvent] = useState<Event | null>(null);
+    const resetEnabledList = () => {
+        enabledList.current = new Map<number, boolean>();
+    }
 
     const openDeleteDialog = () => {
         if (!currentEvent) {
@@ -51,8 +61,30 @@ export default ({ events }: { events: Event[] }) => {
         WarningDialog.open()
     }
 
+    const openEditTimeRangeDialog = () => {
+        if (!currentEvent) {
+            return
+        }
+        const e = currentEvent;
+        const { id: weeklyId, title } = currentEvent;
+        WarningDialog.setContent({
+            title: `Enable/Disable Timeslots for ${e.title}`,
+            desc: () => <TimeRange event={currentEvent} enabledList={enabledList} />,
+            no: { text: "Cancel" },
+            yes: {
+                text: "Submit", action: () => {
+                    const updateList: UpdateOptionEnabled[] = [];
+                    for (const [optionId, enabled] of enabledList.current) {
+                        updateList.push({ optionId, enabled });
+                    }
+                    dispatch(TimesheetThunkActions.updateEnabledTimeslot(updateList));
+                }
+            }
+        })
+        WarningDialog.open()
+    }
 
-    const changeTitleRef = useRef(currentEvent?.title);
+
 
     const changeTitle = (text: string) => {
         changeTitleRef.current = text;
@@ -74,7 +106,7 @@ export default ({ events }: { events: Event[] }) => {
                 defaultValue={currentEvent.title}
                 onChange={e => changeTitle(e.target.value)}
             />,
-            no: { text: "No" },
+            no: { text: "Cancel" },
             yes: {
                 text: "Yes", action: () => {
                     const newTitle = changeTitleRef.current || "";
@@ -92,11 +124,19 @@ export default ({ events }: { events: Event[] }) => {
                 action: () => { openEditDialog() }
             },
             {
+                label: "Edit Time Range",
+                action: () => {
+                    resetEnabledList();
+                    openEditTimeRangeDialog()
+                }
+            },
+            {
                 label: "Delete",
                 action: () => { openDeleteDialog() }
             }
         ]
     });
+
 
     useEffect(() => {
         changeTitleRef.current = currentEvent?.title;

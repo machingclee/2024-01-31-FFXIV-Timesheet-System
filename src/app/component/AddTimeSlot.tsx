@@ -18,7 +18,7 @@ import { FaInfoCircle } from "react-icons/fa";
 import { tss } from "tss-react";
 import xdayjs from "../../util/xdayjs"
 import TimeSlots from "../timesheet/detail/component/TimeSheetsWeekly";
-import { TimesheetThunkActions } from "@/redux/slices/timesheetSlice";
+import { TimesheetThunkActions } from "@/redux/slices/timetableSlice";
 
 const useStyles = tss.create(() => ({
     timePicker: {

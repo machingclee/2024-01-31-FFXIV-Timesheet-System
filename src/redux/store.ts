@@ -4,7 +4,7 @@ import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
 import authSlice from './slices/authSlices';
 import appSlice from './slices/appSlice';
-import timetableSlice, { timetableMiddleware } from './slices/timesheetSlice';
+import timetableSlice, { timetableMiddleware } from './slices/timetableSlice';
 
 const authPersistConfig = {
     key: "auth",

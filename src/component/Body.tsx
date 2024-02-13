@@ -84,6 +84,9 @@ const bodyStyle = tss.withParams<{ darkMode: boolean }>()
             backgroundColor: darkMode ? "rgba(0,0,0,0.65)" : "rgba(255,255,255,0)",
             color: TEXT_COLOR,
             "& .timecolumn": {
+                "& svg": {
+                    color: darkMode ? TEXT_COLOR : `${TEXT_DARK_COLOR} !important`
+                },
                 color: darkMode ? "white !important" : "black",
                 "& input": {
                     // backgroundColor: "rgba(0,0,0,0.2) !important"
@@ -92,7 +95,7 @@ const bodyStyle = tss.withParams<{ darkMode: boolean }>()
             "& .timesheet": {
                 backgroundColor: darkMode ? "rgba(0,0,0,0.2)" : "rgba(255,255,255,0.6)",
                 "& tr:nth-child(2n)": {
-                    backgroundColor: darkMode ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.1)"
+                    backgroundColor: darkMode ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.07)"
                 },
                 "& tr:nth-child(2)": {
                     backgroundColor: darkMode ? "unset" : "unset"

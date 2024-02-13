@@ -10,7 +10,12 @@ import DialogTitle from '@mui/material/DialogTitle';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import { tss } from 'tss-react';
-import { TEXT_COLOR } from './Body';
+import { TEXT_COLOR, TEXT_DARK_COLOR } from './Body';
+import useDialogStyle from '@/app/style/useMenuStyle';
+import { useAppSelector } from '@/redux/hooks';
+import boxShadow from '@/constants/boxShadow';
+import FadeIn from './FadeIn';
+import { Collapse } from '@mui/material';
 
 type DialogContent = {
     title?: string,
@@ -26,6 +31,13 @@ type DialogContent = {
 }
 
 
+const defaultDialogState = {
+    desc: () => <></>,
+    title: "",
+    no: { text: "", action: () => { } },
+    yes: { text: "", action: () => { } },
+};
+
 export default class MyDialog {
     public open = () => console.log("not initialized")
     public close = () => console.log("not initialized")
@@ -33,29 +45,25 @@ export default class MyDialog {
 
 
     public render = () => {
-        const { classes, cx } = useStyles();
+        const darkMode = useAppSelector(s => s.auth.darkMode);
+        const { classes, cx } = useStyles({ darkMode });
         const [open, setOpen] = React.useState(false);
-        const [content, setContent] = React.useState<DialogContent>({
-            desc: () => <></>,
-            title: "",
-            no: { text: "", action: () => { } },
-            yes: { text: "", action: () => { } },
-        })
+        const [content, setContent] = React.useState<DialogContent>(defaultDialogState)
         this.open = () => { setOpen(true) };
         this.close = () => { setOpen(false) };
         this.setContent = setContent;
-        const { desc: Desc, no, title, yes } = content
-
-
+        const { desc: Desc_, no, title, yes } = content
+        const Desc = () => (
+            <FadeIn dependencies={[open]}>
+                <Desc_ />
+            </FadeIn>
+        );
         const theme = useTheme();
         const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
-        const handleClickOpen = () => {
-            setOpen(true);
-        };
-
         const handleClose = () => {
             setOpen(false);
+            // setContent(defaultDialogState);
         };
 
         return (
@@ -67,7 +75,7 @@ export default class MyDialog {
                     onClose={handleClose}
                     aria-labelledby="responsive-dialog-title"
                 >
-                    <DialogTitle id="responsive-dialog-title">
+                    <DialogTitle id="responsive-dialog-title" style={{ fontWeight: 600 }}>
                         {title}
                     </DialogTitle>
                     <DialogContent>
@@ -95,18 +103,32 @@ export default class MyDialog {
     }
 }
 
-const useStyles = tss.create(() => ({
+const useStyles = tss.withParams<{ darkMode: boolean }>().create(({ darkMode }) => ({
     customDialog: {
         "& .MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded": {
-            "& p": {
-                color: `black !important`
-            }
+            "& p, & div, & li, & h2, & h3, & h4, & h5, & h6": {
+                color: darkMode ? `${TEXT_COLOR} !important` : `${TEXT_DARK_COLOR} !important`
+            },
+            "& a": {
+                color: darkMode ? `${TEXT_COLOR} !important` : `${TEXT_DARK_COLOR} !important`,
+                backgroundColor: darkMode ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)",
+                textDecoration: "none",
+                padding: "2px 10px",
+                borderRadius: 4
+            },
+            boxShadow: darkMode ? `${boxShadow.SHADOW_53} !important` : `${boxShadow.SHADOW_62} !important`,
+            backgroundColor: darkMode ? "rgba(255,255,255,0.1)" : "rgb(255,255,255)",
+            backdropFilter: "blur(100px)"
+        },
+        "& button": {
+            color: darkMode ? `${TEXT_COLOR} !important` : `${TEXT_DARK_COLOR} !important`
         },
         "& textarea": {
             fontSize: "18px !important",
         },
         "& .MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation24.MuiDialog-paper.MuiDialog-paperScrollPaper": {
-            minWidth: "460px"
+            minWidth: 600,
+            width: 600
         }
     }
 }))

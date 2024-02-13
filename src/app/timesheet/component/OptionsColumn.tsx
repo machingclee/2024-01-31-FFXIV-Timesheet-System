@@ -15,7 +15,7 @@ import { tss } from "tss-react";
 import { FaCheck, FaCheckCircle, FaRegCheckCircle } from "react-icons/fa";
 import constants from "@/constants/constants";
 import sleepUtil from "@/util/sleepUtil";
-import timetableSlice, { TimesheetThunkActions } from "@/redux/slices/timesheetSlice";
+import timetableSlice, { TimesheetThunkActions } from "@/redux/slices/timetableSlice";
 import { FiCircle } from "react-icons/fi";
 import { FaCircle } from "react-icons/fa6";
 import { FaGrinStars } from "react-icons/fa";
@@ -200,7 +200,10 @@ const OptionsColumn = ({
                     </td>
                 </tr>
                 {options?.map(opt => {
-                    const { id } = opt;
+                    const { id, enabled } = opt;
+                    if (!enabled) {
+                        return null;
+                    }
                     const defaultChecked = (() => {
                         const choice = selections.find(s => s.timeAvailableOptionId === id);
                         if (choice?.checked) {

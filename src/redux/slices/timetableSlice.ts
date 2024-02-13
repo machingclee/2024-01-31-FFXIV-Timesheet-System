@@ -1,4 +1,4 @@
-import { CheckUpdate, CreateTimeSlotParam, Day, Event, MyResponse, TimeSheetsWeeklyProps, UpsertMessageParam, UpsertParticipantParam } from "@/dto/dto";
+import { CheckUpdate, CreateTimeSlotParam, Day, Event, MyResponse, TimeSheetsWeeklyProps, TimesheetOption, UpdateOptionEnabled, UpsertMessageParam, UpsertParticipantParam } from "@/dto/dto";
 import { createAsyncThunk, createListenerMiddleware, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AxiosInstance } from "axios";
 import registerEffects from "../util/registerEffects";
@@ -105,6 +105,27 @@ const timetableSlice = createSlice(
 )
 
 export class TimesheetThunkActions {
+    public static updateEnabledTimeslot = createAsyncThunk(
+        "timetable/updateEnabledTimeslot",
+        async (params: UpdateOptionEnabled[], api) => {
+            const apiClient = getApiClient();
+            const res = await apiClient.put<MyResponse<undefined>>(`/timesheet/options/weekly`, params);
+            return processRes(res, api);
+        }
+    );
+    public static getTimeOptionsWeekly = createAsyncThunk(
+        "timetable/getTimeOptionsWeekly",
+        async (params: { weeklyId: string }, api) => {
+            const apiClient = getApiClient();
+            const { weeklyId } = params;
+
+            const res = await apiClient.get<MyResponse<{
+                options: TimesheetOption[]
+            }[]>>(`/timesheet/options/${weeklyId}`);
+
+            return processRes(res, api);
+        }
+    );
     public static updateMessage = createAsyncThunk(
         "timetable/updateMessage",
         async (params: { msgUpdate: UpsertMessageParam, dailyId: number }, api) => {
@@ -233,6 +254,7 @@ registerEffects(timetableMiddleware, [
     ...loadingActions(TimesheetThunkActions.updateWeekly),
     ...loadingActions(TimesheetThunkActions.getTimesheetDaily),
     ...loadingActions(TimesheetThunkActions.updateMessage),
+    ...loadingActions(TimesheetThunkActions.updateEnabledTimeslot),
     {
         action: TimesheetThunkActions.createWeekly.fulfilled,
         effect: (action, api) => {
