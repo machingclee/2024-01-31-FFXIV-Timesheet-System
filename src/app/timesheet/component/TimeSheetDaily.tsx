@@ -161,7 +161,7 @@ export default (props: { dailyId: number }) => {
                                     {weekDay}
                                 </Weekday>
                             </div>
-
+                            <Spacer width={10} />
                             <SelectionLoadingSpinner dailyId={dailyId} />
                         </div>
 
