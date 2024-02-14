@@ -86,8 +86,8 @@ export default ({ events }: { events: Event[] }) => {
             upperRightButton: () => (
                 <MyButton onClick={applyFirstDayToAll}>
                     <div>
-                        <div>Apply First Day</div>
-                        <div>to All</div>
+                        <div>Clone Day One</div>
+                        <div>to Remaining</div>
                     </div>
                 </MyButton>
             )
