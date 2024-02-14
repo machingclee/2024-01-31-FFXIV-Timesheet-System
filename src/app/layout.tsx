@@ -7,7 +7,7 @@ import StoreProvider from './StoreProvider';
 import LoginNavBar from './component/LoginNavBar';
 import "./globals.css";
 import LoadingScreen from '@/component/LoadingScreen';
-import WarningDialog from '@/component/dialogs/WarningDialog';
+import GeneralPurposeDialog from '@/component/dialogs/GeneralPurposeDialog';
 import DialogInit from '@/component/DialogInit';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';

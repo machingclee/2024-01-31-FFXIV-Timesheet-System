@@ -37,7 +37,7 @@ export default ({ weeklyId }: { weeklyId: string }) => {
         if (!weeklyId) {
             return;
         }
-        dispatch(TimesheetThunkActions.selectEvent({ weeklyId }))
+        dispatch(TimesheetThunkActions.getWeeklyTimetables({ weeklyId }))
     }, [weeklyId])
 
     return (

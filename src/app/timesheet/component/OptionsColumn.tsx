@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from "
 import useTimesheetStyles from "./styles/useTimesheetStyles";
 import useApiClient from "@/hooks/useApiClient";
 import MyTextField from "@/component/MyTextField";
-import WarningDialog from "@/component/dialogs/WarningDialog";
+import GeneralPurposeDialog from "@/component/dialogs/GeneralPurposeDialog";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { Checkbox, CheckboxProps } from "@mui/material";
 import { debounce, cloneDeep } from "lodash";
@@ -140,7 +140,7 @@ const OptionsColumn = ({
                             opacity: participantMessage ? 1 : 0.2,
                         }}
                         onClick={async () => {
-                            WarningDialog.setContent({
+                            GeneralPurposeDialog.setContent({
                                 title: "Message",
                                 desc: () => (
                                     <MessageContent
@@ -156,7 +156,7 @@ const OptionsColumn = ({
                                     action: updateMessage
                                 }
                             });
-                            WarningDialog.open();
+                            GeneralPurposeDialog.open();
                         }}
                     >
                         <BiMessageRounded size={28} />

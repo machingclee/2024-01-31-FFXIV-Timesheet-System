@@ -18,6 +18,7 @@ import { DialogContent } from '@mui/material';
 
 type DialogSetStateContent = {
     title?: string,
+    width?: number
     desc: () => JSX.Element,
     no?: {
         text?: string,
@@ -46,9 +47,9 @@ export default class MyDialog {
 
     public render = () => {
         const darkMode = useAppSelector(s => s.auth.darkMode);
-        const { classes, cx } = useStyles({ darkMode });
         const [open, setOpen] = React.useState(false);
         const [content, setContent] = React.useState<DialogSetStateContent>(defaultDialogState)
+        const { classes, cx } = useStyles({ darkMode, width: content.width });
         this.open = () => { setOpen(true) };
         this.close = () => { setOpen(false) };
         this.setContent = setContent;
@@ -108,12 +109,12 @@ export default class MyDialog {
                         </Button>}
                     </DialogActions>
                 </Dialog>
-            </React.Fragment>
+            </React.Fragment >
         );
     }
 }
 
-const useStyles = tss.withParams<{ darkMode: boolean }>().create(({ darkMode }) => ({
+const useStyles = tss.withParams<{ darkMode: boolean, width?: number | string }>().create(({ darkMode, width }) => ({
     customDialog: {
         "& button.MuiButton-root": {
             textTransform: "capitalize"
@@ -140,8 +141,8 @@ const useStyles = tss.withParams<{ darkMode: boolean }>().create(({ darkMode }) 
             fontSize: "18px !important",
         },
         "& .MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation24.MuiDialog-paper.MuiDialog-paperScrollPaper": {
-            minWidth: 620,
-            width: 620
+            minWidth: width || 620,
+            width: width || 620
         }
     }
 }))

@@ -21,9 +21,10 @@ export type Option = {
 
 
 export type Day = {
-    orderWithinWeek: number;
-    dailyId: number;
-    options: Option[];
+    orderWithinWeek: number,
+    ownerEmail: string,
+    dailyId: number,
+    options: Option[],
     participants: Participant[]
 }
 

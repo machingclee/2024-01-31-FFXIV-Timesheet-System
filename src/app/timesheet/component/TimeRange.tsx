@@ -12,9 +12,10 @@ import { FaArrowRightLong } from "react-icons/fa6";
 import { tss } from "tss-react";
 
 export default (props: {
-    enabledList: Map<number, boolean>
+    enabledList: Map<number, boolean>,
+    orderWithinWeek?: number
 }) => {
-    const { enabledList } = props
+    const { enabledList, orderWithinWeek } = props
     const darkMode = useAppSelector(s => s.auth.darkMode);
     const optionsByDays = useAppSelector(s => s.timetable.timerange.options);
     const rerenderFlag = useAppSelector(s => s.timetable.timerange.rerenderFlag);
@@ -28,7 +29,10 @@ export default (props: {
         <div style={{ maxHeight: 800 }}>
             <div>
                 {rerenderFlag && <FadeIn>
-                    {optionsByDays.map(opts => {
+                    {(orderWithinWeek != null ?
+                        optionsByDays.slice(orderWithinWeek, orderWithinWeek + 1) :
+                        optionsByDays
+                    ).map(opts => {
                         const { option } = opts?.[0];
                         const dayJS = dayjs(option);
                         const date = dayJS.format("YYYY-MM-DD");
@@ -138,7 +142,7 @@ const useStyles = tss.withParams<{ darkMode: boolean }>().create(({ darkMode }) 
         },
         "& div": {
             height: 20,
-            fontSize: 13,
+            fontSize: 14,
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -158,7 +162,7 @@ const useStyles = tss.withParams<{ darkMode: boolean }>().create(({ darkMode }) 
         },
         "& td:nth-child(1)": {
             padding: "2px 10px",
-            fontSize: 14,
+            fontSize: 16,
         },
         "& td:nth-child(2)": {
             width: 100

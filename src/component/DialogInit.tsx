@@ -1,11 +1,11 @@
 "use client"
 
-import WarningDialog from "./dialogs/WarningDialog"
+import GeneralPurposeDialog from "./dialogs/GeneralPurposeDialog"
 
 export default () => {
   return (
     <>
-      <WarningDialog.render />
+      <GeneralPurposeDialog.render />
     </>
   )
 }

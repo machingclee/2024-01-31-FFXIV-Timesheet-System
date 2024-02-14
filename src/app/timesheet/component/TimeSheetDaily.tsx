@@ -17,6 +17,8 @@ import { TEXT_COLOR } from "@/component/Body";
 import Weekday from "@/component/WeekDay";
 import timetableSlice, { TimesheetThunkActions } from "@/redux/slices/timetableSlice";
 import { FaArrowRightLong } from "react-icons/fa6";
+import MyButton2 from "@/component/MyButton2";
+import useTimeRangeDialog from "@/hooks/useTimeRangeDialog";
 
 const SelectionLoadingSpinner = (props: { dailyId: number }) => {
     const { dailyId } = props;
@@ -28,7 +30,17 @@ const SelectionLoadingSpinner = (props: { dailyId: number }) => {
 
 export default (props: { dailyId: number }) => {
     const { dailyId } = props;
+    const loginEmail = useAppSelector(s => s.auth.email);
+    const { title, weeklyId } = useAppSelector(s => s.timetable.selectedWeek);
     const day: Day | undefined = useAppSelector(s => s.timetable.selectedWeek.days.idToObject?.[dailyId]);
+    const orderWithinWeek = day?.orderWithinWeek || 0;
+    const isOwner = loginEmail === day?.ownerEmail;
+    const { openEditTimeRangeDialog } = useTimeRangeDialog({
+        title,
+        weeklyId,
+        orderWithinWeek,
+        fetchTimetablesOnComplete: true
+    })
     const [successSelectionIds, setSuccessSelectionIds] = useState<number[]>([]);
     const startTime = day?.options?.[0]?.option;
     const startingDayjs = xdayjs(day?.options?.[0]?.option);
@@ -149,6 +161,7 @@ export default (props: { dailyId: number }) => {
                         <div style={{ display: "flex", }}>
                             <div style={{
                                 // backgroundColor: "rgba(0,0,0,0.4)",
+                                paddingLeft: 10,
                                 color: TEXT_COLOR,
                                 fontWeight: 600,
                                 fontSize: 16,
@@ -161,6 +174,10 @@ export default (props: { dailyId: number }) => {
                                     {weekDay}
                                 </Weekday>
                             </div>
+                            {isOwner && <>
+                                <Spacer width={20} />
+                                <MyButton2 onClick={openEditTimeRangeDialog}>Edit Timeslots</MyButton2>
+                            </>}
                             <Spacer width={10} />
                             <SelectionLoadingSpinner dailyId={dailyId} />
                         </div>

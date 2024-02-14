@@ -3,7 +3,7 @@
 import MyButton from "@/component/MyButton";
 import MyLink from "@/component/MyLink";
 import Spacer from "@/component/Spacer";
-import WarningDialog from "@/component/dialogs/WarningDialog";
+import GeneralPurposeDialog from "@/component/dialogs/GeneralPurposeDialog";
 import boxShadow from "@/constants/boxShadow";
 import useApiClient from "@/hooks/useApiClient";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
@@ -55,7 +55,7 @@ export default () => {
     }
 
     const openAboutAuthor = () => {
-        WarningDialog.setContent({
+        GeneralPurposeDialog.setContent({
             desc: () => {
                 return (
                     <div style={{ fontSize: 16 }} className={cx(classes.dialog)}>
@@ -81,7 +81,7 @@ export default () => {
                 text: "Ok"
             }
         })
-        WarningDialog.open();
+        GeneralPurposeDialog.open();
     }
 
 

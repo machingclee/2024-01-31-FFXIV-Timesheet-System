@@ -108,7 +108,7 @@ const timetableSlice = createSlice(
                     const result = action.payload;
                     state.events = result!.events;
                 })
-                .addCase(TimesheetThunkActions.selectEvent.fulfilled, (state, action) => {
+                .addCase(TimesheetThunkActions.getWeeklyTimetables.fulfilled, (state, action) => {
                     const { days, title, weeklyId } = action.payload;
                     const { idToObject, ids } = normalize<Day, number>({ idAttribute: "dailyId", targetArr: days })
                     state.selectedWeek.days = { ids, idToObject };
@@ -193,7 +193,7 @@ export class TimesheetThunkActions {
             return processRes(res, api);
         }
     );
-    public static selectEvent = createAsyncThunk(
+    public static getWeeklyTimetables = createAsyncThunk(
         "timetable/selectEvent",
         async (params: { weeklyId: string }, api) => {
             const { weeklyId } = params;
@@ -279,7 +279,7 @@ export class TimesheetThunkActions {
 export const timetableMiddleware = createListenerMiddleware();
 registerEffects(timetableMiddleware, [
     ...loadingActions(TimesheetThunkActions.getEvents),
-    ...loadingActions(TimesheetThunkActions.selectEvent),
+    ...loadingActions(TimesheetThunkActions.getWeeklyTimetables),
     ...loadingActions(TimesheetThunkActions.createWeekly),
     ...loadingActions(TimesheetThunkActions.deleteWeekly),
     ...loadingActions(TimesheetThunkActions.updateWeekly),

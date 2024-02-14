@@ -8,7 +8,7 @@ import { tss } from "tss-react";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { Fab } from "@mui/material";
 import Spacer from "@/component/Spacer";
-import WarningDialog from "@/component/dialogs/WarningDialog";
+import GeneralPurposeDialog from "@/component/dialogs/GeneralPurposeDialog";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import appSlice from "@/redux/slices/appSlice";
 import boxShadow from "@/constants/boxShadow";
@@ -22,12 +22,18 @@ import timetableSlice, { TimesheetThunkActions } from "@/redux/slices/timetableS
 import TimeRange from "./TimeRange";
 import Cache from "@/util/Cache";
 import MyButton2 from "@/component/MyButton2";
+import useTimeRangeDialog from "@/hooks/useTimeRangeDialog";
 
 export default ({ events }: { events: Event[] }) => {
     const dispatch = useAppDispatch();
     const darkMode = useAppSelector(s => s.auth.darkMode);
     const { classes, cx } = useStyles({ darkMode });
     const [currentEvent, setCurrentEvent] = useState<Event | null>(null);
+
+    const { openEditTimeRangeDialog } = useTimeRangeDialog({
+        title: currentEvent?.title || "",
+        weeklyId: currentEvent?.id || ""
+    })
     const changeTitleRef = useRef(currentEvent?.title);
     const router = useRouter()
 
@@ -46,7 +52,7 @@ export default ({ events }: { events: Event[] }) => {
         }
         const e = currentEvent;
         const { id: weeklyId, title } = currentEvent;
-        WarningDialog.setContent({
+        GeneralPurposeDialog.setContent({
             title: `Delete ${e.title}?`,
             desc: () => <>Are you sure to delete {title}?</>,
             no: { text: "No" },
@@ -56,48 +62,7 @@ export default ({ events }: { events: Event[] }) => {
                 }
             }
         })
-        WarningDialog.open()
-    }
-
-    const applyFirstDayToAll = () => {
-        dispatch(timetableSlice.actions.duplicateTimeRangeOfFirstDay());
-        dispatch(timetableSlice.actions.setTimerangeRerenderFlag(false));
-        setTimeout(() => {
-            dispatch(timetableSlice.actions.setTimerangeRerenderFlag(true));
-        }, 1)
-    }
-
-    const openEditTimeRangeDialog = async () => {
-        if (!currentEvent) {
-            return
-        }
-        const e = currentEvent;
-        WarningDialog.setContent({
-            title: `Enable/Disable Timeslots for ${e.title}`,
-            desc: () => <TimeRange enabledList={Cache.enableList} />,
-            no: { text: "Cancel" },
-            yes: {
-                text: "Submit", action: () => {
-                    const updateList: UpdateOptionEnabled[] = [];
-                    for (const [optionId, enabled] of Cache.enableList) {
-                        updateList.push({ optionId, enabled });
-                    }
-                    dispatch(TimesheetThunkActions.updateEnabledTimeslot(updateList));
-                }
-            },
-            upperRightButton: () => (
-                <MyButton2 variant="text" onClick={applyFirstDayToAll}>
-                    <div>
-                        <div>Duplicate Day 1</div>
-                        <div>to Remaining</div>
-                    </div>
-                </MyButton2>
-            )
-        })
-        await dispatch(TimesheetThunkActions
-            .getTimeOptionsWeekly({ weeklyId: currentEvent.id }))
-            .unwrap();
-        WarningDialog.open()
+        GeneralPurposeDialog.open()
     }
 
     const changeTitle = (text: string) => {
@@ -110,7 +75,7 @@ export default ({ events }: { events: Event[] }) => {
         }
         const e = currentEvent;
         const { id: weeklyId } = currentEvent
-        WarningDialog.setContent({
+        GeneralPurposeDialog.setContent({
             title: `Edit Title`,
             desc: () => <MyTextField
                 className={classes.inputField}
@@ -128,7 +93,7 @@ export default ({ events }: { events: Event[] }) => {
                 }
             }
         })
-        WarningDialog.open()
+        GeneralPurposeDialog.open()
     }
 
     const { menu, openMenu } = useMyMenu({
@@ -278,7 +243,7 @@ const useStyles = tss.withParams<{ darkMode: boolean }>().create(({ darkMode }) 
             }
         },
         "& .clickable": {
-            backgroundColor: "rgba(255,255,255,0.2)",
+            backgroundColor: "rgba(255,255,255,0.13)",
             "&:hover": {
                 backgroundColor: darkMode ? "rgba(255,255,255,0.3) !important" :
                     "rgba(0,0,0,0.1) !important"
@@ -289,9 +254,6 @@ const useStyles = tss.withParams<{ darkMode: boolean }>().create(({ darkMode }) 
                 padding: "20px 20px",
                 transition: "opacity 0.1s ease-in-out",
                 cursor: "pointer",
-                "&:hover": {
-
-                }
             }
         },
     }

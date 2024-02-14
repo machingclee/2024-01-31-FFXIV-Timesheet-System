@@ -11,7 +11,7 @@ const useStyles = tss.withParams<{ darkMode: boolean }>().create(({ darkMode }) 
         color: darkMode ? TEXT_COLOR : `${TEXT_DARK_COLOR} !important`,
         textTransform: "none",
         paddingTop: 4,
-        paddingBottom: 4,
+        paddingBottom: 3,
         fontWeight: 500,
         backgroundColor: darkMode ? "rgb(80,80,80)" : "rgb(240,240,240)",
         "&:hover": {
