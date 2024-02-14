@@ -3,17 +3,20 @@
 import { Button, ButtonProps } from "@mui/material";
 import { PropsWithChildren } from "react";
 import { tss } from "tss-react";
-import { TEXT_COLOR } from "./Body";
+import { TEXT_COLOR, TEXT_DARK_COLOR } from "./Body";
 import { useAppSelector } from "@/redux/hooks";
 
 const useStyles = tss.withParams<{ darkMode: boolean }>().create(({ darkMode }) => ({
     myButton: {
-        color: TEXT_COLOR,
+        color: darkMode ? TEXT_COLOR : `${TEXT_DARK_COLOR} !important`,
         textTransform: "none",
         paddingTop: 4,
         paddingBottom: 4,
-        fontWeight: 400,
-        backgroundColor: "rgb(60,60,60)"
+        fontWeight: 500,
+        backgroundColor: darkMode ? "rgb(80,80,80)" : "rgb(240,240,240)",
+        "&:hover": {
+            backgroundColor: "rgba(0,0,0,0.2)"
+        }
     }
 }))
 

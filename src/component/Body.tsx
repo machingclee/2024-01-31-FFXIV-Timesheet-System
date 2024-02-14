@@ -76,7 +76,6 @@ const bodyStyle = tss.withParams<{ darkMode: boolean }>()
                     color: `${TEXT_COLOR} !important`,
                 }
             },
-
             "& .date-picker": {
                 "& svg": {
                     color: darkMode ? TEXT_COLOR : `${TEXT_DARK_COLOR} !important`

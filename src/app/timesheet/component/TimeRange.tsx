@@ -12,28 +12,17 @@ import { FaArrowRightLong } from "react-icons/fa6";
 import { tss } from "tss-react";
 
 export default (props: {
-    event: Event,
     enabledList: Map<number, boolean>
 }) => {
-    const { event, enabledList } = props
-    const { id: weeklyId } = event;
+    const { enabledList } = props
     const darkMode = useAppSelector(s => s.auth.darkMode);
     const optionsByDays = useAppSelector(s => s.timetable.timerange.options);
     const rerenderFlag = useAppSelector(s => s.timetable.timerange.rerenderFlag);
     const { classes, cx } = useStyles({ darkMode });
-    const dispatch = useAppDispatch();
-    const fetched = useRef(false);
 
     const toggle = (optionId: number, enabled: boolean) => {
         enabledList.set(optionId, enabled);
     }
-
-    useEffect(() => {
-        if (!fetched.current) {
-            dispatch(TimesheetThunkActions.getTimeOptionsWeekly({ weeklyId }));
-            fetched.current = true;
-        }
-    }, [])
 
     return (
         <div style={{ maxHeight: 800 }}>
@@ -104,9 +93,13 @@ const LocalEnableDisable = (props: {
 }) => {
     const { defaultEnabled, optionId, toggle } = props;
     const [enabled, setEnabled] = useState(defaultEnabled);
+    const clicked = useRef(false);
     const clickHandler = () => {
-        toggle(optionId, !enabled);
-        setEnabled(e => !e);
+        if (!clicked.current) {
+            toggle(optionId, !enabled);
+            setEnabled(e => !e);
+            clicked.current = true
+        }
     }
     return (
         <div
@@ -119,9 +112,15 @@ const LocalEnableDisable = (props: {
                     clickHandler();
                 }
             }}
+            onMouseUp={() => {
+                clicked.current = false
+            }}
+            onMouseLeave={() => {
+                clicked.current = false
+            }}
         >
-            {enabled && "Enabled"}
-            {!enabled && "Disabled"}
+            {enabled && <div className="enabled" style={{ fontWeight: 600 }}>Enabled</div>}
+            {!enabled && <div className="disabled" style={{ fontWeight: 600 }}>Disabled</div>}
         </div>
     )
 }
@@ -129,6 +128,7 @@ const LocalEnableDisable = (props: {
 
 const useStyles = tss.withParams<{ darkMode: boolean }>().create(({ darkMode }) => ({
     enableDisableTD: {
+
         "& td": {
             width: 100,
             userSelect: "none",
@@ -149,6 +149,9 @@ const useStyles = tss.withParams<{ darkMode: boolean }>().create(({ darkMode }) 
         }
     },
     enableTimeTable: {
+        "& div.enabled": {
+            color: darkMode ? "#d1f5d1 !important" : "#6f7b43 !important"
+        },
         "&": {
             width: "100%",
             userSelect: "none",

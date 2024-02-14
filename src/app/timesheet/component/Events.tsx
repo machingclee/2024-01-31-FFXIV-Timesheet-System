@@ -21,10 +21,12 @@ import AnimatedRightArrow from "@/component/AnimatedRightArrow";
 import timetableSlice, { TimesheetThunkActions } from "@/redux/slices/timetableSlice";
 import TimeRange from "./TimeRange";
 import Cache from "@/util/Cache";
+import MyButton2 from "@/component/MyButton2";
 
 export default ({ events }: { events: Event[] }) => {
     const dispatch = useAppDispatch();
-    const { classes, cx } = useStyles();
+    const darkMode = useAppSelector(s => s.auth.darkMode);
+    const { classes, cx } = useStyles({ darkMode });
     const [currentEvent, setCurrentEvent] = useState<Event | null>(null);
     const changeTitleRef = useRef(currentEvent?.title);
     const router = useRouter()
@@ -65,14 +67,14 @@ export default ({ events }: { events: Event[] }) => {
         }, 1)
     }
 
-    const openEditTimeRangeDialog = () => {
+    const openEditTimeRangeDialog = async () => {
         if (!currentEvent) {
             return
         }
         const e = currentEvent;
         WarningDialog.setContent({
             title: `Enable/Disable Timeslots for ${e.title}`,
-            desc: () => <TimeRange event={currentEvent} enabledList={Cache.enableList} />,
+            desc: () => <TimeRange enabledList={Cache.enableList} />,
             no: { text: "Cancel" },
             yes: {
                 text: "Submit", action: () => {
@@ -84,14 +86,17 @@ export default ({ events }: { events: Event[] }) => {
                 }
             },
             upperRightButton: () => (
-                <MyButton onClick={applyFirstDayToAll}>
+                <MyButton2 variant="text" onClick={applyFirstDayToAll}>
                     <div>
-                        <div>Clone Day One</div>
+                        <div>Duplicate Day 1</div>
                         <div>to Remaining</div>
                     </div>
-                </MyButton>
+                </MyButton2>
             )
         })
+        await dispatch(TimesheetThunkActions
+            .getTimeOptionsWeekly({ weeklyId: currentEvent.id }))
+            .unwrap();
         WarningDialog.open()
     }
 
@@ -245,7 +250,7 @@ export default ({ events }: { events: Event[] }) => {
     )
 }
 
-const useStyles = tss.create(() => ({
+const useStyles = tss.withParams<{ darkMode: boolean }>().create(({ darkMode }) => ({
     inputField: {
         "& input": {
             padding: "10px !important",
@@ -273,28 +278,21 @@ const useStyles = tss.create(() => ({
             }
         },
         "& .clickable": {
-            backgroundColor: "rgba(255,255,255,0.2)"
-        },
-        "& > div:nth-child(4n+3)": {
-            "& .clickable": {
-                backgroundColor: "rgba(255,255,255,0.1)"
-            }
-        },
-        "& > div:nth-child(4n+1)": {
-            "& .clickable": {
-                backgroundColor: "rgba(255,255,255,0.1)"
+            backgroundColor: "rgba(255,255,255,0.2)",
+            "&:hover": {
+                backgroundColor: darkMode ? "rgba(255,255,255,0.3) !important" :
+                    "rgba(0,0,0,0.1) !important"
             }
         },
         "& > div": {
             "& .clickable": {
                 padding: "20px 20px",
                 transition: "opacity 0.1s ease-in-out",
-                cursor: "pointer"
+                cursor: "pointer",
+                "&:hover": {
+
+                }
             }
         },
-        "& .clickable:hover": {
-            opacity: 0.5
-        }
-
     }
 }))

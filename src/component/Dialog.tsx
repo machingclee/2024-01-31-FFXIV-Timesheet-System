@@ -115,9 +115,12 @@ export default class MyDialog {
 
 const useStyles = tss.withParams<{ darkMode: boolean }>().create(({ darkMode }) => ({
     customDialog: {
+        "& button.MuiButton-root": {
+            textTransform: "capitalize"
+        },
         "& .MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded": {
             "& p, & div, & li, & h2, & h3, & h4, & h5, & h6": {
-                color: darkMode ? `${TEXT_COLOR} !important` : `${TEXT_DARK_COLOR} !important`
+                color: darkMode ? `${TEXT_COLOR}` : `${TEXT_DARK_COLOR}`
             },
             "& a": {
                 color: darkMode ? `${TEXT_COLOR} !important` : `${TEXT_DARK_COLOR} !important`,
