@@ -61,7 +61,7 @@ export default () => {
                     <div style={{ fontSize: 16 }} className={cx(classes.dialog)}>
                         <ul>
                             <li>
-                                Author's Homepage: <a href="https://machingclee.github.io/">Github Page</a>.
+                                Project Repository: <a href="https://github.com/machingclee/2024-01-31-FFXIV-Timesheet-System">Github Page</a>.
                             </li>
                             <li>This timesheet-page is created for non-commercial purpose.</li>
                             <li>
