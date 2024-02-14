@@ -26,7 +26,7 @@ type DialogSetStateContent = {
     },
     yes?: {
         text?: string,
-        action?: () => void
+        action?: () => (void | Promise<void>)
     },
     upperRightButton?: () => JSX.Element
 }
@@ -43,7 +43,6 @@ export default class MyDialog {
     public open = () => console.log("not initialized")
     public close = () => console.log("not initialized")
     public setContent: (content: DialogSetStateContent) => void = () => { console.log("not initialized") }
-
 
     public render = () => {
         const darkMode = useAppSelector(s => s.auth.darkMode);
@@ -101,8 +100,8 @@ export default class MyDialog {
                         }}>
                             {no.text}
                         </Button>}
-                        {yes?.text && <Button onClick={() => {
-                            yes?.action?.();
+                        {yes?.text && <Button onClick={async () => {
+                            await yes?.action?.();
                             handleClose()
                         }} autoFocus>
                             {yes.text}

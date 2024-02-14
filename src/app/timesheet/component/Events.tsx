@@ -57,8 +57,8 @@ export default ({ events }: { events: Event[] }) => {
             desc: () => <>Are you sure to delete {title}?</>,
             no: { text: "No" },
             yes: {
-                text: "Yes", action: () => {
-                    dispatch(TimesheetThunkActions.deleteWeekly({ weeklyId }))
+                text: "Yes", action: async () => {
+                    await dispatch(TimesheetThunkActions.deleteWeekly({ weeklyId }))
                 }
             }
         })
