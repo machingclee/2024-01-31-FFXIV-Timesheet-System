@@ -39,7 +39,7 @@ export default () => {
     const addATimeSlot = () => {
         const currDate = new Date();
         const year = currDate.getFullYear();
-        const month = currDate.getMonth().toString().padStart(2, "0");
+        const month = (currDate.getMonth() + 1).toString().padStart(2, "0");
         const date = currDate.getDate().toString().padStart(2, "0");
         const timestamp = dayjs(`${year} ${month} ${date} 07:00:01`).valueOf();
 
