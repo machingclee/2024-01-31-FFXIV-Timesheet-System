@@ -7,7 +7,7 @@ import GeneralPurposeDialog from "@/component/dialogs/GeneralPurposeDialog";
 import boxShadow from "@/constants/boxShadow";
 import useApiClient from "@/hooks/useApiClient";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import authSlice from "@/redux/slices/authSlices";
+import authSlice, { AuthThunkAction } from "@/redux/slices/authSlices";
 import { Button, Container, Fab } from "@mui/material";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
@@ -45,8 +45,7 @@ export default () => {
 
 
     const login = async () => {
-        const res = await apiClient.get<{ url: string }>("/auth/login");
-        const { url } = res.data;
+        const { url } = await dispatch(AuthThunkAction.googleLogin()).unwrap();
         window.location.href = url;
     }
 

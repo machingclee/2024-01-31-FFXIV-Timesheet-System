@@ -5,6 +5,7 @@ import {
     ThunkDispatch,
     isAnyOf
 } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 // import snackbarUtils from "./snackbarUtils";
 
 type Effect = ListenerEffect<any, unknown, ThunkDispatch<unknown, unknown, AnyAction>, unknown>;
@@ -76,15 +77,24 @@ export default (
                             //     { open: true, content: content || "No Message" }
                             // ))
                         } else {
-                            const msg = action?.payload || "";
+                            const msg = (action?.payload || "") as string;
                             let errMsg = "Failed";
                             if (msg) {
-                                errMsg += ` (Reason: ${msg})`;
+                                errMsg = msg;
                             }
-                            // snackbarUtils.error(errMsg)
-                            // dispatch(appSlice.actions.updateNotification(
-                            //     { open: true, content: errMsg }
-                            // ))
+                            toast.error(
+                                errMsg,
+                                {
+                                    toastId: errMsg,
+                                    position: "top-center",
+                                    autoClose: 5000,
+                                    hideProgressBar: false,
+                                    closeOnClick: true,
+                                    pauseOnHover: true,
+                                    draggable: true,
+                                    progress: undefined,
+                                    theme: "colored",
+                                })
                         }
                     }
                 })

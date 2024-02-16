@@ -2,7 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { persistReducer } from 'redux-persist';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
-import authSlice from './slices/authSlices';
+import authSlice, { authMiddleware } from './slices/authSlices';
 import appSlice from './slices/appSlice';
 import timetableSlice, { timetableMiddleware } from './slices/timetableSlice';
 
@@ -25,6 +25,7 @@ export const makeStore = () => {
                 serializableCheck: false
             }).concat(
                 timetableMiddleware.middleware,
+                authMiddleware.middleware
             )
     });
 }

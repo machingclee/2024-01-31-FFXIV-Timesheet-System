@@ -14,6 +14,8 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import Body from '@/component/Body';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -52,6 +54,9 @@ export default function RootLayout({
                         </Body>
                     </StoreProvider>
                 </body>
+                <ToastContainer
+                    limit={1}
+                />
             </AppRouterCacheProvider>
         </html>
     );

@@ -268,6 +268,7 @@ export class TimesheetThunkActions {
             const apiClient = getApiClient();
             const res = await apiClient.post("/timesheet/upsert-participant", params);
             if (!res.data.success) {
+                console.log("res.data.errorMessageres.data.errorMessage", res.data.errorMessage);
                 return api.rejectWithValue(JSON.stringify(res.data.errorMessage));
             } else {
                 return { userUUID, dailyId }
@@ -311,6 +312,19 @@ registerEffects(timetableMiddleware, [
             const { dailyId } = (action as ReturnType<typeof TimesheetThunkActions.updateMessage.fulfilled>).payload;
             api.dispatch(TimesheetThunkActions.getTimesheetDaily({ dailyId }));
         }
+    },
+    {
+        rejections: [
+            TimesheetThunkActions.getEvents.rejected,
+            TimesheetThunkActions.getWeeklyTimetables.rejected,
+            TimesheetThunkActions.createWeekly.rejected,
+            TimesheetThunkActions.deleteWeekly.rejected,
+            TimesheetThunkActions.updateWeekly.rejected,
+            TimesheetThunkActions.getTimesheetDaily.rejected,
+            TimesheetThunkActions.updateMessage.rejected,
+            TimesheetThunkActions.updateEnabledTimeslot.rejected,
+            TimesheetThunkActions.getTimeOptionsWeekly.rejected,
+        ]
     }
 ])
 
