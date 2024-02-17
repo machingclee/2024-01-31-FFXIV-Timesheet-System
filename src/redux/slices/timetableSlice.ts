@@ -334,9 +334,9 @@ registerEffects(timetableMiddleware, [
     ...loadingActions(TimesheetThunkActions.updateMessage),
     ...loadingActions(TimesheetThunkActions.updateEnabledTimeslot),
     ...loadingActions(TimesheetThunkActions.getTimeOptionsWeekly),
-    ...loadingActions(TimesheetThunkActions.addColumn),
+    // ...loadingActions(TimesheetThunkActions.addColumn),
     ...loadingActions(TimesheetThunkActions.deleteColumn),
-    ...loadingActions(TimesheetThunkActions.updateNamebyColumn),
+    // ...loadingActions(TimesheetThunkActions.updateNamebyColumn),
     {
         action: TimesheetThunkActions.createWeekly.fulfilled,
         effect: (action, api) => {
