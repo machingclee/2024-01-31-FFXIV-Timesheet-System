@@ -209,13 +209,19 @@ export class TimesheetThunkActions {
     );
     public static getWeeklyTimetables = createAsyncThunk(
         "timetable/selectEvent",
-        async (params: { weeklyId: string }, api) => {
+        async (params: { weeklyId: string, showLoading?: boolean }, api) => {
             const { weeklyId } = params;
             const apiClient = getApiClient();
             const res = await apiClient.get<MyResponse<TimeSheetsWeeklyProps>>(
                 `/timesheet/get-event-timeslot/${weeklyId}`
             );
             return processRes(res, api);
+        }
+    );
+    public static getWeeklyTimetablesWithoutLoading = createAsyncThunk(
+        "timetable/selectEvent-noloading",
+        async (params: { weeklyId: string }, api) => {
+            api.dispatch(this.getWeeklyTimetables({ ...params, showLoading: false }));
         }
     );
     public static getEvents = createAsyncThunk(
@@ -366,7 +372,7 @@ registerEffects(timetableMiddleware, [
         action: TimesheetThunkActions.addColumn.fulfilled,
         effect: (action, api) => {
             const { weeklyId } = (action as ReturnType<typeof TimesheetThunkActions.addColumn.fulfilled>).payload;
-            api.dispatch(TimesheetThunkActions.getWeeklyTimetables({ weeklyId }));
+            api.dispatch(TimesheetThunkActions.getWeeklyTimetablesWithoutLoading({ weeklyId }));
         }
     },
     {
