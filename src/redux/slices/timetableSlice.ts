@@ -372,7 +372,7 @@ registerEffects(timetableMiddleware, [
         action: TimesheetThunkActions.addColumn.fulfilled,
         effect: (action, api) => {
             const { weeklyId } = (action as ReturnType<typeof TimesheetThunkActions.addColumn.fulfilled>).payload;
-            api.dispatch(TimesheetThunkActions.getWeeklyTimetablesWithoutLoading({ weeklyId }));
+            api.dispatch(TimesheetThunkActions.getWeeklyTimetables({ weeklyId }));
         }
     },
     {
