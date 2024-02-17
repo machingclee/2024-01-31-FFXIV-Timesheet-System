@@ -1,24 +1,18 @@
-import { CheckUpdate, Option, Participant, Selection, UpsertMessageParam, UpsertParticipantParam } from "@/dto/dto";
-import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
+import { CheckUpdate, Option, Selection, UpdateParticipantParam } from "@/dto/dto";
+import { useEffect, useMemo, useRef, useState } from "react";
 import useTimesheetStyles from "./styles/useTimesheetStyles";
 import useApiClient from "@/hooks/useApiClient";
 import MyTextField from "@/component/MyTextField";
 import GeneralPurposeDialog from "@/component/dialogs/GeneralPurposeDialog";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { Checkbox, CheckboxProps } from "@mui/material";
 import { debounce, cloneDeep } from "lodash";
 import { BiMessageRounded } from "react-icons/bi";
 import appSlice from "../../../../appSlice";
 import DeleteIcon from '@mui/icons-material/Clear';
-import { DataGridPremium } from '@mui/x-data-grid-premium';
 import { tss } from "tss-react";
-import { FaCheck, FaCheckCircle, FaRegCheckCircle } from "react-icons/fa";
+import { FaCheck } from "react-icons/fa";
 import constants from "@/constants/constants";
-import sleepUtil from "@/util/sleepUtil";
 import timetableSlice, { TimesheetThunkActions } from "@/redux/slices/timetableSlice";
-import { FiCircle } from "react-icons/fi";
-import { FaCircle } from "react-icons/fa6";
-import { FaGrinStars } from "react-icons/fa";
 import { FaSmileBeam } from "react-icons/fa";
 import { FaFaceSmileBeam } from "react-icons/fa6";
 import { FaFaceSmileWink } from "react-icons/fa6";
@@ -27,8 +21,11 @@ import { PiSmileyXEyesFill } from "react-icons/pi";
 import { PiSmileyAngryFill } from "react-icons/pi";
 import { BsEmojiGrinFill } from "react-icons/bs";
 import { BsEmojiKissFill } from "react-icons/bs";
-import { BsEmojiSunglassesFill } from "react-icons/bs";
 import { BsFillEmojiSunglassesFill } from "react-icons/bs";
+import thunks from "@/redux/thunks";
+import FadeIn from "@/component/FadeIn";
+import useDarkMode from "@/hooks/useDarkMode";
+
 const randomNum = (num: number) => {
     return Math.floor(Math.random() * 9);
 }
@@ -50,41 +47,39 @@ const RandomEmoji = () => {
 
 
 const OptionsColumn = ({
+    orderWithinWeek,
     participantMessage,
     username,
-    uuid,
+    participantId,
     options,
     dailyId,
     selections,
+    participantColumnId,
     successSelectionIds,
     checksUpdate,
-    upsertParticipant
 }: {
+    orderWithinWeek: number,
     participantMessage: string,
     username: string,
-    uuid: string,
+    participantId: number,
     dailyId: number
     options?: Option[],
     selections: Selection[],
+    participantColumnId: number,
     successSelectionIds: number[],
     checksUpdate: (props: CheckUpdate[]) => void,
-    upsertParticipant: (params: UpsertParticipantParam) => void
 }) => {
-    const { classes, cx } = useTimesheetStyles();
-    const [name, setName] = useState(username || "");
+    const darkMode = useDarkMode();
+    const { classes, cx } = useTimesheetStyles({ darkMode });
     const messageDialogContent = useRef<string>("");
     const updateDialogMessageDialogContent = (msg: string) => {
         messageDialogContent.current = msg;
     }
     const dispatch = useAppDispatch();
-    const updateName = debounce((text: string) => {
-        setName(text);
-    }, 1000)
 
     const deleteColumn = () => {
         dispatch(TimesheetThunkActions.deleteParticipant({
-            userUuid: uuid,
-            dailyId
+            participantColumnId
         }));
     }
 
@@ -93,7 +88,7 @@ const OptionsColumn = ({
             dailyId,
             msgUpdate: {
                 message: messageDialogContent.current,
-                participantUUID: uuid
+                participantId
             }
         }))
     }
@@ -109,24 +104,25 @@ const OptionsColumn = ({
         []
     );
     const addUpdate = (update: CheckUpdate) => {
-        const { checked, optionId: selectionId, timeslotDailyId, userUUID } = update;
-        const id = `${timeslotDailyId},${selectionId},${userUUID}`;
+        const { checked, optionId: selectionId, timeslotDailyId, participantId } = update;
+        const id = `${timeslotDailyId},${selectionId},${participantId}`;
         updateRecordsRef.current.set(id, checked);
     }
     const dispatchUpdate = async () => {
         const updates: CheckUpdate[] = []
         for (const result of updateRecordsRef.current) {
             const [id, value] = result;
-            const [timeslotDailyId, selectionId, userUUID] = id.split(",");
+            const [timeslotDailyId, selectionId, participantId] = id.split(",");
             updates.push({
                 checked: value,
                 optionId: Number(selectionId),
                 timeslotDailyId: Number(timeslotDailyId),
-                userUUID: userUUID
+                participantId: Number(participantId)
             })
         }
         deboundedUpdate(updates);
     }
+
 
     return (
         <table>
@@ -145,7 +141,7 @@ const OptionsColumn = ({
                                 desc: () => (
                                     <MessageContent
                                         updateDialogMessageDialogContent={updateDialogMessageDialogContent}
-                                        uuid={uuid}
+                                        participantId={participantId}
                                     />
                                 ),
                                 no: {
@@ -169,24 +165,13 @@ const OptionsColumn = ({
                         paddingLeft: 5,
                         paddingRight: 5
                     }}>
-                        <MyTextField
-                            defaultValue={name}
-                            placeholder="Name"
-                            style={{
-                                paddingTop: 0,
-                                paddingBottom: 0,
-                            }}
-                            onChange={e => {
-                                const text = e.target.value;
-                                updateName(text);
-                                upsertParticipant({
-                                    dailyId,
-                                    username: text,
-                                    userUUID: uuid,
-                                })
-                            }}
+                        <NameField
+                            orderWithinWeek={orderWithinWeek}
+                            participantColumnId={participantColumnId}
+                            participantId={participantId}
+                            username={username}
                         />
-                        <DeleteIcon
+                        {orderWithinWeek === 0 && <DeleteIcon
                             onClick={() => { deleteColumn() }}
                             className={cx(classes.deleteButton, "delete-button")}
                             fontSize={"small"}
@@ -196,7 +181,7 @@ const OptionsColumn = ({
                                 right: 5,
                                 cursor: "pointer",
                                 zIndex: 10
-                            }} />
+                            }} />}
                     </td>
                 </tr>
                 {options?.map(opt => {
@@ -233,7 +218,7 @@ const OptionsColumn = ({
                                     dispatchUpdate={dispatchUpdate}
                                     selectionId={id}
                                     timeslotDailyId={dailyId}
-                                    userUUID={uuid}
+                                    participantId={participantId}
                                 />
                             </td>
                         </tr>
@@ -244,6 +229,67 @@ const OptionsColumn = ({
         </table>
     )
 }
+
+const NameField = ({ username, orderWithinWeek, participantId, participantColumnId }: {
+    username: string,
+    orderWithinWeek: number,
+    participantId: number,
+    participantColumnId: number
+}) => {
+    const flag = useAppSelector(s => s.timetable.columnTextfieldRender.flag?.[participantColumnId]);
+    const weeklyId = useAppSelector(s => s.timetable.selectedWeek.weeklyId);
+    const dispatch = useAppDispatch();
+    const updateColumnName = useMemo(() => {
+        return debounce((text: string) => {
+            dispatch(thunks.timesheet.updateNamebyColumn({
+                weeklyId,
+                name: text,
+                participantColumnId
+            })).unwrap()
+        }, 2000)
+    }, [])
+
+    const updateDailyName = useMemo(() => {
+        return debounce((text: string) => {
+            dispatch(thunks.timesheet.updateParticipant({
+                username: text,
+                participantId
+            }))
+        }, 800)
+    }, [])
+
+    if (!flag) {
+        return null;
+    }
+
+    return (
+        <>
+            <div style={{ height: 27 }}>
+                <FadeIn>
+                    <MyTextField
+                        defaultValue={username}
+                        placeholder="Name"
+                        style={{
+
+                            paddingTop: 0,
+                            paddingBottom: 0,
+                        }}
+                        onChange={e => {
+                            const text = e.target.value;
+                            if (orderWithinWeek === 0) {
+                                updateColumnName(text);
+                            } else {
+                                updateDailyName(text)
+                            }
+                        }}
+                    />
+                </FadeIn>
+            </div>
+        </>
+    )
+}
+
+
 
 const useStyles = tss.create(() => ({
     checkCell: {
@@ -264,7 +310,7 @@ const CustomMouseEnterCheckbox = ({
     dispatchUpdate,
     selectionId,
     timeslotDailyId,
-    userUUID,
+    participantId,
     defaultChecked,
 }: {
     isSuccessId: boolean,
@@ -272,7 +318,7 @@ const CustomMouseEnterCheckbox = ({
     dispatchUpdate: () => void,
     selectionId: number,
     timeslotDailyId: number,
-    userUUID: string,
+    participantId: number,
     defaultChecked: boolean,
 }) => {
     const { classes, cx } = useStyles();
@@ -283,7 +329,7 @@ const CustomMouseEnterCheckbox = ({
             checked: !checked,
             optionId: selectionId,
             timeslotDailyId: timeslotDailyId,
-            userUUID: userUUID
+            participantId
         })
         dispatchUpdate();
         setChecked(c => !c);
@@ -316,32 +362,27 @@ const CustomMouseEnterCheckbox = ({
 }
 
 const MessageContent = ({
-    uuid,
+    participantId,
     updateDialogMessageDialogContent
 }: {
-    uuid: string,
+    participantId: number,
     updateDialogMessageDialogContent: (msg: string) => void
 }) => {
-    const darkMode = useAppSelector(s => s.auth.darkMode);
-    const { classes, cx } = useTimesheetStyles();
+    const darkMode = useDarkMode();
+    const { classes, cx } = useTimesheetStyles({ darkMode });
     const dispatch = useAppDispatch();
     const apiClient = useApiClient();
     const msgDispatched = useRef(false);
     const [msg, setMsg] = useState("");
+
     useEffect(() => {
         if (!msgDispatched.current) {
-            dispatch(appSlice.actions.setLoading(true));
-            apiClient.get<{ result: { message: string } }>(
-                `/timesheet/get-message/${uuid}`
-            ).then((res) => {
-                const msg_ = res.data.result.message;
-                setMsg(msg_);
-            }).finally(() => {
-                setTimeout(() => {
-                    dispatch(appSlice.actions.setLoading(false));
-                }, 500);
-
-            });
+            dispatch(thunks.timesheet.getMessage({ participantId }))
+                .unwrap()
+                .then((result) => {
+                    const { message } = result;
+                    setMsg(message);
+                });
             msgDispatched.current = true;
         }
     }, [])

@@ -1,4 +1,4 @@
-import { CheckUpdate, CreateTimeSlotParam, Day, Event, MyResponse, TimeSheetsWeeklyProps, TimesheetOption, UpdateOptionEnabled, UpsertMessageParam, UpsertParticipantParam } from "@/dto/dto";
+import { CheckUpdate, CreateTimeSlotParam, Day, Event, MyResponse, Participant, TimeSheetsWeeklyProps, TimesheetOption, UpdateOptionEnabled, UpsertMessageParam, UpdateParticipantParam } from "@/dto/dto";
 import { createAsyncThunk, createListenerMiddleware, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AxiosInstance } from "axios";
 import registerEffects from "../util/registerEffects";
@@ -8,13 +8,18 @@ import { loadingActions } from "../util/loadingActions";
 import { v4 as uuidv4 } from "uuid";
 import normalize from "@/util/normalize";
 import Cache from "@/util/Cache";
+import { RootState } from "../store";
 
 export type TimetableSliceState = {
+    columnTextfieldRender: {
+        flag?: { [participantColumnId: string]: boolean }
+    },
     events: Event[],
     timerange: {
         rerenderFlag: boolean,
         options: TimesheetOption[][]
     },
+
     selectedWeek: {
         title: string,
         weeklyId: string,
@@ -26,6 +31,7 @@ export type TimetableSliceState = {
 }
 
 const initialState: TimetableSliceState = {
+    columnTextfieldRender: { flag: {} },
     events: [],
     timerange: {
         rerenderFlag: true,
@@ -43,6 +49,10 @@ const timetableSlice = createSlice(
         name: "timetable",
         initialState,
         reducers: {
+            setColumnTextfieldRerender: (state, action: PayloadAction<{ participantColumnId: number, flag: boolean }>) => {
+                const { flag, participantColumnId } = action.payload;
+                state.columnTextfieldRender.flag![participantColumnId] = flag;
+            },
             setTimerangeRerenderFlag: (state, action: PayloadAction<boolean>) => {
                 state.timerange.rerenderFlag = action.payload;
             },
@@ -62,30 +72,18 @@ const timetableSlice = createSlice(
                     }
                 })
             },
-            addParticipantLocal: (state, action: PayloadAction<{ userUUID: string, dailyId: number }>) => {
-                const { dailyId, userUUID } = action.payload;
-                const day = state.selectedWeek.days.idToObject?.[dailyId];
-                if (!day) {
-                    return;
-                }
-                day.participants.push({
-                    frontendUUID: userUUID,
-                    message: "",
-                    selections: [],
-                    username: "",
-                })
-            },
+
             batchChecksUpdate: (state, action: PayloadAction<{
                 checks: CheckUpdate[]
             }>) => {
                 const { checks } = action.payload;
                 for (const checkUpdate of checks) {
-                    const { checked, optionId, timeslotDailyId, userUUID } = checkUpdate;
+                    const { checked, optionId, timeslotDailyId, participantId } = checkUpdate;
                     const day = state.selectedWeek.days.idToObject?.[timeslotDailyId];
                     if (!day) {
                         return;
                     }
-                    const user = day.participants.find(p => p.frontendUUID === userUUID);
+                    const user = day.participants.find(p => p.id === participantId);
                     if (!user) {
                         return;
                     }
@@ -110,7 +108,11 @@ const timetableSlice = createSlice(
                 })
                 .addCase(TimesheetThunkActions.getWeeklyTimetables.fulfilled, (state, action) => {
                     const { days, title, weeklyId } = action.payload;
+                    const columnIds = days?.[0].participants?.map(p => p.participantColumnId);
                     const { idToObject, ids } = normalize<Day, number>({ idAttribute: "dailyId", targetArr: days })
+                    const renderFlagMap = new Map<number, boolean>();
+                    columnIds.forEach((id) => { renderFlagMap.set(id, true); })
+                    state.columnTextfieldRender.flag = Object.fromEntries(renderFlagMap);
                     state.selectedWeek.days = { ids, idToObject };
                     state.selectedWeek.title = title;
                     state.selectedWeek.weeklyId = weeklyId;
@@ -122,10 +124,13 @@ const timetableSlice = createSlice(
                     }
                 })
                 .addCase(TimesheetThunkActions.deleteParticipant.fulfilled, (state, action) => {
-                    const { userUuid, dailyId } = action.payload;
-                    const day = state.selectedWeek.days.idToObject?.[dailyId];
-                    if (day) {
-                        day.participants = day.participants.filter(u => u.frontendUUID !== userUuid);
+                    const { participantColumnId } = action.payload;
+                    const dailyIds = state.selectedWeek.days.ids!;
+                    for (const dailyId of dailyIds) {
+                        const day = state.selectedWeek.days.idToObject?.[dailyId];
+                        if (day) {
+                            day.participants = day.participants.filter(u => u.participantColumnId !== participantColumnId);
+                        }
                     }
                 })
                 .addCase(TimesheetThunkActions.getTimeOptionsWeekly.fulfilled, (state, action) => {
@@ -136,6 +141,15 @@ const timetableSlice = createSlice(
 )
 
 export class TimesheetThunkActions {
+    public static getMessage = createAsyncThunk(
+        "timetable/updateEnabledTimeslot",
+        async (params: { participantId: number }, api) => {
+            const { participantId } = params;
+            const apiClient = getApiClient();
+            const res = await apiClient.get<MyResponse<{ message: string }>>(`/timesheet/get-message/${participantId}`);
+            return processRes(res, api);
+        }
+    );
     public static updateEnabledTimeslot = createAsyncThunk(
         "timetable/updateEnabledTimeslot",
         async (params: UpdateOptionEnabled[], api) => {
@@ -250,29 +264,61 @@ export class TimesheetThunkActions {
     );
     public static deleteParticipant = createAsyncThunk(
         "timetable/deleteParticipant",
-        async (param: { dailyId: number, userUuid: string }, api) => {
-            const { dailyId, userUuid } = param;
+        async (param: { participantColumnId: number }, api) => {
+            const { participantColumnId } = param;
             const apiClient = getApiClient();
-            const res = await apiClient.delete(`/timesheet/delete-participant/${userUuid}`);
+            const res = await apiClient.delete(`/timesheet/delete-participant/${participantColumnId}`);
             if (!res.data.success) {
                 return api.rejectWithValue(JSON.stringify(res.data.errorMessage));
             } else {
-                return { dailyId, userUuid }
+                return { participantColumnId }
             }
         }
     );
-    public static upsertParticipant = createAsyncThunk(
+    public static updateParticipant = createAsyncThunk(
         "timetable/upsertParticipant",
-        async (params: UpsertParticipantParam, api) => {
-            const { userUUID, dailyId } = params;
+        async (params: UpdateParticipantParam, api) => {
             const apiClient = getApiClient();
-            const res = await apiClient.post("/timesheet/upsert-participant", params);
+            const res = await apiClient.put("/timesheet/update-participant", params);
             if (!res.data.success) {
                 console.log("res.data.errorMessageres.data.errorMessage", res.data.errorMessage);
                 return api.rejectWithValue(JSON.stringify(res.data.errorMessage));
-            } else {
-                return { userUUID, dailyId }
             }
+        }
+    );
+    public static addColumn = createAsyncThunk(
+        "timetable/add-Column",
+        async (params: { weeklyId: string }, api) => {
+            const apiClient = getApiClient();
+            const { weeklyId } = params;
+            const res = await apiClient.post("/timesheet/add-column", { weeklyId });
+            if (!res.data.success) {
+                console.log("res.data.errorMessageres.data.errorMessage", res.data.errorMessage);
+                return api.rejectWithValue(JSON.stringify(res.data.errorMessage));
+            }
+            return { weeklyId }
+        }
+    );
+    public static deleteColumn = createAsyncThunk(
+        "timetable/delete-column",
+        async (params: { participantColumnId: number }, api) => {
+            const apiClient = getApiClient();
+            const { participantColumnId } = params;
+            const res = await apiClient.put(`/timesheet/delete-column/${participantColumnId}}`);
+            return processRes(res, api);
+        }
+    );
+    public static updateNamebyColumn = createAsyncThunk(
+        "timetable/update-name-by-column",
+        async (params: { participantColumnId: number, name: string, weeklyId: string }, api) => {
+            const { participantColumnId, weeklyId } = params;
+            const apiClient = getApiClient();
+            const res = await apiClient.put(`/timesheet/update-name-by-column`, params);
+            if (!res.data.success) {
+                console.log("res.data.errorMessageres.data.errorMessage", res.data.errorMessage);
+                return api.rejectWithValue(JSON.stringify(res.data.errorMessage));
+            }
+            return { weeklyId, participantColumnId }
         }
     );
 }
@@ -288,6 +334,9 @@ registerEffects(timetableMiddleware, [
     ...loadingActions(TimesheetThunkActions.updateMessage),
     ...loadingActions(TimesheetThunkActions.updateEnabledTimeslot),
     ...loadingActions(TimesheetThunkActions.getTimeOptionsWeekly),
+    ...loadingActions(TimesheetThunkActions.addColumn),
+    ...loadingActions(TimesheetThunkActions.deleteColumn),
+    ...loadingActions(TimesheetThunkActions.updateNamebyColumn),
     {
         action: TimesheetThunkActions.createWeekly.fulfilled,
         effect: (action, api) => {
@@ -314,6 +363,38 @@ registerEffects(timetableMiddleware, [
         }
     },
     {
+        action: TimesheetThunkActions.addColumn.fulfilled,
+        effect: (action, api) => {
+            const { weeklyId } = (action as ReturnType<typeof TimesheetThunkActions.addColumn.fulfilled>).payload;
+            api.dispatch(TimesheetThunkActions.getWeeklyTimetables({ weeklyId }));
+        }
+    },
+    {
+        action: TimesheetThunkActions.deleteColumn.fulfilled,
+        effect: (action, api) => {
+            const { weeklyId } = (action as ReturnType<typeof TimesheetThunkActions.addColumn.fulfilled>).payload;
+            api.dispatch(TimesheetThunkActions.getWeeklyTimetables({ weeklyId }));
+        }
+    },
+    {
+        action: TimesheetThunkActions.updateNamebyColumn.fulfilled,
+        effect: async (action, api) => {
+            const { weeklyId, participantColumnId } = (action as ReturnType<typeof TimesheetThunkActions.updateNamebyColumn.fulfilled>).payload;
+            await api.dispatch(TimesheetThunkActions.getWeeklyTimetables({ weeklyId })).unwrap()
+            api.dispatch(timetableSlice.actions.setColumnTextfieldRerender({
+                flag: false,
+                participantColumnId
+            }));
+            setTimeout(() => {
+                api.dispatch(timetableSlice.actions.setColumnTextfieldRerender({
+                    flag: true,
+                    participantColumnId
+                }));
+            }, 1)
+
+        }
+    },
+    {
         rejections: [
             TimesheetThunkActions.getEvents.rejected,
             TimesheetThunkActions.getWeeklyTimetables.rejected,
@@ -324,6 +405,10 @@ registerEffects(timetableMiddleware, [
             TimesheetThunkActions.updateMessage.rejected,
             TimesheetThunkActions.updateEnabledTimeslot.rejected,
             TimesheetThunkActions.getTimeOptionsWeekly.rejected,
+            TimesheetThunkActions.addColumn.rejected,
+            TimesheetThunkActions.deleteColumn.rejected,
+            TimesheetThunkActions.updateNamebyColumn.rejected,
+            TimesheetThunkActions.deleteParticipant
         ]
     }
 ])

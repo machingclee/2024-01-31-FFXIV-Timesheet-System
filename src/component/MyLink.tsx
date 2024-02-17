@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { ReactNode } from "react"
 import { tss } from "tss-react";
-import { TEXT_COLOR } from "./Body";
+import { TEXT_COLOR_LIGHT } from "./Body";
 
 
 
@@ -21,7 +21,7 @@ export default ({ className, href, children }: { className: string, href: string
 const linkStyles = tss.create(() => ({
     link: {
         "& button": {
-            color: TEXT_COLOR
+            color: TEXT_COLOR_LIGHT
         }
     }
 }))

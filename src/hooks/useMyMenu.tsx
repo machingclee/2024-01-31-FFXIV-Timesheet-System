@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { tss } from 'tss-react';
-import { TEXT_COLOR, TEXT_DARK_COLOR } from '@/component/Body';
+import { TEXT_COLOR_LIGHT, TEXT_COLOR_DARK } from '@/component/Body';
 import { useAppSelector } from '@/redux/hooks';
 import boxShadow from '@/constants/boxShadow';
 import useMenuStyle from '@/app/style/useMenuStyle';

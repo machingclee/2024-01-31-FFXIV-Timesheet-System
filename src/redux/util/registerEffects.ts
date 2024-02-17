@@ -77,24 +77,24 @@ export default (
                             //     { open: true, content: content || "No Message" }
                             // ))
                         } else {
-                            const msg = (action?.payload || "") as string;
+                            const msg = action?.payload as string;
                             let errMsg = "Failed";
                             if (msg) {
                                 errMsg = msg;
+                                toast.error(
+                                    errMsg,
+                                    {
+                                        toastId: errMsg,
+                                        position: "top-center",
+                                        autoClose: 5000,
+                                        hideProgressBar: false,
+                                        closeOnClick: true,
+                                        pauseOnHover: true,
+                                        draggable: true,
+                                        progress: undefined,
+                                        theme: "colored",
+                                    })
                             }
-                            toast.error(
-                                errMsg,
-                                {
-                                    toastId: errMsg,
-                                    position: "top-center",
-                                    autoClose: 5000,
-                                    hideProgressBar: false,
-                                    closeOnClick: true,
-                                    pauseOnHover: true,
-                                    draggable: true,
-                                    progress: undefined,
-                                    theme: "colored",
-                                })
                         }
                     }
                 })

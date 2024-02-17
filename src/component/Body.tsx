@@ -14,8 +14,8 @@ export default ({ children }: PropsWithChildren) => {
     </div>
 }
 
-export const TEXT_COLOR = "rgb(220,220,220)"
-export const TEXT_DARK_COLOR = "rgba(0,0,0,0.7)"
+export const TEXT_COLOR_LIGHT = "rgb(220,220,220)"
+export const TEXT_COLOR_DARK = "rgba(0,0,0,0.7)"
 
 
 const bodyStyle = tss.withParams<{ darkMode: boolean }>()
@@ -23,10 +23,10 @@ const bodyStyle = tss.withParams<{ darkMode: boolean }>()
         body: {
             fontSize: "0.85rem",
             "& .delete-button": {
-                color: darkMode ? TEXT_COLOR : `${TEXT_DARK_COLOR} !important`,
+                color: darkMode ? TEXT_COLOR_LIGHT : `${TEXT_COLOR_DARK} !important`,
             },
             "& h2": {
-                color: darkMode ? `${TEXT_COLOR} !important` : `${TEXT_DARK_COLOR} !important`,
+                color: darkMode ? `${TEXT_COLOR_LIGHT} !important` : `${TEXT_COLOR_DARK} !important`,
             },
             "& .event-name-input": {
                 border: `1px solid ${darkMode ? "rgba(0,0,0,0)" : "rgba(0,0,0,0.2)"}`,
@@ -43,7 +43,7 @@ const bodyStyle = tss.withParams<{ darkMode: boolean }>()
                 "button#{&}": {
                     backgroundColor: "rgba(0,0,0,0.1) !important",
                     "& svg": {
-                        color: darkMode ? TEXT_COLOR : `${TEXT_DARK_COLOR} !important`,
+                        color: darkMode ? TEXT_COLOR_LIGHT : `${TEXT_COLOR_DARK} !important`,
                     }
                 }
             },
@@ -51,41 +51,41 @@ const bodyStyle = tss.withParams<{ darkMode: boolean }>()
                 boxShadow: darkMode ? `${boxShadow.DARK_MODE_01} !important` : `${boxShadow.SHADOW_62} !important`,
                 backgroundColor: darkMode ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.2) !important",
                 "& svg": {
-                    color: darkMode ? TEXT_COLOR : `${TEXT_DARK_COLOR} !important`,
+                    color: darkMode ? TEXT_COLOR_LIGHT : `${TEXT_COLOR_DARK} !important`,
                 }
             },
             "& .message-bubble": {
                 "& div, svg": {
-                    color: darkMode ? TEXT_COLOR : `${TEXT_DARK_COLOR} !important`,
+                    color: darkMode ? TEXT_COLOR_LIGHT : `${TEXT_COLOR_DARK} !important`,
                 }
             },
             "& .title-separator": {
                 "& div, svg": {
-                    color: darkMode ? TEXT_COLOR : `${TEXT_DARK_COLOR} !important`,
+                    color: darkMode ? TEXT_COLOR_LIGHT : `${TEXT_COLOR_DARK} !important`,
                     "&.ruler": {
-                        backgroundColor: darkMode ? TEXT_COLOR : `${TEXT_DARK_COLOR} !important`
+                        backgroundColor: darkMode ? TEXT_COLOR_LIGHT : `${TEXT_COLOR_DARK} !important`
                     }
                 }
             },
             "& h2, & div": {
                 "& svg": {
-                    color: `${TEXT_COLOR} !important`
+                    color: `${TEXT_COLOR_LIGHT} !important`
                 },
-                color: darkMode ? TEXT_COLOR : `${TEXT_DARK_COLOR} !important`,
+                color: darkMode ? TEXT_COLOR_LIGHT : `${TEXT_COLOR_DARK} !important`,
                 "&.email, .darkmode-button": {
-                    color: `${TEXT_COLOR} !important`,
+                    color: `${TEXT_COLOR_LIGHT} !important`,
                 }
             },
             "& .date-picker": {
                 "& svg": {
-                    color: darkMode ? TEXT_COLOR : `${TEXT_DARK_COLOR} !important`
+                    color: darkMode ? TEXT_COLOR_LIGHT : `${TEXT_COLOR_DARK} !important`
                 }
             },
             backgroundColor: darkMode ? "rgba(0,0,0,0.75)" : "rgba(255,255,255,0)",
-            color: TEXT_COLOR,
+            color: TEXT_COLOR_LIGHT,
             "& .timecolumn": {
                 "& svg": {
-                    color: darkMode ? TEXT_COLOR : `${TEXT_DARK_COLOR} !important`
+                    color: darkMode ? TEXT_COLOR_LIGHT : `${TEXT_COLOR_DARK} !important`
                 },
                 color: darkMode ? "white !important" : "black",
                 "& input": {
@@ -112,7 +112,7 @@ const bodyStyle = tss.withParams<{ darkMode: boolean }>()
 
             },
             "& div": {
-                color: darkMode ? TEXT_COLOR : `${TEXT_DARK_COLOR} !important`,
+                color: darkMode ? TEXT_COLOR_LIGHT : `${TEXT_COLOR_DARK} !important`,
             },
             "& .navbar": {
                 backgroundColor: "rgb(37,36,36)",
@@ -121,7 +121,7 @@ const bodyStyle = tss.withParams<{ darkMode: boolean }>()
                 "& .MuiButtonBase-root.MuiButton-root": {
                     "&.unselected": {
                         backgroundColor: "rgba(255,255,255,0.2) !important",
-                        color: darkMode ? TEXT_COLOR : `${TEXT_DARK_COLOR} !important`,
+                        color: darkMode ? TEXT_COLOR_LIGHT : `${TEXT_COLOR_DARK} !important`,
                     }
                 }
             },

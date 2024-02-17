@@ -1,16 +1,20 @@
+import { TEXT_COLOR_LIGHT as TEXT_COLOR_LIGHT, TEXT_COLOR_DARK as TEXT_COLOR_DARK } from "@/component/Body";
 import constants from "@/constants/constants";
 import { tss } from "tss-react";
 
 
 
-const useTimesheetStyles = tss.create(() => ({
+const useTimesheetStyles = tss.withParams<{ darkMode: boolean }>().create(({ darkMode }) => ({
     textArea: {
         borderRadius: 4,
         resize: "none",
         backgroundColor: "rgba(0,0,0,0.1)",
         border: 0,
         outline: "none",
-        padding: 10
+        padding: 10,
+        "&": {
+            color: darkMode ? TEXT_COLOR_LIGHT : TEXT_COLOR_DARK
+        }
     },
     deleteButton: {
         opacity: 0.5,

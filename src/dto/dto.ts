@@ -46,27 +46,27 @@ export type Selection = {
 }
 
 export type Participant = {
-    frontendUUID: string,
+    id: number,
     message: string,
     username: string
+    participantColumnId: number,
     selections: Selection[]
 }
 
-export type UpsertParticipantParam = {
-    userUUID: string,
-    username: string,
-    dailyId: number
+export type UpdateParticipantParam = {
+    participantId: Number,
+    username: string
 }
 
 export type CheckUpdate = {
     optionId: number,
-    userUUID: string,
+    participantId: number,
     timeslotDailyId: number,
     checked: boolean
 }
 
 export type UpsertMessageParam = {
-    participantUUID: string,
+    participantId: number,
     message: string
 }
 

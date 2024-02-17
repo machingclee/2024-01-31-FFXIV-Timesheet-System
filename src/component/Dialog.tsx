@@ -9,7 +9,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import { tss } from 'tss-react';
-import { TEXT_COLOR, TEXT_DARK_COLOR } from './Body';
+import { TEXT_COLOR_LIGHT, TEXT_COLOR_DARK } from './Body';
 import useDialogStyle from '@/app/style/useMenuStyle';
 import { useAppSelector } from '@/redux/hooks';
 import boxShadow from '@/constants/boxShadow';
@@ -54,11 +54,6 @@ export default class MyDialog {
         this.setContent = setContent;
         const { desc: Desc_, no, title, yes, upperRightButton } = content
         const UpperRight = upperRightButton || (() => <></>);
-        const Desc = () => (
-            <FadeIn dependencies={[open]}>
-                <Desc_ />
-            </FadeIn>
-        );
         const theme = useTheme();
         const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -90,7 +85,7 @@ export default class MyDialog {
                     </DialogTitle>
                     <DialogContent>
                         <DialogContentText>
-                            <Desc />
+                            <Desc_ />
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
@@ -120,10 +115,10 @@ const useStyles = tss.withParams<{ darkMode: boolean, width?: number | string }>
         },
         "& .MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded": {
             "& p, & div, & li, & h2, & h3, & h4, & h5, & h6": {
-                color: darkMode ? `${TEXT_COLOR}` : `${TEXT_DARK_COLOR}`
+                color: darkMode ? `${TEXT_COLOR_LIGHT}` : `${TEXT_COLOR_DARK}`
             },
             "& a": {
-                color: darkMode ? `${TEXT_COLOR} !important` : `${TEXT_DARK_COLOR} !important`,
+                color: darkMode ? `${TEXT_COLOR_LIGHT} !important` : `${TEXT_COLOR_DARK} !important`,
                 backgroundColor: darkMode ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)",
                 textDecoration: "none",
                 padding: "2px 10px",
@@ -134,14 +129,15 @@ const useStyles = tss.withParams<{ darkMode: boolean, width?: number | string }>
             backdropFilter: "blur(100px)"
         },
         "& button": {
-            color: darkMode ? `${TEXT_COLOR} !important` : `${TEXT_DARK_COLOR} !important`
+            color: darkMode ? `${TEXT_COLOR_LIGHT} !important` : `${TEXT_COLOR_DARK} !important`
         },
         "& textarea": {
             fontSize: "18px !important",
         },
         "& .MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation24.MuiDialog-paper.MuiDialog-paperScrollPaper": {
             minWidth: width || 620,
-            width: width || 620
+            width: width || 620,
+            color: darkMode ? TEXT_COLOR_LIGHT : `${TEXT_COLOR_DARK} !important`
         }
     }
 }))

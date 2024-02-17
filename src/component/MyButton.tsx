@@ -3,12 +3,12 @@
 import { Button, ButtonProps } from "@mui/material";
 import { PropsWithChildren } from "react";
 import { tss } from "tss-react";
-import { TEXT_COLOR } from "./Body";
+import { TEXT_COLOR_LIGHT } from "./Body";
 import { useAppSelector } from "@/redux/hooks";
 
 const useStyles = tss.withParams<{ darkMode: boolean }>().create(({ darkMode }) => ({
     myButton: {
-        color: TEXT_COLOR,
+        color: TEXT_COLOR_LIGHT,
         textTransform: "none",
         paddingTop: 4,
         paddingBottom: 4,

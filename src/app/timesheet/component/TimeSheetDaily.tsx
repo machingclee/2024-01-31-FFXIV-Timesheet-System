@@ -1,4 +1,4 @@
-import { Participant, CheckUpdate, UpsertParticipantParam, Day as string, Day } from "@/dto/dto";
+import { Participant, CheckUpdate, UpdateParticipantParam, Day as string, Day } from "@/dto/dto";
 import useApiClient from "@/hooks/useApiClient";
 import { useAppSelector, useAppDispatch } from "@/redux/hooks";
 import xdayjs from "@/util/xdayjs";
@@ -13,12 +13,13 @@ import boxShadow from "@/constants/boxShadow";
 import OptionsColumn from "./OptionsColumn";
 import AddIcon from '@mui/icons-material/Add';
 import constants from "@/constants/constants";
-import { TEXT_COLOR } from "@/component/Body";
+import { TEXT_COLOR_LIGHT } from "@/component/Body";
 import Weekday from "@/component/WeekDay";
-import timetableSlice, { TimesheetThunkActions } from "@/redux/slices/timetableSlice";
+import timetableSlice from "@/redux/slices/timetableSlice";
 import { FaArrowRightLong } from "react-icons/fa6";
 import MyButton2 from "@/component/MyButton2";
 import useTimeRangeDialog from "@/hooks/useTimeRangeDialog";
+import thunks from "@/redux/thunks";
 
 const SelectionLoadingSpinner = (props: { dailyId: number }) => {
     const { dailyId } = props;
@@ -30,6 +31,7 @@ const SelectionLoadingSpinner = (props: { dailyId: number }) => {
 
 export default (props: { dailyId: number }) => {
     const { dailyId } = props;
+    const darkMode = useAppSelector(s => s.auth.darkMode);
     const loginEmail = useAppSelector(s => s.auth.email);
     const { title, weeklyId } = useAppSelector(s => s.timetable.selectedWeek);
     const day: Day | undefined = useAppSelector(s => s.timetable.selectedWeek.days.idToObject?.[dailyId]);
@@ -47,33 +49,20 @@ export default (props: { dailyId: number }) => {
     const startingDate = startingDayjs.format("YYYY-MM-DD");
     const weekDay = startingDayjs.format("dddd");
     const [turnOnFilter, setTurnOnfilter] = useState(true);
-    const { classes, cx } = useTimesheetStyles();
+    const { classes, cx } = useTimesheetStyles({ darkMode });
     const dispatch = useAppDispatch();
     const checksUpdate = (checks: CheckUpdate[]) => {
         dispatch(appSlice.actions.setTableLoading({ loading: true, loadingDailyId: dailyId }))
-        dispatch(TimesheetThunkActions.updateChecks({ checks }))
+        dispatch(thunks.timesheet.updateChecks({ checks }))
             .unwrap()
             .finally(() => {
                 dispatch(appSlice.actions.setTableLoading({ loading: false, loadingDailyId: 0 }))
             })
     }
-    const upsertParticipant_ = (params: UpsertParticipantParam) => {
-        dispatch(TimesheetThunkActions.upsertParticipant(params));
-    }
 
-    const upsertParticipant = debounce(upsertParticipant_, 500)
     const addUser = () => {
-        const userUUID = uuidv4();
-        // setTurnOnfilter(false);
-        dispatch(timetableSlice.actions.addParticipantLocal({
-            dailyId,
-            userUUID
-        }))
-        upsertParticipant({
-            dailyId,
-            username: "",
-            userUUID,
-        })
+        dispatch(thunks.timesheet.addColumn({ weeklyId }));
+
     }
     const getFinalResultCount = (day: Day) => {
         const selectionIdToCount = new Map<number, number>();
@@ -162,7 +151,7 @@ export default (props: { dailyId: number }) => {
                             <div style={{
                                 // backgroundColor: "rgba(0,0,0,0.4)",
                                 paddingLeft: 10,
-                                color: TEXT_COLOR,
+                                color: TEXT_COLOR_LIGHT,
                                 fontWeight: 600,
                                 fontSize: 16,
                                 display: "flex",
@@ -226,30 +215,33 @@ export default (props: { dailyId: number }) => {
                         </table>
 
 
-                        {!noOption && <> {day?.participants.map(user => {
-                            const { frontendUUID, username, message } = user;
+                        {!noOption && <> {day?.participants.map(participant => {
+                            const { username, message, id: participantId, participantColumnId } = participant;
                             if (noOption) {
                                 return null;
                             }
                             return (
                                 <OptionsColumn
+                                    key={participantId}
+                                    orderWithinWeek={orderWithinWeek}
                                     participantMessage={message}
                                     successSelectionIds={successSelectionIds}
-                                    key={frontendUUID}
                                     username={username}
                                     dailyId={dailyId}
                                     options={day.options}
-                                    uuid={frontendUUID}
+                                    participantColumnId={participantColumnId}
+                                    participantId={participantId}
                                     checksUpdate={checksUpdate}
-                                    upsertParticipant={upsertParticipant}
-                                    selections={user.selections}
+                                    selections={participant.selections}
                                 />
                             )
                         })}
-                            <Spacer width={30} />
-                            <Fab style={{ backgroundColor: "rgba(0,0,0,0.3)", width: 36, height: 36, marginTop: 10 }} onClick={addUser}>
-                                <AddIcon style={{ color: "white" }} />
-                            </Fab>
+                            {orderWithinWeek === 0 && <>
+                                <Spacer width={30} />
+                                <Fab style={{ backgroundColor: "rgba(0,0,0,0.3)", width: 36, height: 36, marginTop: 10 }} onClick={addUser}>
+                                    <AddIcon style={{ color: "white" }} />
+                                </Fab>
+                            </>}
                         </>}
 
                         {noOption && <>
