@@ -386,7 +386,7 @@ registerEffects(timetableMiddleware, [
         action: TimesheetThunkActions.updateNamebyColumn.fulfilled,
         effect: async (action, api) => {
             const { weeklyId, participantColumnId } = (action as ReturnType<typeof TimesheetThunkActions.updateNamebyColumn.fulfilled>).payload;
-            await api.dispatch(TimesheetThunkActions.getWeeklyTimetables({ weeklyId })).unwrap()
+            await api.dispatch(TimesheetThunkActions.getWeeklyTimetablesWithoutLoading({ weeklyId })).unwrap()
             api.dispatch(timetableSlice.actions.setColumnTextfieldRerender({
                 flag: false,
                 participantColumnId
