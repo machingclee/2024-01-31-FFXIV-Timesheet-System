@@ -12,9 +12,7 @@ const useTimesheetStyles = tss.withParams<{ darkMode: boolean }>().create(({ dar
         border: 0,
         outline: "none",
         padding: 10,
-        "&": {
-            color: darkMode ? TEXT_COLOR_LIGHT : TEXT_COLOR_DARK
-        }
+
     },
     deleteButton: {
         opacity: 0.5,

@@ -340,7 +340,7 @@ registerEffects(timetableMiddleware, [
     ...loadingActions(TimesheetThunkActions.updateMessage),
     ...loadingActions(TimesheetThunkActions.updateEnabledTimeslot),
     ...loadingActions(TimesheetThunkActions.getTimeOptionsWeekly),
-    // ...loadingActions(TimesheetThunkActions.addColumn),
+    ...loadingActions(TimesheetThunkActions.addColumn),
     ...loadingActions(TimesheetThunkActions.deleteColumn),
     // ...loadingActions(TimesheetThunkActions.updateNamebyColumn),
     {
