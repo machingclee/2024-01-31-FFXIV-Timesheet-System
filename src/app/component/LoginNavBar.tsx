@@ -15,6 +15,8 @@ import { tss } from "tss-react";
 import { FaRegMoon } from "react-icons/fa6";
 import DarkModeButton from "./DarkModeButton";
 import { FaGithub } from "react-icons/fa";
+import useFontColor from "@/hooks/useFontColor";
+import { FaHome } from "react-icons/fa";
 
 const useDialogStyles = tss.create(() => ({
     link: {
@@ -37,7 +39,7 @@ const useDialogStyles = tss.create(() => ({
 
 export default () => {
     const apiClient = useApiClient();
-
+    const fontColor = useFontColor();
     const pathname = usePathname();
     const accessToken = useAppSelector(s => s.auth.accessToken);
     const email = useAppSelector(s => s.auth.email);
@@ -58,15 +60,17 @@ export default () => {
         GeneralPurposeDialog.setContent({
             desc: () => {
                 return (
-                    <div style={{ fontSize: 16 }} className={cx(classes.dialog)}>
+                    <div style={{
+                        fontSize: "0.9rem",
+                    }} className={cx(classes.dialog)}>
                         <ul>
                             <li>
-                                Project Repository <a href="https://github.com/machingclee/2024-01-31-FFXIV-Timesheet-System" target="_blank">Github Page</a>.
+                                Project Repository <a href="https://github.com/machingclee/2024-01-31-FFXIV-Timesheet-System" target="_blank">Github Page</a>
                             </li>
                             <li>
                                 Please feel free to contact me on <a href="machingclee@gmail.com">machingclee@gmail.com</a> for any new features
                             </li>
-                            <li> Sometimes you may encounter 3~4s delay as it takes time to spin up the backend server if it has been a long while counted from the last request to the server.
+                            <li> Sometimes you may encounter 3~4s delay as it takes time to spin up the backend server if it has been a long while counted from the last request to the server
                             </li >
                         </ul >
                     </div >
