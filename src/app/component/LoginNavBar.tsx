@@ -64,7 +64,7 @@ export default () => {
                                 Project Repository <a href="https://github.com/machingclee/2024-01-31-FFXIV-Timesheet-System" target="_blank">Github Page</a>.
                             </li>
                             <li>
-                                Please feel free to contact me on <a href="machingclee@gmail.com">machingclee@gmail.com</a> for any new features,
+                                Please feel free to contact me on <a href="machingclee@gmail.com">machingclee@gmail.com</a> for any new features
                             </li>
                             <li> Sometimes you may encounter 3~4s delay as it takes time to spin up the backend server if it has been a long while counted from the last request to the server.
                             </li >
