@@ -14,6 +14,7 @@ import { useParams, usePathname, useRouter } from "next/navigation";
 import { tss } from "tss-react";
 import { FaRegMoon } from "react-icons/fa6";
 import DarkModeButton from "./DarkModeButton";
+import { FaGithub } from "react-icons/fa";
 
 const useDialogStyles = tss.create(() => ({
     link: {
@@ -60,17 +61,12 @@ export default () => {
                     <div style={{ fontSize: 16 }} className={cx(classes.dialog)}>
                         <ul>
                             <li>
-                                Project Repository: <a href="https://github.com/machingclee/2024-01-31-FFXIV-Timesheet-System">Github Page</a>.
+                                Project Repository <a href="https://github.com/machingclee/2024-01-31-FFXIV-Timesheet-System" target="_blank">Github Page</a>.
                             </li>
-                            <li>This timesheet-page is created for non-commercial purpose.</li>
                             <li>
-                                Please feel free to contact me, James, on <a href="machingclee@gmail.com">machingclee@gmail.com</a> to request/suggest for any new features.
+                                Please feel free to contact me on <a href="machingclee@gmail.com">machingclee@gmail.com</a> for any new features,
                             </li>
-
-                            <li>
-                                The website is deployed in a minimal possible cost to the best of my knowledge.
-                            </li>
-                            <li> Sometimes you may encounter 3~4s delay as it takes time to spin up the backend server if it has been a long time from the last request to the server (i.e., staying idle to cut cost).
+                            <li> Sometimes you may encounter 3~4s delay as it takes time to spin up the backend server if it has been a long while counted from the last request to the server.
                             </li >
                         </ul >
                     </div >
@@ -102,8 +98,10 @@ export default () => {
                     </MyLink>
 
                 </div>
-                <div style={{ display: "flex" }}>
-                    <MyButton variant="text" onClick={openAboutAuthor}>About Author</MyButton>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                    <MyButton variant="text" onClick={openAboutAuthor}>
+                        <FaGithub size={24} />
+                    </MyButton>
                     <Spacer width={30} />
                     {!accessToken && <Button variant="contained" onClick={login} >Login</Button>}
                     <div style={{ display: "flex", alignItems: "center" }}>
