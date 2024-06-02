@@ -305,15 +305,6 @@ export class TimesheetThunkActions {
             return { weeklyId }
         }
     );
-    public static deleteColumn = createAsyncThunk(
-        "timetable/delete-column",
-        async (params: { participantColumnId: number }, api) => {
-            const apiClient = getApiClient();
-            const { participantColumnId } = params;
-            const res = await apiClient.put(`/timesheet/delete-column/${participantColumnId}}`);
-            return processRes(res, api);
-        }
-    );
     public static updateNamebyColumn = createAsyncThunk(
         "timetable/update-name-by-column",
         async (params: { participantColumnId: number, name: string, weeklyId: string }, api) => {
@@ -341,7 +332,6 @@ registerEffects(timetableMiddleware, [
     ...loadingActions(TimesheetThunkActions.updateEnabledTimeslot),
     ...loadingActions(TimesheetThunkActions.getTimeOptionsWeekly),
     ...loadingActions(TimesheetThunkActions.addColumn),
-    ...loadingActions(TimesheetThunkActions.deleteColumn),
     // ...loadingActions(TimesheetThunkActions.updateNamebyColumn),
     {
         action: TimesheetThunkActions.createWeekly.fulfilled,
@@ -370,13 +360,6 @@ registerEffects(timetableMiddleware, [
     },
     {
         action: TimesheetThunkActions.addColumn.fulfilled,
-        effect: (action, api) => {
-            const { weeklyId } = (action as ReturnType<typeof TimesheetThunkActions.addColumn.fulfilled>).payload;
-            api.dispatch(TimesheetThunkActions.getWeeklyTimetables({ weeklyId }));
-        }
-    },
-    {
-        action: TimesheetThunkActions.deleteColumn.fulfilled,
         effect: (action, api) => {
             const { weeklyId } = (action as ReturnType<typeof TimesheetThunkActions.addColumn.fulfilled>).payload;
             api.dispatch(TimesheetThunkActions.getWeeklyTimetables({ weeklyId }));
@@ -412,7 +395,6 @@ registerEffects(timetableMiddleware, [
             TimesheetThunkActions.updateEnabledTimeslot.rejected,
             TimesheetThunkActions.getTimeOptionsWeekly.rejected,
             TimesheetThunkActions.addColumn.rejected,
-            TimesheetThunkActions.deleteColumn.rejected,
             TimesheetThunkActions.updateNamebyColumn.rejected,
             TimesheetThunkActions.deleteParticipant
         ]
